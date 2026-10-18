@@ -1,0 +1,6 @@
+# --- CORE FRAMEWORK ---
+django>=4.2                 # Le framework web principal (gestion des vues, URLs, administration)
+djangorestframework         # Pour créer l'API REST que le frontend React va interroger
+
+# --- BASE DE DONNÉES & SÉCURITÉ ---
+psycopg2-binary             # Le connecteur pour permettre à Django de parler à PostgreSQL
