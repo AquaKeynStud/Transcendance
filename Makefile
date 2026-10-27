@@ -49,9 +49,22 @@ clean:
 	@$(COMPOSE) down -v --rmi local
 
 fclean:
-	@echo "$(RED)🏮 • Deep cleaning (containers, volumes, orphans, cache)...$(RESET)"
-	@$(COMPOSE) down --rmi local --remove-orphans -v
-	@docker builder prune -f
-	@echo "$(RED)-> Full cleanup completed 🧨$(RESET)"
+	@printf "⚠️ Êtes-vous sûr de vouloir tout supprimer (conteneurs, volumes, images) ? [y/N] "; \
+	read choice; \
+	if [ "$$choice" = "y" ] || [ "$$choice" = "Y" ]; then \
+		docker compose down -v --rmi local --remove-orphans; \
+		printf "\033[1;31m-> Full cleanup completed 🧨\033[0m\n"; \
+	else \
+		printf "\033[1;31m-> Operation aborted 🐦‍🔥\033[0m\n"; \
+	fi
 
-.PHONY: all build up down logs status re clean fclean
+env:
+	@if [ -f .env ]; then \
+		sed 's/=.*/=/' .env > .env.example; \
+		echo "✅ Fichier .env.example généré/mis à jour avec succès !"; \
+	else \
+		echo "❌ Erreur : Aucun fichier .env trouvé à la racine."; \
+		exit 1; \
+	fi
+
+.PHONY: all build up down logs status re clean fclean env

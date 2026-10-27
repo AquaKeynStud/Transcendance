@@ -4,6 +4,12 @@
 
 ## 📋 Prerequisites & Docker Installation
 
+### Commande pour installer Docker via le script officiel
+```bash
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+```
+
 In order to launch the project, you must have installed on your device (or session):
    - <img src="./assets/docker.png" width="28" height="20" /> **Docker**
    - <img src="./assets/docker-compose.png" width="28" height="28" /> **Docker Compose**

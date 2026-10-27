@@ -15,3 +15,5 @@ build/
 # Docker / OS
 .DS_Store
 *.log
+
+.vscode/
