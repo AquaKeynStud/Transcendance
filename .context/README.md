@@ -21,3 +21,4 @@ Ils servent à reprendre le travail d'une session à l'autre et à montrer à l'
 | 2026-11-05 | [2026-11-05_specs-et-plan-front.md](2026-11-05_specs-et-plan-front.md) | Specs fonctionnelle et technique, plan du front, branches |
 | 2026-11-05 | [2026-11-05_maquette-liquid-glass-v1.md](2026-11-05_maquette-liquid-glass-v1.md) | Maquette v1 : DA liquid glass, accueil bento, nav gauche |
 | 2026-11-05 | [2026-11-05_maquette-liquid-glass-v2.md](2026-11-05_maquette-liquid-glass-v2.md) | Maquette v2 : monochrome, fil et plugins qui défilent séparément |
+| 2026-11-05 | [2026-11-05_maquette-liquid-glass-v3.md](2026-11-05_maquette-liquid-glass-v3.md) | Maquette v3 : rédaction à droite, fond noir, Unbounded + Manrope |
