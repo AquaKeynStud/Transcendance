@@ -1,9 +1,10 @@
 # Spécification fonctionnelle : ft_transcendence (réseau social)
 
-> **Version :** 0.3 (brouillon, à valider en équipe)
-> **Date :** 2026-10-29
+> **Version :** 0.4 (brouillon, à valider en équipe)
+> **Date :** 2026-11-05
 > **Changements v0.2 :** les visiteurs non connectés peuvent lire le contenu public (§2, §3, §4.14).
 > **Changements v0.3 :** rendu avancé au 15 janvier 2027, sprints d'une semaine (§10.3, §11).
+> **Changements v0.4 :** les posts ont un titre obligatoire et un contenu optionnel, comme sur Reddit ; les réponses n'ont pas de titre (§4.4, §4.11, §6).
 > **Équipe :** pledieu, abouclie, aboumall, arocca
 > **Référence sujet :** [subject.json](subject.json). Les identifiants `GR*` / `TR*` / `web.*`… viennent de ce fichier.
 
@@ -161,12 +162,12 @@ Pendant le bannissement, le contenu d'un user banni est masqué pour tout le mon
 
 | ID | Fonctionnalité | Prio |
 |---|---|---|
-| POST-01 | **Créer un post** : texte (≤ 500 caractères), médias en option. Il faut au moins du texte ou un média. | Must |
+| POST-01 | **Créer un post** : **titre obligatoire** (3 à 120 caractères), contenu texte (≤ 500 caractères) et médias **optionnels**. | Must |
 | POST-02 | **Médias joints** (§4.5). | Must |
-| POST-03 | **Répondre** à un post : une réponse est un post qui a un post parent. On peut répondre à une réponse, ce qui forme un fil. | Must |
+| POST-03 | **Répondre** à un post : une réponse est un post qui a un post parent. Elle **n'a pas de titre** et doit contenir au moins du texte ou un média. On peut répondre à une réponse, ce qui forme un fil. | Must |
 | POST-04 | **Page d'un post** : le post, la chaîne de ses parents au-dessus et ses réponses en dessous (paginées, de la plus ancienne à la plus récente). | Must |
 | POST-05 | **Mentions** `@username` : le texte devient un lien vers le profil, et le user mentionné reçoit une notification. | Must |
-| POST-06 | **Modifier** son post : texte et retrait de médias. La mention **« (modifié) »** s'affiche, avec la date de modification au survol. | Must |
+| POST-06 | **Modifier** son post : titre, texte et retrait de médias. La mention **« (modifié) »** s'affiche, avec la date de modification au survol. | Must |
 | POST-07 | **Supprimer** son post (§4.4.1). | Must |
 | POST-08 | **Compteurs** sur chaque post : réponses, likes, republications. | Must |
 
@@ -276,7 +277,7 @@ Pendant le bannissement, le contenu d'un user banni est masqué pour tout le mon
 | ID | Fonctionnalité | Prio |
 |---|---|---|
 | SEARCH-01 | Recherche de **users** par nom d'utilisateur ou nom affiché. | Should |
-| SEARCH-02 | Recherche de **posts** par mots-clés, dans la limite des posts visibles. | Should |
+| SEARCH-02 | Recherche de **posts** par mots-clés dans le titre et le contenu, dans la limite des posts visibles. | Should |
 | SEARCH-03 | **Filtres** : type (users / posts), « avec médias », période (24 h, 7 j, 30 j, tout), auteur. | Should |
 | SEARCH-04 | **Tri** : plus récents / plus populaires (likes + republications). | Should |
 | SEARCH-05 | **Pagination.** | Should |
@@ -395,7 +396,8 @@ erDiagram
         int id PK
         int author_id FK
         int parent_id FK "nullable"
-        text content
+        string title "obligatoire si parent_id est null, vide pour une réponse"
+        text content "optionnel pour un post"
         datetime edited_at "nullable → (modifié)"
         datetime deleted_at "nullable → Post supprimé"
         bool deleted_by_admin
