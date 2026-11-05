@@ -14,7 +14,7 @@ Décision d'aboumall : **titre obligatoire, contenu optionnel.** `docs/SPEC_FONC
 - **SEARCH-02** : la recherche porte sur le titre et le contenu.
 - **§6 (modèle de données)** : champ `title` sur `POST`, obligatoire si `parent_id` est vide.
 
-⚠️ Le changement est commité sur `front/chore/mockups`. Il arrivera sur `master` avec le merge de la branche. Il faut prévenir le backend (modèle `Post`, validation, recherche).
+Le changement est commité sur `front/chore/mockups`, et reporté sur `master` par cherry-pick (commit `adb6369`) pour que toute l'équipe le voie. ⚠️ Il faut prévenir le backend (modèle `Post`, validation, recherche).
 
 ## Retour sur la v4 → changement dans la v5
 
