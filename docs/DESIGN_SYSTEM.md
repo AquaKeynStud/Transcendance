@@ -7,6 +7,8 @@
 > **Module visé :** `web.design_system` (mineur, 1 pt) : *« Custom-made design system with reusable components, including a proper color palette, typography, and icons (minimum: 10 reusable components). »*
 > **Spec technique :** [SPEC_TECH.md](SPEC_TECH.md) §11.5
 
+> ⚠️ **Statut : exploration, direction artistique non définitive.** Le « liquid glass » est un **test**. aboumall est satisfait de la maquette v8, mais ce style n'est peut-être pas adapté à un réseau social. D'autres maquettes avec d'autres thèmes viendront plus tard. Ce qui ne dépend pas du thème restera valable quel que soit le style retenu : la liste des composants (§5), leurs variantes et états, leurs props et le lien avec la spec. Les couleurs, matières et polices pourront changer.
+
 Ce document décrit la palette, la typographie, les autres fondations et les composants réutilisables du frontend. Les valeurs viennent de la maquette v8. Une valeur marquée ⚠️ a été corrigée pour l'accessibilité par rapport à la v8 (§2.6). Ces corrections sont validées et appliquées dans `design-system.html`.
 
 ---
