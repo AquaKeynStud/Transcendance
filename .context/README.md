@@ -19,3 +19,11 @@ Ils servent à reprendre le travail d'une session à l'autre et à montrer à l'
 | Date | Rapport | Sujet |
 |---|---|---|
 | 2026-11-05 | [2026-11-05_specs-et-plan-front.md](2026-11-05_specs-et-plan-front.md) | Specs fonctionnelle et technique, plan du front, branches |
+| 2026-11-05 | [2026-11-05_maquette-liquid-glass-v1.md](2026-11-05_maquette-liquid-glass-v1.md) | Maquette v1 : DA liquid glass, accueil bento, nav gauche |
+| 2026-11-05 | [2026-11-05_maquette-liquid-glass-v2.md](2026-11-05_maquette-liquid-glass-v2.md) | Maquette v2 : monochrome, fil et plugins qui défilent séparément |
+| 2026-11-05 | [2026-11-05_maquette-liquid-glass-v3.md](2026-11-05_maquette-liquid-glass-v3.md) | Maquette v3 : rédaction à droite, fond noir, Unbounded + Manrope |
+| 2026-11-05 | [2026-11-05_maquette-liquid-glass-v4.md](2026-11-05_maquette-liquid-glass-v4.md) | Maquette v4 : posts façon Reddit (titre + contenu), survol, barre de défilement |
+| 2026-11-05 | [2026-11-05_maquette-liquid-glass-v5.md](2026-11-05_maquette-liquid-glass-v5.md) | Maquette v5 : barres de défilement discrètes ; spec v0.4 (titre des posts obligatoire) |
+| 2026-11-05 | [2026-11-05_maquette-liquid-glass-v6.md](2026-11-05_maquette-liquid-glass-v6.md) | Maquette v6 : barres de défilement natives masquées au repos, fond #111214 |
+| 2026-11-05 | [2026-11-05_maquette-liquid-glass-v7.md](2026-11-05_maquette-liquid-glass-v7.md) | Maquette v7 : J'aime en framboise pourpre, Republier en ambre |
+| 2026-11-05 | [2026-11-05_maquette-liquid-glass-v8.md](2026-11-05_maquette-liquid-glass-v8.md) | Maquette v8 : J'aime et Republier sans brillance |
