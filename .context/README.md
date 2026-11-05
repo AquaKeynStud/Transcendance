@@ -27,3 +27,4 @@ Ils servent à reprendre le travail d'une session à l'autre et à montrer à l'
 | 2026-11-05 | [2026-11-05_maquette-liquid-glass-v6.md](2026-11-05_maquette-liquid-glass-v6.md) | Maquette v6 : barres de défilement natives masquées au repos, fond #111214 |
 | 2026-11-05 | [2026-11-05_maquette-liquid-glass-v7.md](2026-11-05_maquette-liquid-glass-v7.md) | Maquette v7 : J'aime en framboise pourpre, Republier en ambre |
 | 2026-11-05 | [2026-11-05_maquette-liquid-glass-v8.md](2026-11-05_maquette-liquid-glass-v8.md) | Maquette v8 : J'aime et Republier sans brillance |
+| 2026-11-05 | [2026-11-05_design-system-palette-composants.md](2026-11-05_design-system-palette-composants.md) | Design system : palette, contrastes, table des 24 composants |
