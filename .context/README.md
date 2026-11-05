@@ -3,6 +3,10 @@
 Rapports de travail sur le frontend : ce qui a été fait, les décisions prises, ce qui reste à faire.
 Ils servent à reprendre le travail d'une session à l'autre et à montrer à l'équipe où on en est.
 
+## État de la direction artistique
+
+⚠️ Le style **« liquid glass »** (maquettes v1 à v8, `design-system.html`) est un **test**. aboumall est satisfait de la v8, mais le style n'est peut-être pas adapté à un réseau social : d'autres maquettes avec d'autres thèmes suivront. **Pas de maquettes de pages pour l'instant.** La table des composants reste la référence, quel que soit le thème.
+
 ## Convention
 
 - Un fichier par session ou par tâche : `AAAA-MM-JJ_<sujet>.md`.
@@ -27,3 +31,6 @@ Ils servent à reprendre le travail d'une session à l'autre et à montrer à l'
 | 2026-11-05 | [2026-11-05_maquette-liquid-glass-v6.md](2026-11-05_maquette-liquid-glass-v6.md) | Maquette v6 : barres de défilement natives masquées au repos, fond #111214 |
 | 2026-11-05 | [2026-11-05_maquette-liquid-glass-v7.md](2026-11-05_maquette-liquid-glass-v7.md) | Maquette v7 : J'aime en framboise pourpre, Republier en ambre |
 | 2026-11-05 | [2026-11-05_maquette-liquid-glass-v8.md](2026-11-05_maquette-liquid-glass-v8.md) | Maquette v8 : J'aime et Republier sans brillance |
+| 2026-11-05 | [2026-11-05_design-system-palette-composants.md](2026-11-05_design-system-palette-composants.md) | Design system : palette, contrastes, table des 24 composants |
+| 2026-11-05 | [2026-11-05_maquette-design-system.md](2026-11-05_maquette-design-system.md) | Maquette du design system : palette des deux thèmes et 24 composants |
+| 2026-11-05 | [2026-11-05_statut-liquid-glass.md](2026-11-05_statut-liquid-glass.md) | Le liquid glass est un test ; pas de maquettes de pages pour l'instant |

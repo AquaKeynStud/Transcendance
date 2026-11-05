@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design system · Liquid glass · ft_transcendence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   Design system « Liquid glass » : palette + tous les composants.
+   Référence : liquid-glass-v8.html (validée) + corrections de contraste
+   validées dans docs/DESIGN_SYSTEM.md §2.6.
+   ?theme=light : thème clair · ?scrolling : barres de défilement visibles
+   ===================================================================== */
+
+/* 1. TOKENS ============================================================ */
+
+:root {
+  --font-display: "Unbounded", system-ui, sans-serif;
+  --font-body: "Manrope", system-ui, sans-serif;
+
+  --r-sm: 12px;
+  --r-md: 18px;
+  --r-lg: 28px;
+  --r-pill: 999px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --page-pad: 28px;
+  --gap: 20px;
+
+  --blur: 22px;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+}
+
+/* Thème sombre (par défaut) */
+[data-theme="dark"] {
+  --bg: #111214;
+  --text: #f4f5f7;
+  --text-2: rgba(244, 245, 247, .66);
+  --text-3: rgba(244, 245, 247, .52);
+  --line: rgba(255, 255, 255, .09);
+
+  --accent: #ffffff;
+  --accent-ink: #0b0c0e;
+  --accent-soft: rgba(255, 255, 255, .14);
+  --accent-fill: linear-gradient(170deg, #ffffff 0%, #e4e7eb 45%, #aeb4bc 100%);
+  --accent-glow: 0 10px 30px -12px rgba(255, 255, 255, .45);
+
+  --like: #f0508f;
+  --repost: #ffa834;
+  --success: #3ddc97;
+  --danger: #ff5c7a;
+  --warning: #ffc857;
+
+  --glass-fill: linear-gradient(140deg, rgba(255, 255, 255, .10) 0%, rgba(255, 255, 255, .045) 45%, rgba(255, 255, 255, .065) 100%);
+  --glass-edge: linear-gradient(140deg, rgba(255, 255, 255, .75) 0%, rgba(255, 255, 255, .12) 22%, rgba(255, 255, 255, .03) 55%, rgba(255, 255, 255, .10) 80%, rgba(255, 255, 255, .55) 100%);
+  --glass-shadow: 0 24px 60px -24px rgba(0, 0, 0, .7), inset 0 1px 0 rgba(255, 255, 255, .22), inset 0 -1px 0 rgba(255, 255, 255, .04);
+  --well: rgba(0, 0, 0, .28);
+  --well-edge: rgba(255, 255, 255, .09);
+  --chrome: linear-gradient(160deg, #ffffff 0%, #cfd3d8 18%, #5f646b 42%, #eceef1 58%, #8f949b 78%, #2c2f33 100%);
+  --scroll-thumb: rgba(255, 255, 255, .32);
+  --post-hover: rgba(255, 255, 255, .055);
+  --post-hover-edge: rgba(255, 255, 255, .08);
+  --overlay: rgba(6, 7, 8, .72);
+}
+
+/* Thème clair */
+[data-theme="light"] {
+  --bg: #dadcdf;
+  --text: #0c0d0f;
+  --text-2: rgba(12, 13, 15, .66);
+  --text-3: rgba(12, 13, 15, .58);
+  --line: rgba(12, 13, 15, .08);
+
+  --accent: #15171a;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(12, 13, 15, .12);
+  --accent-fill: linear-gradient(170deg, #4a4f56 0%, #24272b 50%, #0c0d0f 100%);
+  --accent-glow: 0 10px 24px -12px rgba(0, 0, 0, .55);
+
+  --like: #c0185e;
+  --repost: #a8530a;
+  --success: #12985f;
+  --danger: #c42347;
+  --warning: #92600a;
+
+  --glass-fill: linear-gradient(140deg, rgba(255, 255, 255, .72) 0%, rgba(255, 255, 255, .38) 50%, rgba(255, 255, 255, .55) 100%);
+  --glass-edge: linear-gradient(140deg, #fff 0%, rgba(255, 255, 255, .5) 30%, rgba(255, 255, 255, .2) 60%, rgba(255, 255, 255, .9) 100%);
+  --glass-shadow: 0 24px 50px -28px rgba(20, 22, 26, .55), inset 0 1px 0 rgba(255, 255, 255, .9), inset 0 -1px 0 rgba(0, 0, 0, .04);
+  --well: rgba(255, 255, 255, .45);
+  --well-edge: rgba(12, 13, 15, .10);
+  --chrome: linear-gradient(160deg, #ffffff 0%, #e2e4e7 25%, #9da2a8 50%, #f5f6f7 70%, #b9bdc2 100%);
+  --scroll-thumb: rgba(12, 13, 15, .3);
+  --post-hover: rgba(255, 255, 255, .6);
+  --post-hover-edge: rgba(255, 255, 255, .9);
+  --overlay: rgba(200, 203, 208, .7);
+}
+
+/* 2. BASE ============================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  transition: background .4s var(--ease), color .4s var(--ease);
+}
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; margin: 0; letter-spacing: -.02em; }
+b, strong { font-weight: 800; }
+p { margin: 0; }
+button { font: inherit; color: inherit; cursor: pointer; }
+svg.i { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+svg.i.sm { width: 16px; height: 16px; }
+.muted { color: var(--text-2); }
+.faint { color: var(--text-3); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+
+/* 4. VERRE LIQUIDE ===================================================== */
+.glass {
+  position: relative;
+  background: var(--glass-fill);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(160%);
+  backdrop-filter: blur(var(--blur)) saturate(160%);
+  border-radius: var(--r-lg);
+  box-shadow: var(--glass-shadow);
+  isolation: isolate;
+}
+.glass::before, .glass-edge::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
+  background: var(--glass-edge);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  pointer-events: none;
+}
+.glass::after {
+  content: ""; position: absolute; inset: 1px 1px 55% 1px; border-radius: inherit;
+  background: radial-gradient(120% 90% at 15% 0%, rgba(255, 255, 255, .10), transparent 60%);
+  pointer-events: none; z-index: -1;
+}
+.liquid {
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  backdrop-filter: blur(14px) saturate(180%);
+  backdrop-filter: url(#liquid-refraction) blur(10px) saturate(180%);
+}
+@media (prefers-reduced-transparency: reduce) { .glass { backdrop-filter: none; background: var(--bg); } }
+
+
+/* Nav (repris de la v8) */
+.sidebar { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-5) var(--space-4); min-height: 0; }
+.brand { display: flex; align-items: center; gap: var(--space-3); padding: 0 var(--space-2); }
+.brand-mark { width: 34px; height: 34px; border-radius: 11px; background: var(--chrome); box-shadow: inset 0 1px 1px rgba(255, 255, 255, .8), 0 6px 16px -6px rgba(0, 0, 0, .8); }
+.brand-name { font-family: var(--font-display); font-size: 16px; font-weight: 700; letter-spacing: -.01em; }
+.me { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); border-radius: var(--r-md); background: var(--well); border: 1px solid var(--well-edge); }
+.me .who { min-width: 0; }
+.me .who b { display: block; font-weight: 600; font-family: var(--font-display); font-size: 13px; }
+.me .who span { font-size: 12px; color: var(--text-3); }
+.nav-label { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); padding: 0 var(--space-3); margin-top: var(--space-2); }
+.nav { display: flex; flex-direction: column; gap: 2px; }
+.nav a { position: relative; display: flex; align-items: center; gap: var(--space-3); padding: 10px var(--space-3); border-radius: var(--r-sm); color: var(--text-2); text-decoration: none; font-weight: 600; transition: background .2s var(--ease), color .2s var(--ease); }
+.nav a:hover { color: var(--text); background: rgba(255, 255, 255, .05); }
+.nav a.active { color: var(--text); }
+.nav a.active::before { content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: -1;
+  background: linear-gradient(140deg, rgba(255, 255, 255, .16), rgba(255, 255, 255, .04));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), inset 0 0 0 1px rgba(255, 255, 255, .10), 0 8px 20px -10px rgba(0, 0, 0, .8); }
+[data-theme="light"] .nav a:hover { background: rgba(255, 255, 255, .4); }
+[data-theme="light"] .nav a.active::before { background: rgba(255, 255, 255, .75); box-shadow: inset 0 1px 0 #fff, 0 6px 16px -10px rgba(20, 22, 26, .5); }
+.nav a .badge { margin-left: auto; }
+.sidebar .spacer { flex: 1; }
+.sidebar-foot { display: flex; flex-direction: column; gap: var(--space-3); }
+.theme-label { display: inline-flex; gap: 8px; align-items: center; }
+.sidebar-foot .row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
+
+
+/* Tuiles */
+.tile { padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); min-height: 0; overflow: hidden; }
+.tile.compact { padding: var(--space-4); gap: var(--space-3); }
+.tile-head { display: flex; align-items: center; gap: var(--space-2); }
+.tile-head h2 { font-size: 15px; }
+.tile-head .end { margin-left: auto; display: flex; gap: var(--space-2); align-items: center; }
+
+.p-w2h2 { grid-column: span 2; grid-row: span 2; }
+.p-w2h3 { grid-column: span 2; grid-row: span 3; }
+.p-w1h2 { grid-column: span 1; grid-row: span 2; }
+.p-w2h1 { grid-column: span 2; grid-row: span 1; }
+
+
+/* 6. COMPOSANTS ======================================================== */
+.btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); height: 40px; padding: 0 18px; border-radius: var(--r-pill); border: 0; font-weight: 700; white-space: nowrap; isolation: isolate; transition: transform .15s var(--ease), box-shadow .2s var(--ease), filter .2s var(--ease); }
+.btn:active { transform: scale(.97); }
+.btn-primary { color: var(--accent-ink); background: var(--accent-fill); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9), inset 0 -2px 6px rgba(0, 0, 0, .18), var(--accent-glow); }
+.btn-primary:hover { filter: brightness(1.06); }
+[data-theme="light"] .btn-primary { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25), var(--accent-glow); }
+.btn-glass { background: linear-gradient(160deg, rgba(255, 255, 255, .16), rgba(255, 255, 255, .04)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45), inset 0 0 0 1px rgba(255, 255, 255, .12), 0 10px 24px -12px rgba(0, 0, 0, .9); }
+[data-theme="light"] .btn-glass { background: linear-gradient(160deg, rgba(255, 255, 255, .95), rgba(255, 255, 255, .55)); box-shadow: inset 0 1px 0 #fff, inset 0 0 0 1px rgba(12, 13, 15, .08), 0 8px 20px -12px rgba(20, 22, 26, .6); }
+.btn-ghost { background: transparent; color: var(--text-2); }
+.btn-ghost:hover { color: var(--text); background: rgba(255, 255, 255, .06); }
+.btn-danger { color: #fff; background: linear-gradient(170deg, #e04a68, #c92a4a); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 10px 26px -14px rgba(201, 42, 74, .8); }
+.btn-sm { height: 32px; padding: 0 14px; font-size: 13px; }
+.btn-block { width: 100%; }
+
+.icon-btn { position: relative; width: 40px; height: 40px; border-radius: 50%; border: 0; display: inline-grid; place-items: center; color: var(--text);
+  background: linear-gradient(160deg, rgba(255, 255, 255, .18), rgba(255, 255, 255, .03));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), inset 0 0 0 1px rgba(255, 255, 255, .12), 0 8px 18px -10px rgba(0, 0, 0, .9);
+  transition: transform .15s var(--ease); }
+.icon-btn:hover { transform: translateY(-1px); }
+[data-theme="light"] .icon-btn { background: linear-gradient(160deg, #fff, rgba(255, 255, 255, .5)); box-shadow: inset 0 1px 0 #fff, inset 0 0 0 1px rgba(12, 13, 15, .08), 0 6px 14px -8px rgba(20, 22, 26, .5); }
+
+.field { display: flex; align-items: center; gap: var(--space-2); height: 44px; padding: 0 var(--space-4); border-radius: var(--r-pill);
+  background: var(--well); border: 1px solid var(--well-edge); box-shadow: inset 0 2px 6px rgba(0, 0, 0, .35); color: var(--text-3);
+  transition: border-color .2s var(--ease), box-shadow .2s var(--ease); }
+[data-theme="light"] .field { box-shadow: inset 0 2px 5px rgba(20, 22, 26, .08); }
+.field input, .field textarea { flex: 1; min-width: 0; background: none; border: 0; outline: 0; color: var(--text); font: inherit; resize: none; }
+.field input::placeholder, .field textarea::placeholder { color: var(--text-3); }
+.field:focus-within { border-color: rgba(255, 255, 255, .45); box-shadow: inset 0 2px 6px rgba(0, 0, 0, .35), 0 0 0 4px var(--accent-soft); }
+[data-theme="light"] .field:focus-within { border-color: rgba(12, 13, 15, .35); }
+.field.error { border-color: color-mix(in srgb, var(--danger) 75%, transparent); }
+.field-area { height: auto; align-items: flex-start; padding: var(--space-3) var(--space-4); border-radius: var(--r-md); }
+.help { font-size: 12px; color: var(--text-3); padding-left: var(--space-4); margin-top: 6px; }
+.help.error { color: var(--danger); }
+.search-bar { height: 52px; padding: 0 var(--space-2) 0 var(--space-5); }
+.search-bar kbd { font-family: var(--font-body); font-size: 11px; color: var(--text-3); padding: 3px 8px; border-radius: 8px; border: 1px solid var(--well-edge); }
+
+.badge { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: var(--r-pill); font-size: 11px; font-weight: 600;
+  color: var(--accent-ink); background: var(--accent-fill); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), 0 0 12px -3px rgba(255, 255, 255, .5); }
+[data-theme="light"] .badge { box-shadow: none; }
+.badge.neutral { color: var(--text-2); background: rgba(255, 255, 255, .08); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12); }
+.badge.private { gap: 4px; display: inline-flex; align-items: center; color: var(--text-2); background: rgba(255, 255, 255, .06); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); font-weight: 500; }
+[data-theme="light"] .badge.neutral, [data-theme="light"] .badge.private { background: rgba(255, 255, 255, .6); box-shadow: inset 0 0 0 1px rgba(12, 13, 15, .1); }
+
+/* Avatar sans photo : cercle de verre, initiales blanches qui remplissent le cercle */
+.avatar { --size: 40px; position: relative; flex: none; width: var(--size); height: var(--size); border-radius: 50%;
+  display: grid; place-items: center;
+  font-family: var(--font-display); font-weight: 600; font-size: calc(var(--size) * .38); letter-spacing: -.04em; line-height: 1;
+  color: #fff;
+  background: radial-gradient(120% 120% at 30% 20%, rgba(255, 255, 255, .22), rgba(255, 255, 255, .04) 55%, rgba(255, 255, 255, .10));
+  -webkit-backdrop-filter: blur(12px) saturate(160%); backdrop-filter: blur(12px) saturate(160%);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, .55), inset 0 -2px 6px rgba(0, 0, 0, .35), 0 6px 16px -8px rgba(0, 0, 0, .9);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .35);
+}
+.avatar.glass-edge::before { padding: 1px; }
+[data-theme="light"] .avatar { color: var(--text); text-shadow: none; background: radial-gradient(120% 120% at 30% 20%, #fff, rgba(255, 255, 255, .55) 55%, rgba(255, 255, 255, .75)); box-shadow: inset 0 1px 1px #fff, inset 0 -2px 6px rgba(0, 0, 0, .08), 0 6px 14px -8px rgba(20, 22, 26, .5); }
+.avatar.online::after { content: ""; position: absolute; right: 0; bottom: 0; width: 28%; height: 28%; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 2px var(--bg), 0 0 8px color-mix(in srgb, var(--success) 70%, transparent); }
+.avatar.xs { --size: 28px; } .avatar.sm { --size: 34px; } .avatar.lg { --size: 56px; } .avatar.xl { --size: 72px; }
+
+.switch { position: relative; width: 54px; height: 30px; border-radius: var(--r-pill); border: 0; padding: 0; background: var(--well); box-shadow: inset 0 2px 6px rgba(0, 0, 0, .45), inset 0 0 0 1px var(--well-edge); }
+.switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: var(--chrome); box-shadow: inset 0 1px 1px #fff, 0 3px 8px rgba(0, 0, 0, .6); transition: transform .25s var(--ease); }
+.switch[aria-checked="true"] { background: linear-gradient(170deg, rgba(255, 255, 255, .28), rgba(255, 255, 255, .12)); }
+[data-theme="light"] .switch[aria-checked="true"] { background: rgba(12, 13, 15, .6); }
+.switch[aria-checked="true"]::after { transform: translateX(24px); }
+
+.tabs { display: inline-flex; padding: 4px; gap: 2px; border-radius: var(--r-pill); background: var(--well); box-shadow: inset 0 0 0 1px var(--well-edge); }
+.tabs button { border: 0; background: none; height: 32px; padding: 0 14px; border-radius: var(--r-pill); color: var(--text-2); font-weight: 700; font-size: 13px; }
+.tabs button[aria-selected="true"] { color: var(--text); background: linear-gradient(160deg, rgba(255, 255, 255, .2), rgba(255, 255, 255, .06)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45), 0 4px 12px -6px rgba(0, 0, 0, .8); }
+[data-theme="light"] .tabs button[aria-selected="true"] { background: #fff; box-shadow: 0 4px 10px -6px rgba(20, 22, 26, .5); }
+
+.progress { height: 8px; border-radius: var(--r-pill); background: var(--well); box-shadow: inset 0 0 0 1px var(--well-edge); overflow: hidden; }
+.progress i { display: block; height: 100%; width: var(--p, 60%); border-radius: inherit; background: linear-gradient(90deg, #8d939b, #fff); box-shadow: 0 0 12px rgba(255, 255, 255, .5); }
+[data-theme="light"] .progress i { background: linear-gradient(90deg, #6b7078, #15171a); box-shadow: none; }
+
+.toast { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-radius: var(--r-pill); }
+.toast .ok { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; color: var(--accent-ink); background: var(--accent-fill); }
+
+/* Post */
+.post { position: relative; padding: var(--space-5); border-radius: var(--r-md); transition: background .2s var(--ease), box-shadow .2s var(--ease); cursor: pointer; }
+.post:hover { background: var(--post-hover); box-shadow: inset 0 0 0 1px var(--post-hover-edge); }
+.post + .post::before { content: ""; position: absolute; top: -1px; left: var(--space-5); right: var(--space-5); height: 1px; background: var(--line); transition: opacity .2s; }
+.post:hover::before, .post:hover + .post::before { opacity: 0; }
+
+/* En-tête : photo, nom, @username, temps */
+.post-head { display: flex; align-items: center; gap: var(--space-3); }
+.post-head .who { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; min-width: 0; }
+.post-head .who b { font-weight: 800; }
+.post-head .who span { font-size: 13px; color: var(--text-3); }
+.post-head .more { margin-left: auto; padding: 0 6px; opacity: 0; transition: opacity .2s; }
+.post:hover .post-head .more { opacity: 1; }
+.post-context { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--text-3); margin-bottom: var(--space-3); }
+
+/* Corps : titre puis contenu, alignés sur le bord gauche */
+.post-title { margin-top: var(--space-5); font-family: var(--font-display); font-weight: 600; font-size: 19px; line-height: 1.3; letter-spacing: -.02em; }
+.post-text { margin-top: var(--space-2); font-size: 15px; line-height: 1.6; color: var(--text-2); }
+.post-text a { color: var(--text); font-weight: 700; text-decoration: underline; text-decoration-color: var(--text-3); text-underline-offset: 3px; }
+.post-media { margin-top: var(--space-4); height: 240px; border-radius: var(--r-md); overflow: hidden;
+  background:
+    radial-gradient(60% 80% at 30% 40%, rgba(255, 255, 255, .95), rgba(190, 195, 202, .45) 18%, transparent 45%),
+    radial-gradient(50% 70% at 75% 60%, rgba(230, 232, 236, .7), rgba(90, 95, 102, .4) 30%, transparent 60%),
+    linear-gradient(120deg, #0b0c0e, #2a2c30 50%, #0b0c0e);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12); }
+
+/* Actions : pastilles alignées en bas */
+.post-actions { display: flex; gap: var(--space-2); margin-top: var(--space-5); }
+.action { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border-radius: var(--r-pill); border: 0;
+  font-size: 13px; font-weight: 700; color: var(--text-2); background: var(--well); box-shadow: inset 0 0 0 1px var(--well-edge);
+  transition: color .2s, background .2s; }
+.action:hover { color: var(--text); background: rgba(255, 255, 255, .1); }
+[data-theme="light"] .action:hover { background: #fff; }
+.action svg { transition: transform .2s var(--ease); }
+/* J'aime : framboise / pourpre */
+.act-like:hover { color: var(--like); }
+.act-like.liked {
+  color: var(--like);
+  background: color-mix(in srgb, var(--like) 14%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--like) 38%, transparent);
+}
+.act-like.liked svg { fill: currentColor; }
+/* Republier : ambre orangé */
+.act-repost:hover { color: var(--repost); }
+.act-repost.reposted {
+  color: var(--repost);
+  background: color-mix(in srgb, var(--repost) 14%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--repost) 38%, transparent);
+}
+.act-repost.reposted svg { stroke-width: 2.3; }
+.act-like:active svg, .act-repost:active svg { transform: scale(1.25); }
+/* Ligne « X a republié » : icône en ambre */
+.post-context svg { color: var(--repost); }
+.post-deleted { padding: var(--space-3) var(--space-4); border-radius: var(--r-sm); background: var(--well); color: var(--text-3); font-size: 13px; font-style: italic; }
+
+.list { display: flex; flex-direction: column; gap: 2px; }
+.row-item { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2); border-radius: var(--r-sm); }
+.row-item .txt { min-width: 0; flex: 1; }
+.flex { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+.stack { display: flex; flex-direction: column; gap: var(--space-3); }
+
+/* Composer */
+.composer { display: flex; gap: var(--space-4); align-items: flex-start; }
+.composer .body { flex: 1; display: flex; flex-direction: column; gap: var(--space-3); }
+.composer .tools { display: flex; align-items: center; gap: var(--space-2); }
+.composer .tools .count { margin-left: auto; font-size: 12px; color: var(--text-3); }
+.composer-tile { flex: none; }
+.composer-title { height: 42px; border-radius: var(--r-md); }
+.composer-title input { font-family: var(--font-display); font-weight: 600; font-size: 14px; }
+code { font-family: ui-monospace, monospace; font-size: .88em; padding: 1px 6px; border-radius: 6px; background: var(--well); box-shadow: inset 0 0 0 1px var(--well-edge); }
+.composer-tile .tools { display: flex; align-items: center; gap: var(--space-2); }
+.composer-tile .tools .count { margin-left: auto; font-size: 12px; color: var(--text-3); }
+
+/* Plugins */
+.plugin-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); }
+.weather { display: flex; align-items: center; gap: var(--space-4); }
+.weather .temp { font-family: var(--font-display); font-size: 40px; font-weight: 600; line-height: 1; }
+.weather .forecast { margin-left: auto; display: flex; gap: var(--space-3); text-align: center; font-size: 12px; color: var(--text-3); }
+.weather .forecast b { display: block; color: var(--text); font-weight: 500; font-size: 13px; }
+.big-num { font-family: var(--font-display); font-size: 26px; font-weight: 600; line-height: 1; }
+.game-preview { flex: 1; border-radius: var(--r-md); position: relative;
+  background: linear-gradient(rgba(255, 255, 255, .05) 1px, transparent 1px) 0 0 / 14px 14px, linear-gradient(90deg, rgba(255, 255, 255, .05) 1px, transparent 1px) 0 0 / 14px 14px, var(--well);
+  box-shadow: inset 0 0 0 1px var(--well-edge); }
+.game-preview .snake { position: absolute; left: 20%; top: 50%; width: 96px; height: 10px; border-radius: 6px; background: linear-gradient(90deg, rgba(255, 255, 255, .15), #fff); box-shadow: 0 0 12px rgba(255, 255, 255, .6); }
+.game-preview .food { position: absolute; left: 70%; top: 30%; width: 10px; height: 10px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px #fff; }
+[data-theme="light"] .game-preview .snake { background: linear-gradient(90deg, rgba(12, 13, 15, .15), #15171a); box-shadow: none; }
+[data-theme="light"] .game-preview .food { background: #15171a; box-shadow: none; }
+.player { display: flex; align-items: center; gap: var(--space-3); }
+.cover { width: 48px; height: 48px; border-radius: 12px; flex: none; background: var(--chrome); box-shadow: inset 0 1px 1px rgba(255, 255, 255, .7); }
+.player .progress { height: 4px; }
+.t-add { align-items: center; justify-content: center; text-align: center; background: transparent; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; flex-direction: row; }
+.t-add::before { background: none; border: 1.5px dashed rgba(255, 255, 255, .18); padding: 0; -webkit-mask: none; mask: none; }
+.t-add::after { display: none; }
+[data-theme="light"] .t-add::before { border-color: rgba(12, 13, 15, .2); }
+
+
+
+/* =====================================================================
+   PAGE DE DOCUMENTATION
+   ===================================================================== */
+html, body { height: auto; }
+body { min-height: 100vh; }
+.doc { max-width: 1280px; margin: 0 auto; padding: var(--page-pad); display: flex; flex-direction: column; gap: var(--gap); }
+
+.doc-head { position: sticky; top: var(--space-4); z-index: 20; display: flex; align-items: center; gap: var(--space-5);
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-5); border-radius: var(--r-pill); }
+.doc-head .brand { padding: 0; }
+.doc-head nav { display: flex; gap: 2px; margin-left: auto; flex-wrap: wrap; }
+.doc-head nav a { color: var(--text-2); text-decoration: none; font-weight: 700; font-size: 13px; padding: 8px 12px; border-radius: var(--r-pill); }
+.doc-head nav a:hover { color: var(--text); background: var(--well); }
+.doc-head .theme { display: flex; align-items: center; gap: var(--space-2); color: var(--text-3); font-size: 12px; }
+
+.hero { padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); }
+.hero h1 { font-size: 34px; font-weight: 700; }
+.hero p { color: var(--text-2); max-width: 760px; font-size: 15px; line-height: 1.6; }
+.hero .flex { margin-top: var(--space-2); }
+
+.section { scroll-margin-top: 110px; display: flex; flex-direction: column; gap: var(--space-4); margin-top: var(--space-5); }
+.section > header { display: flex; align-items: baseline; gap: var(--space-4); padding: 0 var(--space-2); }
+.section > header h2 { font-size: 26px; font-weight: 700; }
+.section > header p { color: var(--text-3); }
+.sub { font-family: var(--font-display); font-size: 15px; font-weight: 600; padding: 0 var(--space-2); margin-top: var(--space-3); }
+
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--space-4); align-items: start; }
+.c-12 { grid-column: span 12; } .c-8 { grid-column: span 8; } .c-6 { grid-column: span 6; } .c-4 { grid-column: span 4; } .c-3 { grid-column: span 3; }
+
+/* Colonnes « masonry » : chaque colonne s'empile sans trou */
+.masonry { columns: 2; column-gap: var(--space-4); }
+.masonry > .card { break-inside: avoid; margin-bottom: var(--space-4); width: 100%; display: flex; }
+@media (max-width: 1100px) { .masonry { columns: 1; } }
+/* Carte de composant */
+.card { padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+.card-head { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+.card-head .num { font-family: var(--font-display); font-size: 12px; font-weight: 700; color: var(--text-3); min-width: 26px; }
+.card-head h3 { font-size: 17px; font-family: var(--font-display); }
+.card-head .lot { margin-left: auto; }
+.card .desc { color: var(--text-2); }
+.card .specs { font-size: 12px; color: var(--text-3); }
+.demo { position: relative; border-radius: var(--r-md); background: var(--well); box-shadow: inset 0 0 0 1px var(--well-edge);
+  padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); overflow: hidden; }
+.demo.plain { background: transparent; box-shadow: inset 0 0 0 1px var(--line); }
+.demo.lit { background:
+  radial-gradient(60% 90% at 20% 30%, rgba(255,255,255,.22), transparent 60%),
+  radial-gradient(50% 80% at 85% 70%, rgba(255,255,255,.14), transparent 60%), var(--well); }
+.lbl { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-3); font-weight: 600; }
+.variant { display: flex; flex-direction: column; gap: var(--space-2); }
+.props { display: flex; flex-wrap: wrap; gap: 6px; }
+.props code { font-size: 11.5px; }
+.lot-badge { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: var(--r-pill); background: var(--accent-fill); color: var(--accent-ink); }
+.lot-badge.l2 { background: var(--well); color: var(--text-2); box-shadow: inset 0 0 0 1px var(--well-edge); }
+.lot-badge.l3 { background: transparent; color: var(--text-3); box-shadow: inset 0 0 0 1px var(--line); }
+
+/* États forcés pour la démo */
+.post.is-hover { background: var(--post-hover); box-shadow: inset 0 0 0 1px var(--post-hover-edge); }
+.post.is-hover .post-head .more { opacity: 1; }
+.field.is-focus { border-color: rgba(255, 255, 255, .45); box-shadow: inset 0 2px 6px rgba(0, 0, 0, .35), 0 0 0 4px var(--accent-soft); }
+[data-theme="light"] .field.is-focus { border-color: rgba(12, 13, 15, .35); }
+.btn-glass.is-hover { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), inset 0 0 0 1px rgba(255, 255, 255, .25), 0 10px 28px -10px rgba(0, 0, 0, .9); }
+.btn-primary.is-hover { filter: brightness(1.06); }
+.action.is-hover { color: var(--text); background: rgba(255, 255, 255, .1); }
+.act-like.is-hover { color: var(--like); } .act-repost.is-hover { color: var(--repost); }
+
+/* =====================================================================
+   PALETTE
+   ===================================================================== */
+.theme-panel { padding: var(--space-5); border-radius: var(--r-lg); background: var(--bg); color: var(--text);
+  box-shadow: inset 0 0 0 1px var(--line); display: flex; flex-direction: column; gap: var(--space-5); }
+.theme-panel > h3 { font-size: 16px; display: flex; align-items: center; gap: var(--space-2); }
+.pal-group { display: flex; flex-direction: column; gap: var(--space-3); }
+.pal { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: var(--space-3); }
+.sw { border-radius: var(--r-md); overflow: hidden; background: var(--glass-fill); box-shadow: inset 0 0 0 1px var(--well-edge); display: flex; flex-direction: column; }
+.sw .chip { height: 64px; position: relative; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: 18px; }
+.sw .meta { padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; font-size: 12px; }
+.sw .meta code.tok { color: var(--text); font-weight: 700; font-size: 12px; }
+.sw .meta code { background: none; box-shadow: none; padding: 0; color: var(--text-3); font-size: 11px; }
+.sw .meta .use { color: var(--text-3); font-size: 11.5px; line-height: 1.35; }
+.ratio { display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; margin-top: 4px; font-size: 11px; font-weight: 700;
+  padding: 2px 8px; border-radius: var(--r-pill); background: var(--well); box-shadow: inset 0 0 0 1px var(--well-edge); color: var(--text-2); }
+.ratio i { font-style: normal; color: var(--success); }
+.checker { background:
+  linear-gradient(45deg, rgba(128,128,128,.25) 25%, transparent 25%, transparent 75%, rgba(128,128,128,.25) 75%) 0 0 / 16px 16px,
+  linear-gradient(45deg, rgba(128,128,128,.25) 25%, transparent 25%, transparent 75%, rgba(128,128,128,.25) 75%) 8px 8px / 16px 16px; }
+.glass-chip { position: absolute; inset: 10px 14px; border-radius: 12px; background: var(--glass-fill); backdrop-filter: blur(6px); box-shadow: var(--glass-shadow); }
+.glass-chip::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; background: var(--glass-edge);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+
+/* Typo et fondations */
+.type-row { display: grid; grid-template-columns: 260px 1fr; gap: var(--space-4); align-items: baseline; padding: 10px 0; border-top: 1px solid var(--line); }
+.type-row:first-child { border-top: 0; }
+.type-row code { background: none; box-shadow: none; padding: 0; color: var(--text-3); font-size: 11.5px; }
+.space-row { display: flex; align-items: center; gap: var(--space-3); font-size: 12px; color: var(--text-3); }
+.space-row code { background: none; box-shadow: none; padding: 0; white-space: nowrap; color: var(--text-3); font-size: 11.5px; }
+.space-row i { display: block; background: var(--accent-fill); border-radius: 3px; flex: none; }
+.radius-demo { width: 84px; height: 64px; background: var(--glass-fill); box-shadow: inset 0 0 0 1px var(--well-edge); }
+.icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: var(--space-2); }
+.icon-cell { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 6px; border-radius: var(--r-sm); background: var(--well); font-size: 11px; color: var(--text-3); }
+.icon-cell svg { color: var(--text); }
+
+/* =====================================================================
+   COMPOSANTS AJOUTÉS (non présents en v8)
+   ===================================================================== */
+/* Boutons : états */
+.btn[disabled], .icon-btn[disabled], .action[disabled], .switch[disabled] { opacity: .4; cursor: not-allowed; filter: none; transform: none; }
+.btn .spin { width: 16px; height: 16px; }
+.field.disabled { opacity: .45; }
+.field-label { font-size: 13px; font-weight: 700; margin-bottom: 6px; display: block; padding-left: 4px; }
+.count.warn { color: var(--warning); } .count.over { color: var(--danger); font-weight: 700; }
+
+/* Spinner */
+.spin { --s: 22px; width: var(--s); height: var(--s); border-radius: 50%; flex: none;
+  background: conic-gradient(from 0deg, transparent 0 25%, var(--text) 100%);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
+  animation: spin .8s linear infinite; }
+.spin.lg { --s: 36px; }
+.btn-primary .spin { background: conic-gradient(from 0deg, transparent 0 25%, var(--accent-ink) 100%); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Skeleton */
+.sk { border-radius: 8px; background: linear-gradient(90deg, rgba(255,255,255,.05) 0%, rgba(255,255,255,.12) 40%, rgba(255,255,255,.05) 80%) 0 0 / 300% 100%;
+  animation: shimmer 1.4s ease-in-out infinite; }
+[data-theme="light"] .sk { background: linear-gradient(90deg, rgba(12,13,15,.06) 0%, rgba(12,13,15,.12) 40%, rgba(12,13,15,.06) 80%) 0 0 / 300% 100%; }
+.sk.circle { border-radius: 50%; }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+@media (prefers-reduced-motion: reduce) { .sk, .spin { animation: none; } }
+
+/* Toast : variantes */
+.toast .ico { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+.toast .ico.success { color: #04140c; background: var(--success); }
+.toast .ico.error { color: #fff; background: var(--danger); }
+.toast .ico.info { color: var(--accent-ink); background: var(--accent-fill); }
+.toast .act { margin-left: auto; }
+.toast-stack { display: flex; flex-direction: column; gap: var(--space-3); max-width: 420px; }
+
+/* Modal */
+.overlay-demo { position: relative; min-height: 280px; border-radius: var(--r-md); overflow: hidden; display: grid; place-items: center; padding: var(--space-5);
+  background: linear-gradient(var(--overlay), var(--overlay)), repeating-linear-gradient(0deg, var(--line) 0 1px, transparent 1px 28px); }
+.modal { width: min(420px, 100%); padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); }
+.modal .modal-head { display: flex; align-items: center; gap: var(--space-3); }
+.modal .modal-head h4 { font-family: var(--font-display); font-size: 18px; }
+.modal .modal-head .icon-btn { margin-left: auto; width: 32px; height: 32px; }
+.modal .actions { display: flex; justify-content: flex-end; gap: var(--space-2); }
+.modal .danger-icon { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; flex: none;
+  color: var(--danger); background: color-mix(in srgb, var(--danger) 14%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--danger) 35%, transparent); }
+
+/* Dropdown */
+.menu { width: 230px; padding: 6px; border-radius: var(--r-md); display: flex; flex-direction: column; gap: 2px; }
+.menu button { display: flex; align-items: center; gap: var(--space-3); width: 100%; border: 0; background: none; text-align: left;
+  padding: 10px 12px; border-radius: 10px; font-weight: 600; color: var(--text); }
+.menu button:hover, .menu button.is-hover { background: var(--post-hover); }
+.menu button.danger { color: var(--danger); }
+.menu hr { border: 0; height: 1px; background: var(--line); margin: 4px 8px; }
+.dropdown-demo { display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-2); }
+
+/* Empty state */
+.empty { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--space-3); padding: var(--space-6) var(--space-4); }
+.empty .ring { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; color: var(--text-2);
+  background: radial-gradient(120% 120% at 30% 20%, rgba(255,255,255,.18), rgba(255,255,255,.03) 60%);
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.4), inset 0 0 0 1px var(--well-edge); }
+[data-theme="light"] .empty .ring { background: radial-gradient(120% 120% at 30% 20%, #fff, rgba(255,255,255,.5) 60%); }
+.empty h4 { font-family: var(--font-display); font-size: 16px; }
+.empty p { color: var(--text-3); max-width: 280px; }
+
+/* ScrollArea (démo) */
+.scroll-demo { height: 210px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: transparent transparent; padding-right: 6px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 40px), transparent); }
+.scroll-demo.is-scrolling { scrollbar-color: var(--scroll-thumb) transparent; }
+
+/* Post : réponses */
+.thread { position: relative; padding-left: 28px; }
+.thread::before { content: ""; position: absolute; left: 20px; top: 0; bottom: 16px; width: 2px; border-radius: 2px; background: var(--line); }
+.post.reply .post-text { margin-top: var(--space-4); color: var(--text); }
+.post-replying { font-size: 12px; color: var(--text-3); margin-top: 6px; }
+.post-replying a { color: var(--text-2); font-weight: 700; text-decoration: none; }
+.badge.mod { gap: 4px; display: inline-flex; align-items: center; color: var(--danger); background: color-mix(in srgb, var(--danger) 12%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--danger) 30%, transparent); font-weight: 600; }
+
+/* MediaGrid */
+.mg { display: grid; gap: 4px; border-radius: var(--r-md); overflow: hidden; height: 220px; }
+.mg > div { position: relative; min-height: 0; background-size: cover; }
+.mg.n1 { grid-template-columns: 1fr; }
+.mg.n2 { grid-template-columns: 1fr 1fr; }
+.mg.n3 { grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; } .mg.n3 > :first-child { grid-row: span 2; }
+.mg.n4 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+.ph1 { background: radial-gradient(60% 80% at 30% 40%, rgba(255,255,255,.9), rgba(190,195,202,.4) 20%, transparent 50%), linear-gradient(120deg, #0b0c0e, #2a2c30 50%, #0b0c0e); }
+.ph2 { background: radial-gradient(70% 70% at 70% 30%, rgba(230,232,236,.8), rgba(90,95,102,.4) 30%, transparent 60%), linear-gradient(200deg, #16171a, #3a3d42); }
+.ph3 { background: linear-gradient(160deg, #e9ebee, #8e939a 50%, #2a2c30); }
+.ph4 { background: repeating-linear-gradient(115deg, #1a1b1e 0 18px, #2c2e33 18px 36px); }
+.mg .more-n { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(0,0,0,.5); color: #fff; font-family: var(--font-display); font-size: 22px; font-weight: 700; }
+.video { position: relative; height: 220px; border-radius: var(--r-md); overflow: hidden; }
+.video .play { position: absolute; inset: 0; margin: auto; width: 60px; height: 60px; }
+.video .dur { position: absolute; right: 12px; bottom: 12px; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: var(--r-pill); color: #fff; background: rgba(0,0,0,.55); }
+.video .gif { position: absolute; left: 12px; bottom: 12px; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 6px; color: #0b0c0e; background: #fff; }
+.lightbox { position: relative; height: 300px; border-radius: var(--r-md); overflow: hidden; background: rgba(4,5,6,.92); display: grid; place-items: center; }
+.lightbox .img { width: 70%; height: 78%; border-radius: 10px; }
+.lightbox .icon-btn { position: absolute; top: 12px; right: 12px; }
+.lightbox .nav-arrow { position: absolute; top: 50%; translate: 0 -50%; }
+.lightbox .nav-arrow.l { left: 12px; transform: scaleX(-1); } .lightbox .nav-arrow.r { right: 12px; }
+.lightbox .counter { position: absolute; bottom: 12px; font-size: 12px; color: rgba(255,255,255,.7); font-weight: 700; }
+
+/* Composer : médias joints */
+.attach { display: flex; gap: var(--space-2); }
+.attach .thumb { position: relative; width: 84px; height: 84px; border-radius: 12px; overflow: hidden; flex: none; }
+.attach .thumb .rm { position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; border-radius: 50%; border: 0; display: grid; place-items: center; color: #fff; background: rgba(0,0,0,.6); }
+.attach .thumb .up { position: absolute; left: 8px; right: 8px; bottom: 8px; }
+.attach .thumb .up.progress { height: 4px; }
+.replying-to { font-size: 12px; color: var(--text-3); }
+.replying-to b { color: var(--text-2); }
+
+/* Sidebar : démos */
+.side-demo { display: flex; gap: var(--space-4); align-items: flex-start; flex-wrap: wrap; }
+.side-demo .sidebar { width: 236px; height: 520px; }
+.side-demo .sidebar > * { flex: none; }
+.side-demo .sidebar .spacer { flex: 1; }
+.side-demo .sidebar.collapsed { width: 76px; align-items: center; padding: var(--space-4) var(--space-3); }
+.sidebar.collapsed .brand-name, .sidebar.collapsed .nav-label, .sidebar.collapsed .label, .sidebar.collapsed .me .who { display: none; }
+.sidebar.collapsed .me { padding: 4px; background: none; border: 0; }
+.sidebar.collapsed .nav a { justify-content: center; padding: 12px; }
+.sidebar.collapsed .nav a .badge { position: absolute; top: 2px; right: 2px; min-width: 16px; height: 16px; font-size: 10px; padding: 0 4px; }
+.bottom-bar { display: flex; justify-content: space-around; align-items: center; padding: var(--space-2); border-radius: var(--r-pill); width: 340px; }
+.bottom-bar a { position: relative; display: grid; place-items: center; width: 48px; height: 44px; border-radius: 14px; color: var(--text-2); }
+.bottom-bar a.active { color: var(--text); background: linear-gradient(140deg, rgba(255,255,255,.16), rgba(255,255,255,.04)); box-shadow: inset 0 1px 0 rgba(255,255,255,.35), inset 0 0 0 1px rgba(255,255,255,.1); }
+[data-theme="light"] .bottom-bar a.active { background: rgba(255,255,255,.8); }
+.bottom-bar a .badge { position: absolute; top: 0; right: 2px; min-width: 16px; height: 16px; font-size: 10px; padding: 0 4px; }
+
+/* UserListItem */
+.user-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); border-radius: var(--r-md); transition: background .2s; }
+.user-row:hover, .user-row.is-hover { background: var(--post-hover); }
+.user-row .txt { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.user-row .txt b { display: flex; align-items: center; gap: 6px; }
+.user-row .txt span { font-size: 13px; color: var(--text-3); }
+.user-row .end { display: flex; gap: var(--space-2); }
+
+/* Plugins (démo) */
+.plugins.demo-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 72px; grid-auto-flow: dense; gap: var(--space-4); }
+
+/* Responsive de la page */
+@media (max-width: 1100px) {
+  .c-8, .c-6, .c-4, .c-3 { grid-column: span 12; }
+  .doc-head nav { display: none; }
+  .type-row { grid-template-columns: 1fr; gap: 4px; }
+  .plugins.demo-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  :root { --page-pad: 14px; }
+  .hero { padding: var(--space-5); }
+  .hero h1 { font-size: 26px; }
+}
+
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="liquid-refraction" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.008 0.012" numOctaves="2" seed="7" result="noise"/>
+    <feGaussianBlur in="noise" stdDeviation="2" result="soft"/>
+    <feDisplacementMap in="SourceGraphic" in2="soft" scale="38" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></symbol>
+  <symbol id="i-reply" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></symbol>
+  <symbol id="i-game" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4M8 10v4M15 12h.01M18 10h.01"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></symbol>
+  <symbol id="i-smile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.53 13.53 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><path d="m2 2 20 20"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-blocks" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/><path d="M17 3v8M13 7h8"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></symbol>
+
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.7 3.86a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+  <symbol id="i-user-plus" viewBox="0 0 24 24"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0"/><path d="M19 8v6M16 11h6"/></symbol>
+  <symbol id="i-user-check" viewBox="0 0 24 24"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0"/><path d="m16 11 2 2 4-4"/></symbol>
+  <symbol id="i-maximize" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></symbol>
+  <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m5.7 5.7 12.6 12.6"/></symbol>
+</svg>
+
+<div class="doc">
+
+  <header class="doc-head glass">
+    <div class="brand"><div class="brand-mark"></div><span class="brand-name">transcendance</span></div>
+    <nav aria-label="Sections">
+      <a href="#couleurs">Couleurs</a><a href="#typo">Typographie</a><a href="#fondations">Fondations</a><a href="#composants">Composants</a>
+    </nav>
+    <div class="theme"><span>Sombre</span><button class="switch" role="switch" aria-checked="true" aria-label="Thème sombre" id="theme-toggle"></button></div>
+  </header>
+
+  <section class="hero glass">
+    <span class="lbl">Module web.design_system · v1</span>
+    <h1>Design system « Liquid glass »</h1>
+    <p>Palette, typographie, icônes et les 24 composants réutilisables du frontend, dans leurs variantes et leurs états. Tout passe par des tokens (variables CSS) : le thème change avec un seul attribut <code>data-theme</code>. Référence visuelle : maquette v8.</p>
+    <div class="flex"><span class="lot-badge">Lot 1 · 13 composants (S2-S3)</span><span class="lot-badge l2">Lot 2 · 10 composants</span><span class="lot-badge l3">Lot 3 · 1 composant</span></div>
+  </section>
+
+  <section class="section" id="couleurs">
+    <header><h2>Couleurs</h2><p>Monochrome. La couleur est réservée à ce qui a un sens. Contrastes WCAG mesurés sur une tuile de verre.</p></header>
+    <div class="grid">
+        <div class="theme-panel c-6" data-theme="dark">
+          <h3><svg class="i"><use href="#i-moon"/></svg> Thème sombre <span class='faint' style='font-family:var(--font-body);font-size:12px;font-weight:500'>par défaut</span></h3>
+          <div class="pal-group"><span class="lbl">Neutres</span><div class="pal"><div class="sw"><div class="chip" style="background:var(--bg);box-shadow:inset 0 -1px 0 var(--line)"></div>
+              <div class="meta"><code class="tok">--bg</code><code>#111214</code><span class="use">Fond de page</span></div></div><div class="sw"><div class="chip" style="background:var(--bg);color:var(--text)">Aa</div>
+              <div class="meta"><code class="tok">--text</code><code>#F4F5F7</code><span class="use">Texte principal, titres</span><span class="ratio"><i>✓</i> 14,8</span></div></div><div class="sw"><div class="chip" style="background:var(--bg);color:var(--text-2)">Aa</div>
+              <div class="meta"><code class="tok">--text-2</code><code>rgba(244,245,247,.66)</code><span class="use">Contenu des posts, libellés</span><span class="ratio"><i>✓</i> 7,2</span></div></div><div class="sw"><div class="chip" style="background:var(--bg);color:var(--text-3)">Aa</div>
+              <div class="meta"><code class="tok">--text-3</code><code>rgba(244,245,247,.52)</code><span class="use">@username, dates, compteurs</span><span class="ratio"><i>✓</i> 5,0</span></div></div><div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;left:12px;right:12px;height:1px;background:var(--line)"></span></div>
+              <div class="meta"><code class="tok">--line</code><code>rgba(…, .08–.09)</code><span class="use">Séparateurs</span></div></div><div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;inset:12px 14px;border-radius:10px;background:var(--well);box-shadow:inset 0 0 0 1px var(--well-edge)"></span></div>
+              <div class="meta"><code class="tok">--well</code><code>rgba(0,0,0,.28)</code><span class="use">Creux : champs, onglets, pastilles</span></div></div></div></div>
+          <div class="pal-group"><span class="lbl">Accent (blanc perle)</span><div class="pal"><div class="sw"><div class="chip" style="background:var(--accent-fill)"></div>
+              <div class="meta"><code class="tok">--accent-fill</code><code>#FFF → #E4E7EB → #AEB4BC</code><span class="use">Bouton principal, badges</span></div></div><div class="sw"><div class="chip" style="background:var(--accent-fill);color:var(--accent-ink)">Aa</div>
+              <div class="meta"><code class="tok">--accent-ink</code><code>#0B0C0E</code><span class="use">Texte sur l'accent</span><span class="ratio"><i>✓</i> 15,8</span></div></div><div class="sw"><div class="chip" style="background:var(--chrome)"></div>
+              <div class="meta"><code class="tok">--chrome</code><code>dégradé chrome</code><span class="use">Logo, curseurs, pochettes</span></div></div></div></div>
+          <div class="pal-group"><span class="lbl">Couleurs fonctionnelles</span><div class="pal"><div class="sw"><div class="chip" style="background:var(--like)"></div>
+              <div class="meta"><code class="tok">--like</code><code>#F0508F</code><span class="use">J'aime (framboise pourpre)</span><span class="ratio"><i>✓</i> 4,8</span></div></div><div class="sw"><div class="chip" style="background:var(--repost)"></div>
+              <div class="meta"><code class="tok">--repost</code><code>#FFA834</code><span class="use">Republier (ambre orangé)</span><span class="ratio"><i>✓</i> 8,4</span></div></div><div class="sw"><div class="chip" style="background:var(--success)"></div>
+              <div class="meta"><code class="tok">--success</code><code>#3DDC97</code><span class="use">En ligne, succès</span><span class="ratio"><i>✓</i> 9,1 (UI)</span></div></div><div class="sw"><div class="chip" style="background:var(--danger)"></div>
+              <div class="meta"><code class="tok">--danger</code><code>#FF5C7A</code><span class="use">Erreur, suppression</span><span class="ratio"><i>✓</i> 5,4</span></div></div><div class="sw"><div class="chip" style="background:var(--warning)"></div>
+              <div class="meta"><code class="tok">--warning</code><code>#FFC857</code><span class="use">Avertissement, limite proche</span><span class="ratio"><i>✓</i> 10,5</span></div></div></div></div>
+          <div class="pal-group"><span class="lbl">Matières</span><div class="pal"><div class="sw"><div class="chip checker" style=""><span class="glass-chip"></span></div>
+              <div class="meta"><code class="tok">--glass-fill + edge</code><code>blanc .10 → .045</code><span class="use">Surfaces de verre</span></div></div><div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;inset:12px 14px;border-radius:10px;background:var(--post-hover);box-shadow:inset 0 0 0 1px var(--post-hover-edge)"></span></div>
+              <div class="meta"><code class="tok">--post-hover</code><code>rgba(255,255,255,.055)</code><span class="use">Survol d'un post</span></div></div><div class="sw"><div class="chip" style="background:var(--overlay)"></div>
+              <div class="meta"><code class="tok">--overlay</code><code>rgba(6,7,8,.72)</code><span class="use">Fond des fenêtres modales</span></div></div></div></div>
+        </div>
+        <div class="theme-panel c-6" data-theme="light">
+          <h3>☀︎ Thème clair</h3>
+          <div class="pal-group"><span class="lbl">Neutres</span><div class="pal"><div class="sw"><div class="chip" style="background:var(--bg);box-shadow:inset 0 -1px 0 var(--line)"></div>
+              <div class="meta"><code class="tok">--bg</code><code>#DADCDF</code><span class="use">Fond de page</span></div></div><div class="sw"><div class="chip" style="background:var(--bg);color:var(--text)">Aa</div>
+              <div class="meta"><code class="tok">--text</code><code>#0C0D0F</code><span class="use">Texte principal, titres</span><span class="ratio"><i>✓</i> 16,9</span></div></div><div class="sw"><div class="chip" style="background:var(--bg);color:var(--text-2)">Aa</div>
+              <div class="meta"><code class="tok">--text-2</code><code>rgba(12,13,15,.66)</code><span class="use">Contenu des posts, libellés</span><span class="ratio"><i>✓</i> 6,0</span></div></div><div class="sw"><div class="chip" style="background:var(--bg);color:var(--text-3)">Aa</div>
+              <div class="meta"><code class="tok">--text-3</code><code>rgba(12,13,15,.58)</code><span class="use">@username, dates, compteurs</span><span class="ratio"><i>✓</i> 4,6</span></div></div><div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;left:12px;right:12px;height:1px;background:var(--line)"></span></div>
+              <div class="meta"><code class="tok">--line</code><code>rgba(…, .08–.09)</code><span class="use">Séparateurs</span></div></div><div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;inset:12px 14px;border-radius:10px;background:var(--well);box-shadow:inset 0 0 0 1px var(--well-edge)"></span></div>
+              <div class="meta"><code class="tok">--well</code><code>rgba(255,255,255,.45)</code><span class="use">Creux : champs, onglets, pastilles</span></div></div></div></div>
+          <div class="pal-group"><span class="lbl">Accent (graphite)</span><div class="pal"><div class="sw"><div class="chip" style="background:var(--accent-fill)"></div>
+              <div class="meta"><code class="tok">--accent-fill</code><code>#4A4F56 → #24272B → #0C0D0F</code><span class="use">Bouton principal, badges</span></div></div><div class="sw"><div class="chip" style="background:var(--accent-fill);color:var(--accent-ink)">Aa</div>
+              <div class="meta"><code class="tok">--accent-ink</code><code>#FFFFFF</code><span class="use">Texte sur l'accent</span><span class="ratio"><i>✓</i> 15,0</span></div></div><div class="sw"><div class="chip" style="background:var(--chrome)"></div>
+              <div class="meta"><code class="tok">--chrome</code><code>dégradé chrome</code><span class="use">Logo, curseurs, pochettes</span></div></div></div></div>
+          <div class="pal-group"><span class="lbl">Couleurs fonctionnelles</span><div class="pal"><div class="sw"><div class="chip" style="background:var(--like)"></div>
+              <div class="meta"><code class="tok">--like</code><code>#C0185E</code><span class="use">J'aime (framboise pourpre)</span><span class="ratio"><i>✓</i> 5,2</span></div></div><div class="sw"><div class="chip" style="background:var(--repost)"></div>
+              <div class="meta"><code class="tok">--repost</code><code>#A8530A</code><span class="use">Republier (ambre orangé)</span><span class="ratio"><i>✓</i> 4,7</span></div></div><div class="sw"><div class="chip" style="background:var(--success)"></div>
+              <div class="meta"><code class="tok">--success</code><code>#12985F</code><span class="use">En ligne, succès</span><span class="ratio"><i>✓</i> 3,2 (UI)</span></div></div><div class="sw"><div class="chip" style="background:var(--danger)"></div>
+              <div class="meta"><code class="tok">--danger</code><code>#C42347</code><span class="use">Erreur, suppression</span><span class="ratio"><i>✓</i> 5,0</span></div></div><div class="sw"><div class="chip" style="background:var(--warning)"></div>
+              <div class="meta"><code class="tok">--warning</code><code>#92600A</code><span class="use">Avertissement, limite proche</span><span class="ratio"><i>✓</i> 4,7</span></div></div></div></div>
+          <div class="pal-group"><span class="lbl">Matières</span><div class="pal"><div class="sw"><div class="chip checker" style=""><span class="glass-chip"></span></div>
+              <div class="meta"><code class="tok">--glass-fill + edge</code><code>blanc .72 → .38</code><span class="use">Surfaces de verre</span></div></div><div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;inset:12px 14px;border-radius:10px;background:var(--post-hover);box-shadow:inset 0 0 0 1px var(--post-hover-edge)"></span></div>
+              <div class="meta"><code class="tok">--post-hover</code><code>rgba(255,255,255,.6)</code><span class="use">Survol d'un post</span></div></div><div class="sw"><div class="chip" style="background:var(--overlay)"></div>
+              <div class="meta"><code class="tok">--overlay</code><code>rgba(200,203,208,.7)</code><span class="use">Fond des fenêtres modales</span></div></div></div></div>
+        </div>
+    </div>
+  </section>
+
+  <section class="section" id="typo">
+    <header><h2>Typographie</h2><p>Unbounded pour les titres et les chiffres, Manrope pour le texte. Gratuites (licence OFL), auto-hébergées en production.</p></header>
+    <div class="grid"><article class="card glass c-12">
+          <div class="type-row"><code>Display · Unbounded 700 · 28</code><span style="font-family:var(--font-display);font-weight:700;font-size:28px">Transcendance</span></div>
+          <div class="type-row"><code>Titre · Unbounded 600 · 20</code><span style="font-family:var(--font-display);font-weight:600;font-size:20px">Paramètres du compte</span></div>
+          <div class="type-row"><code>Titre de post · Unbounded 600 · 19</code><span style="font-family:var(--font-display);font-weight:600;font-size:19px">Premier rendu du verre liquide</span></div>
+          <div class="type-row"><code>Sous-titre · Unbounded 600 · 15</code><span style="font-family:var(--font-display);font-weight:600;font-size:15px">Plugins</span></div>
+          <div class="type-row"><code>Chiffre · Unbounded 600 · 26–40</code><span style="font-family:var(--font-display);font-weight:600;font-size:34px;line-height:1">18:42</span></div>
+          <div class="type-row"><code>Texte de post · Manrope 500 · 15 / 1,6</code><span style="font-size:15px;line-height:1.6;color:var(--text-2)">La réfraction marche enfin avec le filtre SVG dans backdrop-filter.</span></div>
+          <div class="type-row"><code>Texte · Manrope 500 · 14</code><span>Interface, libellés, champs.</span></div>
+          <div class="type-row"><code>Gras · Manrope 700–800</code><span style="font-weight:800">Léa N. · S'abonner · Abonnements</span></div>
+          <div class="type-row"><code>Légende · Manrope 500 · 12–13</code><span class="faint" style="font-size:12.5px">@lea_n · il y a 12 min · (modifié)</span></div>
+          <div class="type-row"><code>Sur-titre · Manrope 600 · 11 · MAJ.</code><span class="lbl">Menu · Météo · Couleurs</span></div>
+    </article></div>
+  </section>
+
+  <section class="section" id="fondations">
+    <header><h2>Fondations</h2><p>Espacements, rayons, mouvement.</p></header>
+    <div class="grid">
+      <article class="card glass c-4"><h3 style="font-size:15px">Espacements</h3><div class="stack"><div class="space-row"><code style="width:110px">--space-1 · 4 px</code><i style="width:4px;height:4px"></i></div><div class="space-row"><code style="width:110px">--space-2 · 8 px</code><i style="width:8px;height:8px"></i></div><div class="space-row"><code style="width:110px">--space-3 · 12 px</code><i style="width:12px;height:12px"></i></div><div class="space-row"><code style="width:110px">--space-4 · 16 px</code><i style="width:16px;height:16px"></i></div><div class="space-row"><code style="width:110px">--space-5 · 24 px</code><i style="width:24px;height:24px"></i></div><div class="space-row"><code style="width:110px">--space-6 · 32 px</code><i style="width:32px;height:32px"></i></div></div><p class="faint" style="font-size:12px">Marge de page 28 px (14 px mobile) · entre blocs 20 px (14 px mobile)</p></article>
+      <article class="card glass c-4"><h3 style="font-size:15px">Rayons</h3><div class="flex"><div class="variant" style="align-items:center"><div class="radius-demo" style="border-radius:12px"></div><span class="lbl">sm · 12px</span></div><div class="variant" style="align-items:center"><div class="radius-demo" style="border-radius:18px"></div><span class="lbl">md · 18px</span></div><div class="variant" style="align-items:center"><div class="radius-demo" style="border-radius:28px"></div><span class="lbl">lg · 28px</span></div><div class="variant" style="align-items:center"><div class="radius-demo" style="border-radius:999px"></div><span class="lbl">pill · 999px</span></div></div></article>
+      <article class="card glass c-4"><h3 style="font-size:15px">Mouvement</h3>
+        <div class="stack" style="gap:8px;font-size:13px">
+          <div class="space-row"><code style="width:190px">cubic-bezier(.2,.8,.2,1)</code>courbe unique</div>
+          <div class="space-row"><code style="width:190px">150 ms</code>clic</div>
+          <div class="space-row"><code style="width:190px">200 ms</code>survol</div>
+          <div class="space-row"><code style="width:190px">250 ms</code>interrupteur</div>
+          <div class="space-row"><code style="width:190px">350 ms</code>barre de défilement</div>
+          <div class="space-row"><code style="width:190px">400 ms</code>changement de thème</div>
+        </div>
+        <p class="faint" style="font-size:12px">Coupé si prefers-reduced-motion.</p></article>
+    </div>
+  </section>
+
+  <section class="section" id="composants">
+    <header><h2>Composants</h2><p>24 composants · numérotés comme dans docs/DESIGN_SYSTEM.md §5.</p></header>
+    <h3 class="sub">Primitives</h3>
+    <div class="grid">
+      <article class="card glass c-12" id="cmp-1">
+        <div class="card-head"><span class="num">01</span><h3>GlassPanel</h3><span class="lot-badge lot">Lot 1</span></div>
+        <p class="desc">Surface de verre de base : tuiles, nav, fenêtres. Flou de l'arrière-plan, bord brillant aux coins, reflet en haut.</p>
+        <div class="demo lit">
+          <div class="variant"><span class="lbl">default · compact · interactive (survol) · dashed (ajout)</span><div class="flex"><div class="glass tile" style="width:170px;height:110px"><b>default</b><span class="faint">padding 24</span></div><div class="glass tile compact" style="width:150px;height:110px"><b>compact</b><span class="faint">padding 16</span></div><div class="glass tile compact post is-hover" style="width:150px;height:110px;border-radius:28px"><b>interactive</b><span class="faint">survol</span></div><div class="glass tile compact t-add" style="width:150px;height:110px"><svg class="i sm"><use href="#i-plus"/></svg><b>dashed</b></div></div></div>
+        </div>
+        <div class="props"><code>as</code><code>padding: 'default' | 'compact'</code><code>interactive</code><code>dashed</code></div>
+        <p class="specs">Toutes les pages</p>
+      </article>
+      <article class="card glass c-12" id="cmp-2">
+        <div class="card-head"><span class="num">02</span><h3>Button</h3><span class="lot-badge lot">Lot 1</span></div>
+        <p class="desc">Action principale ou secondaire. Forme « pill », réfraction liquide optionnelle sur Chrome.</p>
+        <div class="demo lit">
+          <div class="variant"><span class="lbl">Variantes</span><div class="flex"><button class="btn btn-primary liquid"><svg class="i sm"><use href="#i-send"/></svg>Publier</button><button class="btn btn-glass liquid">S'abonner</button><button class="btn btn-ghost">Annuler</button><button class="btn btn-danger"><svg class="i sm"><use href="#i-trash"/></svg>Supprimer</button></div></div>
+          <div class="variant"><span class="lbl">Tailles</span><div class="flex"><button class="btn btn-primary btn-sm">Petit</button><button class="btn btn-primary">Moyen</button><button class="btn btn-glass btn-sm">Petit</button><button class="btn btn-glass">Moyen</button></div></div>
+          <div class="variant"><span class="lbl">États</span><div class="flex"><button class="btn btn-glass is-hover">Survol</button><button class="btn btn-primary"><span class="spin"></span>Publication…</button><button class="btn btn-primary" disabled>Désactivé</button><button class="btn btn-glass" disabled>Désactivé</button></div></div>
+          <div class="variant"><span class="lbl">Pleine largeur</span><div class="stack"><button class="btn btn-primary btn-block"><svg class="i sm"><use href="#i-plus"/></svg>Publier</button></div></div>
+        </div>
+        <div class="props"><code>variant: 'primary' | 'glass' | 'ghost' | 'danger'</code><code>size: 'sm' | 'md'</code><code>icon</code><code>loading</code><code>disabled</code><code>block</code></div>
+        <p class="specs">Partout · NOTIF-03, POST, SOC, ADM</p>
+      </article><div class="masonry c-12">
+      <article class="card glass c-6" id="cmp-3">
+        <div class="card-head"><span class="num">03</span><h3>IconButton</h3><span class="lot-badge lot">Lot 1</span></div>
+        <p class="desc">Bouton rond avec une seule icône. Le libellé accessible (aria-label) est obligatoire.</p>
+        <div class="demo">
+          <div class="variant"><span class="lbl">Tailles et états</span><div class="flex"><button class="icon-btn" style="width:32px;height:32px" aria-label="Image"><svg class="i sm"><use href="#i-image"/></svg></button><button class="icon-btn" aria-label="Paramètres"><svg class="i"><use href="#i-settings"/></svg></button><button class="icon-btn" aria-label="Notifications"><svg class="i"><use href="#i-bell"/></svg><span class="dot" style="position:absolute;top:8px;right:9px;width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px var(--bg)"></span></button><button class="icon-btn" disabled aria-label="Désactivé"><svg class="i"><use href="#i-trash"/></svg></button><button class="icon-btn liquid" style="width:56px;border-radius:999px" aria-label="Suivant"><svg class="i"><use href="#i-arrow"/></svg></button></div></div>
+        </div>
+        <div class="props"><code>icon</code><code>label (obligatoire)</code><code>size: 'sm' | 'md'</code><code>dot</code><code>disabled</code></div>
+        <p class="specs">Rédaction, menus, nav réduite, en-têtes</p>
+      </article>
+      <article class="card glass c-6" id="cmp-4">
+        <div class="card-head"><span class="num">04</span><h3>Input</h3><span class="lot-badge lot">Lot 1</span></div>
+        <p class="desc">Champ texte d'une ligne, avec libellé, aide, erreur et éléments à gauche ou à droite.</p>
+        <div class="demo">
+          <div class="variant"><span class="lbl">Avec libellé · focus</span><div class="stack"><div style="width:100%"><span class="field-label">Nom d'utilisateur</span><label class="field is-focus"><input value="aboumall"><svg class="i sm"><use href="#i-user"/></svg></label></div></div></div>
+          <div class="variant"><span class="lbl">Mot de passe · erreur</span><div class="stack"><label class="field"><input type="password" value="motdepasse"><svg class="i sm"><use href="#i-eye-off"/></svg></label><div><label class="field error"><input value="ab"></label><p class="help error">3 à 20 caractères : lettres, chiffres et _</p></div></div></div>
+          <div class="variant"><span class="lbl">Recherche · désactivé</span><div class="stack"><label class="field search-bar"><span style="display:contents"><svg class="i sm"><use href="#i-search"/></svg></span><input placeholder="Rechercher"><kbd>Ctrl K</kbd></label><label class="field disabled"><input placeholder="Désactivé" disabled></label></div></div>
+        </div>
+        <div class="props"><code>label</code><code>hint</code><code>error</code><code>leading</code><code>trailing</code><code>disabled</code></div>
+        <p class="specs">AUTH-01/02, ACC-03/05, SEARCH</p>
+      </article>
+      <article class="card glass c-6" id="cmp-5">
+        <div class="card-head"><span class="num">05</span><h3>Textarea</h3><span class="lot-badge lot">Lot 1</span></div>
+        <p class="desc">Champ multi-lignes avec compteur de caractères. Le compteur passe en avertissement près de la limite, puis en erreur au-delà.</p>
+        <div class="demo">
+          <div class="variant"><span class="lbl">Normal</span><div class="stack"><label class="field field-area"><textarea rows="2" placeholder="Contenu (optionnel)"></textarea></label><span class="count faint" style="align-self:flex-end;font-size:12px">0 / 500</span></div></div>
+          <div class="variant"><span class="lbl">Limite proche · dépassée</span><div class="stack"><label class="field field-area"><textarea rows="2">Bio presque pleine, il reste peu de place pour écrire…</textarea></label><span class="count warn" style="align-self:flex-end;font-size:12px">152 / 160</span><label class="field field-area error"><textarea rows="2">Ce message dépasse la limite autorisée…</textarea></label><span class="count over" style="align-self:flex-end;font-size:12px">512 / 500</span></div></div>
+        </div>
+        <div class="props"><code>maxLength</code><code>showCount</code><code>autosize</code><code>error</code></div>
+        <p class="specs">POST-01 (500), DM-01 (1 000), ACC-03 (bio, 160)</p>
+      </article>
+      <article class="card glass c-6" id="cmp-6">
+        <div class="card-head"><span class="num">06</span><h3>Avatar</h3><span class="lot-badge lot">Lot 1</span></div>
+        <p class="desc">Photo de profil, ou initiales blanches sur un cercle de verre (sans couleur). Point vert si la personne est en ligne.</p>
+        <div class="demo">
+          <div class="variant"><span class="lbl">Tailles : xs 28 · sm 34 · md 40 · lg 56 · xl 72</span><div class="flex"><div class="avatar xs">J</div><div class="avatar sm">LN</div><div class="avatar">TK</div><div class="avatar lg">A</div><div class="avatar xl">SM</div></div></div>
+          <div class="variant"><span class="lbl">En ligne · avec photo</span><div class="flex"><div class="avatar online">N</div><div class="avatar lg online">A</div><div class="avatar lg" style="background:var(--chrome);color:transparent;text-shadow:none" role="img" aria-label="Photo de profil"></div><div class="avatar xl online ph2" style="color:transparent;text-shadow:none" role="img" aria-label="Photo de profil"></div></div></div>
+        </div>
+        <div class="props"><code>src</code><code>name</code><code>size: 'xs' | 'sm' | 'md' | 'lg' | 'xl'</code><code>online</code></div>
+        <p class="specs">ACC-01, ACC-04, ACC-07 · partout</p>
+      </article>
+      <article class="card glass c-6" id="cmp-7">
+        <div class="card-head"><span class="num">07</span><h3>Badge</h3><span class="lot-badge lot">Lot 1</span></div>
+        <p class="desc">Compteur ou étiquette courte.</p>
+        <div class="demo">
+          <div class="variant"><span class="lbl">count · neutral · private · rôle · modération</span><div class="flex"><span class="badge">4</span><span class="badge">99+</span><span class="badge neutral">12</span><span class="badge private"><svg class="i sm" style="width:12px;height:12px"><use href="#i-lock"/></svg>Privé</span><span class="badge neutral">Admin</span><span class="badge mod"><svg class="i sm" style="width:12px;height:12px"><use href="#i-ban"/></svg>Banni</span></div></div>
+        </div>
+        <div class="props"><code>variant: 'count' | 'neutral' | 'private' | 'danger'</code><code>max (99+)</code></div>
+        <p class="specs">Nav (NOTIF-01, DM-02), profil (ACC-01), admin</p>
+      </article>
+      <article class="card glass c-6" id="cmp-8">
+        <div class="card-head"><span class="num">08</span><h3>Tabs</h3><span class="lot-badge lot">Lot 1</span></div>
+        <p class="desc">Onglets segmentés. Navigation au clavier avec les flèches (role tablist).</p>
+        <div class="demo">
+          <div class="variant"><span class="lbl">Fil</span><div class="flex"><div class="tabs" role="tablist"><button role="tab" aria-selected="true">Abonnements</button><button role="tab" aria-selected="false">Explorer</button></div></div></div>
+          <div class="variant"><span class="lbl">Profil</span><div class="flex"><div class="tabs" role="tablist"><button role="tab" aria-selected="true">Posts</button><button role="tab" aria-selected="false">Réponses</button><button role="tab" aria-selected="false">Médias</button><button role="tab" aria-selected="false">J'aime</button><button role="tab" aria-selected="false">Republications</button></div></div></div>
+          <div class="variant"><span class="lbl">Avec compteur</span><div class="flex"><div class="tabs" role="tablist"><button role="tab" aria-selected="true">Messages</button><button role="tab" aria-selected="false" style="display:inline-flex;gap:6px;align-items:center">Demandes <span class="badge" style="height:18px;min-width:18px">3</span></button></div></div></div>
+        </div>
+        <div class="props"><code>items</code><code>value</code><code>onChange</code></div>
+        <p class="specs">FEED-01/02, ACC-02, DM-03, recherche, admin</p>
+      </article>
+      <article class="card glass c-6" id="cmp-9">
+        <div class="card-head"><span class="num">09</span><h3>Switch</h3><span class="lot-badge lot">Lot 1</span></div>
+        <p class="desc">Interrupteur on/off avec curseur chrome (role switch).</p>
+        <div class="demo">
+          <div class="variant"><span class="lbl">États</span><div class="flex"><button class="switch" role="switch" aria-checked="true" aria-label="Activé"></button><button class="switch" role="switch" aria-checked="false" aria-label="Désactivé"></button><button class="switch" role="switch" aria-checked="true" disabled aria-label="Activé, désactivé"></button><button class="switch" role="switch" aria-checked="false" disabled aria-label="Désactivé"></button></div></div>
+          <div class="variant"><span class="lbl">Avec libellé</span><div class="flex"><div style="display:flex;align-items:center;justify-content:space-between;width:100%;max-width:360px"><span style="display:flex;flex-direction:column"><b>Compte privé</b><span class="faint" style="font-size:12px">Les nouveaux abonnés doivent être acceptés</span></span><button class="switch" role="switch" aria-checked="true" aria-label="Compte privé"></button></div></div></div>
+        </div>
+        <div class="props"><code>checked</code><code>onChange</code><code>label</code><code>disabled</code></div>
+        <p class="specs">Thème, ACC-06 (compte privé)</p>
+      </article>
+      <article class="card glass c-6" id="cmp-10">
+        <div class="card-head"><span class="num">10</span><h3>ProgressBar</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+        <p class="desc">Progression déterminée, avec libellé.</p>
+        <div class="demo">
+          <div class="variant"><span class="lbl">Valeurs</span><div class="stack"><div class="progress" style="--p:25%"><i></i></div><div class="progress" style="--p:68%"><i></i></div><div class="progress" style="--p:100%"><i></i></div></div></div>
+          <div class="variant"><span class="lbl">Avec libellé · erreur</span><div class="stack"><div class="stack" style="gap:6px"><div style="display:flex;justify-content:space-between;font-size:12px"><span>video.mp4</span><span class="faint">68 %</span></div><div class="progress" style="--p:68%"><i></i></div></div><div class="stack" style="gap:6px"><div style="display:flex;justify-content:space-between;font-size:12px"><span>gros-fichier.mov</span><span style="color:var(--danger)">Format non accepté</span></div><div class="progress" style="--p:100%"><i style="background:var(--danger);box-shadow:none"></i></div></div></div></div>
+        </div>
+        <div class="props"><code>value</code><code>label</code><code>error</code></div>
+        <p class="specs">MEDIA-05 (upload)</p>
+      </article>
+      <article class="card glass c-6" id="cmp-11">
+        <div class="card-head"><span class="num">11</span><h3>Spinner / Skeleton</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+        <p class="desc">Chargement : un spinner pour les actions courtes, des squelettes pour le contenu.</p>
+        <div class="demo">
+          <div class="variant"><span class="lbl">Spinner</span><div class="flex"><span class="spin"></span><span class="spin lg"></span><button class="btn btn-glass"><span class="spin"></span>Chargement…</button></div></div>
+          <div class="variant"><span class="lbl">Squelette de post</span><div class="stack"><div style="display:flex;gap:12px;align-items:center"><span class="sk circle" style="width:40px;height:40px"></span><span class="sk" style="width:160px;height:12px"></span></div><span class="sk" style="width:70%;height:18px;margin-top:8px"></span><span class="sk" style="width:100%;height:12px"></span><span class="sk" style="width:85%;height:12px"></span></div></div>
+        </div>
+        <div class="props"><code>shape: 'post' | 'row' | 'avatar' | 'text'</code><code>lines</code></div>
+        <p class="specs">UI-06, tous les chargements</p>
+      </article></div>
+      <article class="card glass c-12" id="cmp-12">
+        <div class="card-head"><span class="num">12</span><h3>Icon</h3><span class="lot-badge lot">Lot 1</span></div>
+        <p class="desc">Habillage de Lucide (lucide-react) aux tailles du système : 20 px, et 16 px dans les boutons. Trait 1,7.</p>
+        <div class="demo">
+          <div class="icon-grid"><div class="icon-cell"><svg class="i"><use href="#i-home"/></svg><span>home</span></div><div class="icon-cell"><svg class="i"><use href="#i-compass"/></svg><span>compass</span></div><div class="icon-cell"><svg class="i"><use href="#i-bell"/></svg><span>bell</span></div><div class="icon-cell"><svg class="i"><use href="#i-msg"/></svg><span>msg</span></div><div class="icon-cell"><svg class="i"><use href="#i-search"/></svg><span>search</span></div><div class="icon-cell"><svg class="i"><use href="#i-user"/></svg><span>user</span></div><div class="icon-cell"><svg class="i"><use href="#i-settings"/></svg><span>settings</span></div><div class="icon-cell"><svg class="i"><use href="#i-shield"/></svg><span>shield</span></div><div class="icon-cell"><svg class="i"><use href="#i-plus"/></svg><span>plus</span></div><div class="icon-cell"><svg class="i"><use href="#i-logout"/></svg><span>logout</span></div><div class="icon-cell"><svg class="i"><use href="#i-heart"/></svg><span>heart</span></div><div class="icon-cell"><svg class="i"><use href="#i-repeat"/></svg><span>repeat</span></div><div class="icon-cell"><svg class="i"><use href="#i-reply"/></svg><span>reply</span></div><div class="icon-cell"><svg class="i"><use href="#i-send"/></svg><span>send</span></div><div class="icon-cell"><svg class="i"><use href="#i-moon"/></svg><span>moon</span></div><div class="icon-cell"><svg class="i"><use href="#i-cloud"/></svg><span>cloud</span></div><div class="icon-cell"><svg class="i"><use href="#i-game"/></svg><span>game</span></div><div class="icon-cell"><svg class="i"><use href="#i-more"/></svg><span>more</span></div><div class="icon-cell"><svg class="i"><use href="#i-image"/></svg><span>image</span></div><div class="icon-cell"><svg class="i"><use href="#i-smile"/></svg><span>smile</span></div><div class="icon-cell"><svg class="i"><use href="#i-eye"/></svg><span>eye</span></div><div class="icon-cell"><svg class="i"><use href="#i-eye-off"/></svg><span>eye-off</span></div><div class="icon-cell"><svg class="i"><use href="#i-grid"/></svg><span>grid</span></div><div class="icon-cell"><svg class="i"><use href="#i-lock"/></svg><span>lock</span></div><div class="icon-cell"><svg class="i"><use href="#i-blocks"/></svg><span>blocks</span></div><div class="icon-cell"><svg class="i"><use href="#i-check"/></svg><span>check</span></div><div class="icon-cell"><svg class="i"><use href="#i-arrow"/></svg><span>arrow</span></div><div class="icon-cell"><svg class="i"><use href="#i-x"/></svg><span>x</span></div><div class="icon-cell"><svg class="i"><use href="#i-clock"/></svg><span>clock</span></div><div class="icon-cell"><svg class="i"><use href="#i-timer"/></svg><span>timer</span></div><div class="icon-cell"><svg class="i"><use href="#i-music"/></svg><span>music</span></div><div class="icon-cell"><svg class="i"><use href="#i-play"/></svg><span>play</span></div><div class="icon-cell"><svg class="i"><use href="#i-pencil"/></svg><span>pencil</span></div><div class="icon-cell"><svg class="i"><use href="#i-trash"/></svg><span>trash</span></div><div class="icon-cell"><svg class="i"><use href="#i-flag"/></svg><span>flag</span></div><div class="icon-cell"><svg class="i"><use href="#i-link"/></svg><span>link</span></div><div class="icon-cell"><svg class="i"><use href="#i-info"/></svg><span>info</span></div><div class="icon-cell"><svg class="i"><use href="#i-alert"/></svg><span>alert</span></div><div class="icon-cell"><svg class="i"><use href="#i-inbox"/></svg><span>inbox</span></div><div class="icon-cell"><svg class="i"><use href="#i-user-plus"/></svg><span>user-plus</span></div><div class="icon-cell"><svg class="i"><use href="#i-user-check"/></svg><span>user-check</span></div><div class="icon-cell"><svg class="i"><use href="#i-maximize"/></svg><span>maximize</span></div><div class="icon-cell"><svg class="i"><use href="#i-ban"/></svg><span>ban</span></div></div>
+        </div>
+        <div class="props"><code>name</code><code>size: 16 | 20</code><code>label (si l'icône est seule)</code></div>
+        <p class="specs">Partout</p>
+      </article>
+    </div>
+    <h3 class="sub">Retours et superpositions</h3>
+    <div class="grid"><div class="masonry c-12">
+      <article class="card glass c-6" id="cmp-13">
+        <div class="card-head"><span class="num">13</span><h3>Toast</h3><span class="lot-badge lot">Lot 1</span></div>
+        <p class="desc">Confirmation de chaque création, modification et suppression. Fermeture automatique après 4 s, ou manuelle. Pile en bas à droite.</p>
+        <div class="demo lit">
+          <div class="toast-stack">
+            <div class="toast glass"><span class="ico success"><svg class="i sm"><use href="#i-check"/></svg></span><span>Post publié</span><button class="btn btn-ghost btn-sm act" style="padding:0 6px" aria-label="Fermer"><svg class="i sm"><use href="#i-x"/></svg></button></div>
+            <div class="toast glass"><span class="ico info"><svg class="i sm"><use href="#i-trash"/></svg></span><span>Post supprimé</span><button class="btn btn-glass btn-sm act">Annuler</button></div>
+            <div class="toast glass"><span class="ico info"><svg class="i sm"><use href="#i-user-check"/></svg></span><span>Abonnement envoyé à @nora</span><button class="btn btn-ghost btn-sm act" style="padding:0 6px" aria-label="Fermer"><svg class="i sm"><use href="#i-x"/></svg></button></div>
+            <div class="toast glass"><span class="ico error"><svg class="i sm"><use href="#i-alert"/></svg></span><span>Échec de l'envoi, réessayez</span><button class="btn btn-ghost btn-sm act" style="padding:0 6px" aria-label="Fermer"><svg class="i sm"><use href="#i-x"/></svg></button></div>
+          </div>
+        </div>
+        <div class="props"><code>type: 'success' | 'error' | 'info'</code><code>message</code><code>action</code><code>duration</code></div>
+        <p class="specs">NOTIF-03 (toutes les actions)</p>
+      </article>
+      <article class="card glass c-6" id="cmp-14">
+        <div class="card-head"><span class="num">14</span><h3>Modal</h3><span class="lot-badge lot">Lot 1</span></div>
+        <p class="desc">Fenêtre de dialogue sur un fond assombri. Piège du focus, fermeture avec Échap, retour du focus à l'élément d'origine.</p>
+        <div class="demo plain">
+          <div class="overlay-demo">
+            <div class="modal glass">
+              <div class="modal-head"><span class="danger-icon"><svg class="i"><use href="#i-trash"/></svg></span><h4>Supprimer ce post ?</h4></div>
+              <p class="muted">Il affichera « Post supprimé ». Les réponses sont conservées. Cette action est définitive.</p>
+              <div class="actions"><button class="btn btn-ghost btn-sm">Annuler</button><button class="btn btn-danger btn-sm">Supprimer</button></div>
+            </div>
+          </div>
+          <div class="overlay-demo">
+            <div class="modal glass">
+              <div class="modal-head"><h4>Rejoignez la conversation</h4><button class="icon-btn" aria-label="Fermer"><svg class="i sm"><use href="#i-x"/></svg></button></div>
+              <p class="muted">Connectez-vous pour aimer, répondre et suivre des personnes. Vous reviendrez sur cette page.</p>
+              <div class="actions"><button class="btn btn-glass btn-sm">Inscription</button><button class="btn btn-primary btn-sm">Connexion</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="props"><code>open</code><code>onClose</code><code>title</code><code>actions</code><code>variant: 'default' | 'danger'</code></div>
+        <p class="specs">POST-07, ACC-09, ADM-04, VIS-03</p>
+      </article>
+      <article class="card glass c-4" id="cmp-15">
+        <div class="card-head"><span class="num">15</span><h3>Dropdown</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+        <p class="desc">Menu contextuel ouvert par le bouton « … ». Les actions destructrices sont en rouge, après un séparateur.</p>
+        <div class="demo lit">
+          <div class="dropdown-demo">
+            <button class="icon-btn" aria-label="Options" aria-expanded="true"><svg class="i"><use href="#i-more"/></svg></button>
+            <div class="menu glass" role="menu">
+              <button role="menuitem"><svg class="i sm"><use href="#i-pencil"/></svg>Modifier</button>
+              <button role="menuitem" class="is-hover"><svg class="i sm"><use href="#i-link"/></svg>Copier le lien</button>
+              <button role="menuitem"><svg class="i sm"><use href="#i-flag"/></svg>Signaler</button>
+              <hr>
+              <button role="menuitem" class="danger"><svg class="i sm"><use href="#i-trash"/></svg>Supprimer</button>
+            </div>
+          </div>
+        </div>
+        <div class="props"><code>trigger</code><code>items[] : label, icon, danger, onSelect</code></div>
+        <p class="specs">Menu d'un post (POST-06/07, ADM-09), plugins, admin</p>
+      </article>
+      <article class="card glass c-4" id="cmp-16">
+        <div class="card-head"><span class="num">16</span><h3>EmptyState</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+        <p class="desc">Liste vide : une icône, un titre, une explication et, si utile, une action.</p>
+        <div class="demo">
+          <div class="empty"><span class="ring"><svg class="i"><use href="#i-inbox"/></svg></span><h4>Aucune notification</h4><p>Les likes, réponses et nouveaux abonnés apparaîtront ici.</p></div>
+          <div class="empty" style="padding-top:0"><span class="ring"><svg class="i"><use href="#i-compass"/></svg></span><h4>Votre fil est vide</h4><p>Suivez des personnes pour voir leurs posts ici.</p><button class="btn btn-glass btn-sm">Explorer</button></div>
+        </div>
+        <div class="props"><code>icon</code><code>title</code><code>description</code><code>action</code></div>
+        <p class="specs">UI-06 : fil vide, aucune notification, aucun résultat</p>
+      </article>
+      <article class="card glass c-4" id="cmp-17">
+        <div class="card-head"><span class="num">17</span><h3>ScrollArea</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+        <p class="desc">Zone qui défile : barre native fine, sans fond, visible seulement pendant le défilement, fondu en bas.</p>
+        <div class="demo">
+          <div class="scroll-demo list" data-autohide><div class="row-item"><div class="avatar xs">A</div><div class="txt"><b>Élément 1</b></div></div><div class="row-item"><div class="avatar xs">B</div><div class="txt"><b>Élément 2</b></div></div><div class="row-item"><div class="avatar xs">C</div><div class="txt"><b>Élément 3</b></div></div><div class="row-item"><div class="avatar xs">D</div><div class="txt"><b>Élément 4</b></div></div><div class="row-item"><div class="avatar xs">E</div><div class="txt"><b>Élément 5</b></div></div><div class="row-item"><div class="avatar xs">F</div><div class="txt"><b>Élément 6</b></div></div><div class="row-item"><div class="avatar xs">G</div><div class="txt"><b>Élément 7</b></div></div><div class="row-item"><div class="avatar xs">H</div><div class="txt"><b>Élément 8</b></div></div><div class="row-item"><div class="avatar xs">I</div><div class="txt"><b>Élément 9</b></div></div><div class="row-item"><div class="avatar xs">J</div><div class="txt"><b>Élément 10</b></div></div><div class="row-item"><div class="avatar xs">K</div><div class="txt"><b>Élément 11</b></div></div><div class="row-item"><div class="avatar xs">L</div><div class="txt"><b>Élément 12</b></div></div></div><span class="faint" style="font-size:12px">Faites défiler : la barre apparaît puis s'efface.</span>
+        </div>
+        <div class="props"><code>fade</code><code>autoHide</code></div>
+        <p class="specs">Fil, plugins, messages, listes</p>
+      </article></div>
+    </div>
+    <h3 class="sub">Composants métier</h3>
+    <div class="grid">
+      <article class="card glass c-12" id="cmp-18">
+        <div class="card-head"><span class="num">18</span><h3>PostCard</h3><span class="lot-badge lot">Lot 1</span></div>
+        <p class="desc">Post façon Reddit : en-tête (photo, nom, @username, temps), titre obligatoire, contenu optionnel, médias, actions. Les réponses n'ont pas de titre.</p>
+        <div class="demo plain">
+          <div class="grid" style="gap:16px">
+            <div class="c-6 stack" style="gap:16px">
+              <div class="variant"><span class="lbl">Normal · aimé · avec média</span><article class="post">
+            <header class="post-head">
+              <div class="avatar online">LN</div>
+              <div class="who"><b>Léa N.</b><span>@lea_n · 12 min</span></div>
+              <button class="btn btn-ghost btn-sm more" aria-label="Options du post"><svg class="i sm"><use href="#i-more"/></svg></button>
+            </header>
+            <h3 class="post-title">Premier rendu du verre liquide sur Chrome</h3>
+            <p class="post-text">La réfraction marche enfin avec le filtre SVG. <a href='#'>@nora</a> tu valides ?</p><div class="post-media" style="height:180px"></div>
+            <footer class="post-actions">
+              <button class="action"><svg class="i sm"><use href="#i-reply"/></svg>12</button>
+              <button class="action act-repost"><svg class="i sm"><use href="#i-repeat"/></svg>4</button>
+              <button class="action act-like liked"><svg class="i sm"><use href="#i-heart"/></svg>86</button>
+            </footer>
+          </article></div>
+              <div class="variant"><span class="lbl">Supprimé · supprimé par la modération</span>
+                <article class="post"><div class="post-deleted">Post supprimé</div></article>
+                <article class="post"><div class="post-deleted" style="display:flex;align-items:center;gap:8px"><svg class="i sm"><use href="#i-shield"/></svg>Post supprimé par la modération</div></article>
+              </div>
+            </div>
+            <div class="c-6 stack" style="gap:16px">
+              <div class="variant"><span class="lbl">Republié par · (modifié) · survol</span><article class="post is-hover">
+            <div class="post-context"><svg class="i sm"><use href="#i-repeat"/></svg>Nora a republié</div><header class="post-head">
+              <div class="avatar">TK</div>
+              <div class="who"><b>Théo K.</b><span>@theok · 1 h · (modifié)</span></div>
+              <button class="btn btn-ghost btn-sm more" aria-label="Options du post"><svg class="i sm"><use href="#i-more"/></svg></button>
+            </header>
+            <h3 class="post-title">WebSocket : uniquement pour pousser</h3>
+            <p class="post-text">Toutes les actions passent par l'API REST. Une seule couche de permissions.</p>
+            <footer class="post-actions">
+              <button class="action"><svg class="i sm"><use href="#i-reply"/></svg>3</button>
+              <button class="action act-repost reposted"><svg class="i sm"><use href="#i-repeat"/></svg>10</button>
+              <button class="action act-like"><svg class="i sm"><use href="#i-heart"/></svg>41</button>
+            </footer>
+          </article></div>
+              <div class="variant"><span class="lbl">Réponses (sans titre, en fil)</span>
+                <div class="thread"><article class="post reply">
+            <header class="post-head">
+              <div class="avatar online">N</div>
+              <div class="who"><b>Nora</b><span>@nora · 8 min</span></div>
+              <button class="btn btn-ghost btn-sm more" aria-label="Options du post"><svg class="i sm"><use href="#i-more"/></svg></button>
+            </header>
+            
+            <p class="post-text">Validé ! Le flou passe bien, même sur fond noir.</p>
+            <footer class="post-actions">
+              <button class="action"><svg class="i sm"><use href="#i-reply"/></svg>1</button>
+              <button class="action act-repost"><svg class="i sm"><use href="#i-repeat"/></svg>0</button>
+              <button class="action act-like"><svg class="i sm"><use href="#i-heart"/></svg>5</button>
+            </footer>
+          </article><article class="post reply">
+            <header class="post-head">
+              <div class="avatar online">A</div>
+              <div class="who"><b>aboumall</b><span>@aboumall · 2 min</span></div>
+              <button class="btn btn-ghost btn-sm more" aria-label="Options du post"><svg class="i sm"><use href="#i-more"/></svg></button>
+            </header>
+            
+            <p class="post-text">Merci, je pousse la branche ce soir.</p>
+            <footer class="post-actions">
+              <button class="action"><svg class="i sm"><use href="#i-reply"/></svg>0</button>
+              <button class="action act-repost"><svg class="i sm"><use href="#i-repeat"/></svg>0</button>
+              <button class="action act-like"><svg class="i sm"><use href="#i-heart"/></svg>2</button>
+            </footer>
+          </article></div>
+              </div>
+              <div class="variant"><span class="lbl">Compte privé (republication désactivée)</span><article class="post">
+            <header class="post-head">
+              <div class="avatar">SM</div>
+              <div class="who"><b>Sami M.</b><span>@sami · 2 h</span></div>
+              <button class="btn btn-ghost btn-sm more" aria-label="Options du post"><svg class="i sm"><use href="#i-more"/></svg></button>
+            </header>
+            <h3 class="post-title">Compte privé : republication impossible</h3>
+            <p class="post-text">Ce post vient d'un compte privé : le bouton Republier est désactivé (REPOST-03).</p>
+            <footer class="post-actions">
+              <button class="action"><svg class="i sm"><use href="#i-reply"/></svg>1</button>
+              <button class="action act-repost" disabled title="Republication impossible : compte privé"><svg class="i sm"><use href="#i-repeat"/></svg>0</button>
+              <button class="action act-like"><svg class="i sm"><use href="#i-heart"/></svg>7</button>
+            </footer>
+          </article></div>
+            </div>
+          </div>
+        </div>
+        <div class="props"><code>post</code><code>variant: 'post' | 'reply'</code><code>context (republié par)</code><code>deleted: false | 'user' | 'moderation'</code><code>onAction</code></div>
+        <p class="specs">FEED-01/02, POST-01 à 08, ACC-02</p>
+      </article><div class="masonry c-12">
+      <article class="card glass c-6" id="cmp-19">
+        <div class="card-head"><span class="num">19</span><h3>PostAction</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+        <p class="desc">Pastille d'action avec compteur. J'aime en framboise pourpre, Republier en ambre. Pas de halo.</p>
+        <div class="demo">
+          <div class="variant"><span class="lbl">Répondre</span><div class="flex"><button class="action"><svg class="i sm"><use href="#i-reply"/></svg>12</button><button class="action is-hover"><svg class="i sm"><use href="#i-reply"/></svg>12</button></div></div>
+          <div class="variant"><span class="lbl">Republier : repos · survol · actif · désactivé</span><div class="flex"><button class="action act-repost"><svg class="i sm"><use href="#i-repeat"/></svg>4</button><button class="action act-repost is-hover"><svg class="i sm"><use href="#i-repeat"/></svg>4</button><button class="action act-repost reposted"><svg class="i sm"><use href="#i-repeat"/></svg>5</button><button class="action act-repost" disabled><svg class="i sm"><use href="#i-repeat"/></svg>0</button></div></div>
+          <div class="variant"><span class="lbl">J'aime : repos · survol · actif</span><div class="flex"><button class="action act-like"><svg class="i sm"><use href="#i-heart"/></svg>85</button><button class="action act-like is-hover"><svg class="i sm"><use href="#i-heart"/></svg>85</button><button class="action act-like liked"><svg class="i sm"><use href="#i-heart"/></svg>86</button></div></div>
+        </div>
+        <div class="props"><code>kind: 'reply' | 'repost' | 'like'</code><code>count</code><code>active</code><code>disabled</code></div>
+        <p class="specs">LIKE-01, REPOST-01, REPOST-03, POST-03</p>
+      </article>
+      <article class="card glass c-6" id="cmp-20">
+        <div class="card-head"><span class="num">20</span><h3>MediaGrid</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+        <p class="desc">Médias d'un post : 1 à 4 images, un GIF ou une seule vidéo. Clic : plein écran, avec navigation entre les images.</p>
+        <div class="demo plain">
+          <div class="grid" style="gap:16px">
+            <div class="c-6 variant"><span class="lbl">1 image</span><div class="mg n1"><div class="ph1"></div></div></div>
+            <div class="c-6 variant"><span class="lbl">2 images</span><div class="mg n2"><div class="ph1"></div><div class="ph3"></div></div></div>
+            <div class="c-6 variant"><span class="lbl">3 images</span><div class="mg n3"><div class="ph2"></div><div class="ph3"></div><div class="ph4"></div></div></div>
+            <div class="c-6 variant"><span class="lbl">4 images</span><div class="mg n4"><div class="ph1"></div><div class="ph2"></div><div class="ph3"></div><div class="ph4"></div></div></div>
+            <div class="c-6 variant"><span class="lbl">Vidéo (1 seule, ≤ 2 min)</span><div class="video ph2"><button class="icon-btn liquid play" aria-label="Lire"><svg class="i"><use href="#i-play"/></svg></button><span class="dur">1:42</span></div></div>
+            <div class="c-6 variant"><span class="lbl">GIF</span><div class="video ph4"><span class="gif">GIF</span></div></div>
+            <div class="c-12 variant"><span class="lbl">Plein écran</span><div class="lightbox"><div class="img ph1"></div>
+              <button class="icon-btn" aria-label="Fermer"><svg class="i"><use href="#i-x"/></svg></button>
+              <button class="icon-btn nav-arrow l" aria-label="Précédente"><svg class="i"><use href="#i-arrow"/></svg></button><button class="icon-btn nav-arrow r" aria-label="Suivante"><svg class="i"><use href="#i-arrow"/></svg></button>
+              <span class="counter">2 / 4</span></div></div>
+          </div>
+        </div>
+        <div class="props"><code>media[] : type, src, alt</code><code>onOpen</code></div>
+        <p class="specs">MEDIA-02, MEDIA-08</p>
+      </article>
+      <article class="card glass c-6" id="cmp-21">
+        <div class="card-head"><span class="num">21</span><h3>Composer</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+        <p class="desc">Rédaction. Mode post : titre obligatoire, contenu optionnel, médias. Mode réponse : pas de titre.</p>
+        <div class="demo lit">
+          <div class="variant"><span class="lbl">Post avec médias en cours d'envoi</span>
+            <div class="glass tile compact composer-tile">
+              <label class="field composer-title"><input value="Retour sur la démo de vendredi"></label>
+              <label class="field field-area"><textarea rows="2">Quelques captures du rendu final.</textarea></label>
+              <div class="attach">
+                <div class="thumb ph1"><button class="rm" aria-label="Retirer"><svg class="i sm" style="width:12px;height:12px"><use href="#i-x"/></svg></button></div>
+                <div class="thumb ph3"><button class="rm" aria-label="Retirer"><svg class="i sm" style="width:12px;height:12px"><use href="#i-x"/></svg></button><div class="progress up" style="--p:60%"><i></i></div></div>
+              </div>
+              <div class="tools"><button class="icon-btn" aria-label="Ajouter un média" style="width:34px;height:34px"><svg class="i sm"><use href="#i-image"/></svg></button><button class="icon-btn" aria-label="Emoji" style="width:34px;height:34px"><svg class="i sm"><use href="#i-smile"/></svg></button><span class="count">33 / 500</span><button class="btn btn-primary btn-sm" disabled><svg class="i sm"><use href="#i-send"/></svg>Publier</button></div>
+            </div>
+          </div>
+          <div class="variant"><span class="lbl">Erreur : titre manquant</span>
+            <div class="glass tile compact composer-tile">
+              <div><label class="field composer-title error"><input placeholder="Titre"></label><p class="help error">Le titre est obligatoire (3 à 120 caractères).</p></div>
+              <div class="tools"><span class="count">0 / 500</span><button class="btn btn-primary btn-sm"><svg class="i sm"><use href="#i-send"/></svg>Publier</button></div>
+            </div>
+          </div>
+          <div class="variant"><span class="lbl">Réponse (sans titre)</span>
+            <div class="glass tile compact composer-tile">
+              <span class="replying-to">En réponse à <b>@lea_n</b></span>
+              <label class="field field-area"><textarea rows="2" placeholder="Votre réponse"></textarea></label>
+              <div class="tools"><button class="icon-btn" aria-label="Ajouter un média" style="width:34px;height:34px"><svg class="i sm"><use href="#i-image"/></svg></button><span class="count">0 / 500</span><button class="btn btn-primary btn-sm"><svg class="i sm"><use href="#i-reply"/></svg>Répondre</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="props"><code>mode: 'post' | 'reply'</code><code>replyTo</code><code>onSubmit</code><code>maxMedia: 4</code></div>
+        <p class="specs">POST-01, POST-03, MEDIA-04/05</p>
+      </article>
+      <article class="card glass c-6" id="cmp-23">
+        <div class="card-head"><span class="num">23</span><h3>UserListItem</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+        <p class="desc">Ligne d'utilisateur, avec l'action d'abonnement adaptée à la relation.</p>
+        <div class="demo plain">
+          <div class="list">
+            <div class="user-row"><div class="avatar online">N</div><div class="txt"><b>Nora</b><span>@nora · vous suit</span></div><div class="end"><button class="btn btn-primary btn-sm"><svg class="i sm"><use href="#i-user-plus"/></svg>S'abonner</button></div></div>
+            <div class="user-row is-hover"><div class="avatar">SM</div><div class="txt"><b>Sami M. <span class="badge private"><svg class="i sm" style="width:12px;height:12px"><use href="#i-lock"/></svg>Privé</span></b><span>@sami</span></div><div class="end"><button class="btn btn-glass btn-sm">Demandé</button></div></div>
+            <div class="user-row"><div class="avatar online">LN</div><div class="txt"><b>Léa N.</b><span>@lea_n · ami</span></div><div class="end"><button class="btn btn-ghost btn-sm"><svg class="i sm"><use href="#i-user-check"/></svg>Abonné</button></div></div>
+            <div class="user-row"><div class="avatar">J</div><div class="txt"><b>Jade</b><span>@jade · demande à vous suivre</span></div><div class="end"><button class="btn btn-ghost btn-sm">Refuser</button><button class="btn btn-primary btn-sm">Accepter</button></div></div>
+            <div class="user-row"><div class="avatar">TK</div><div class="txt"><b>Théo K. <span class="badge neutral">Admin</span></b><span>@theok · inscrit le 02/11/2026</span></div><div class="end"><button class="btn btn-danger btn-sm"><svg class="i sm"><use href="#i-ban"/></svg>Bannir</button></div></div>
+          </div>
+        </div>
+        <div class="props"><code>user</code><code>relation: 'none' | 'requested' | 'following' | 'incoming' </code><code>action</code><code>admin</code></div>
+        <p class="specs">SOC-01 à 06, SEARCH-01, ADM-01</p>
+      </article></div>
+      <article class="card glass c-12" id="cmp-22">
+        <div class="card-head"><span class="num">22</span><h3>NavItem / Sidebar</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+        <p class="desc">Navigation principale : dépliée (> 1180 px), repliée en icônes (≤ 1180 px), barre du bas (≤ 720 px).</p>
+        <div class="demo lit">
+          <div class="side-demo">
+            <aside class="sidebar glass">
+              <div class="brand"><div class="brand-mark"></div><span class="brand-name">transcendance</span></div>
+              <div class="me"><div class="avatar sm online">A</div><div class="who"><b>aboumall</b><span>@aboumall</span></div></div>
+              <div class="nav-label">Menu</div>
+              <nav class="nav"><a href="#" class="active"><svg class="i"><use href="#i-home"/></svg><span class="label">Accueil</span></a>
+              <a href="#"><svg class="i"><use href="#i-compass"/></svg><span class="label">Explorer</span></a>
+              <a href="#"><svg class="i"><use href="#i-bell"/></svg><span class="label">Notifications</span><span class="badge">4</span></a>
+              <a href="#"><svg class="i"><use href="#i-msg"/></svg><span class="label">Messages</span><span class="badge">2</span></a>
+              <a href="#"><svg class="i"><use href="#i-user"/></svg><span class="label">Profil</span></a></nav>
+              <div class="spacer"></div>
+              <button class="btn btn-primary btn-block"><svg class="i sm"><use href="#i-plus"/></svg><span class="label">Publier</span></button>
+            </aside>
+            <aside class="sidebar glass collapsed">
+              <div class="brand"><div class="brand-mark"></div></div>
+              <div class="me"><div class="avatar sm online">A</div></div>
+              <nav class="nav"><a href="#" class="active"><svg class="i"><use href="#i-home"/></svg><span class="label">Accueil</span></a>
+              <a href="#"><svg class="i"><use href="#i-compass"/></svg><span class="label">Explorer</span></a>
+              <a href="#"><svg class="i"><use href="#i-bell"/></svg><span class="label">Notifications</span><span class="badge">4</span></a>
+              <a href="#"><svg class="i"><use href="#i-msg"/></svg><span class="label">Messages</span><span class="badge">2</span></a>
+              <a href="#"><svg class="i"><use href="#i-user"/></svg><span class="label">Profil</span></a></nav>
+              <div class="spacer"></div>
+              <button class="btn btn-primary" style="width:44px;padding:0" aria-label="Publier"><svg class="i sm"><use href="#i-plus"/></svg></button>
+            </aside>
+            <div class="variant"><span class="lbl">Mobile</span>
+              <nav class="bottom-bar glass">
+                <a href="#" class="active" aria-label="Accueil"><svg class="i"><use href="#i-home"/></svg></a><a href="#" aria-label="Explorer"><svg class="i"><use href="#i-compass"/></svg></a>
+                <a href="#" aria-label="Notifications"><svg class="i"><use href="#i-bell"/></svg><span class="badge">4</span></a><a href="#" aria-label="Messages"><svg class="i"><use href="#i-msg"/></svg><span class="badge">2</span></a>
+                <a href="#" aria-label="Profil"><svg class="i"><use href="#i-user"/></svg></a>
+              </nav>
+            </div>
+          </div>
+        </div>
+        <div class="props"><code>items[] : label, icon, href, badge</code><code>active</code><code>collapsed</code></div>
+        <p class="specs">FEED-04, toutes les pages</p>
+      </article>
+      <article class="card glass c-12" id="cmp-24">
+        <div class="card-head"><span class="num">24</span><h3>PluginTile</h3><span class="lot-badge l3 lot">Lot 3</span></div>
+        <p class="desc">Tuile de plugin dans la colonne de droite. Le contenu d'un plugin est une iframe isolée (sandbox).</p>
+        <div class="demo lit">
+          <div class="plugins demo-grid">
+            <article class="tile glass compact p-w2h2"><div class="tile-head"><span class="plugin-tag"><svg class="i sm"><use href="#i-cloud"/></svg>Météo</span><div class="end"><button class="btn btn-ghost btn-sm" aria-label="Options" style="padding:0 6px"><svg class="i sm"><use href="#i-more"/></svg></button></div></div>
+              <div class="weather"><div><div class="temp">9°</div><p class="faint">Lyon · brumeux</p></div><div class="forecast"><div>jeu.<b>11°</b></div><div>ven.<b>8°</b></div></div></div></article>
+            <article class="tile glass compact p-w1h2"><span class="plugin-tag"><svg class="i sm"><use href="#i-clock"/></svg>Horloge</span><div><div class="big-num">18:42</div><p class="faint" style="font-size:12px">jeudi 5 nov.</p></div></article>
+            <article class="tile glass compact p-w1h2"><span class="plugin-tag"><svg class="i sm"><use href="#i-timer"/></svg>Focus</span><div><div class="big-num">24:59</div><p class="faint" style="font-size:12px">session 2 / 4</p></div></article>
+            <article class="tile glass compact p-w2h3"><div class="tile-head"><span class="plugin-tag"><svg class="i sm"><use href="#i-game"/></svg>Snake</span><div class="end"><button class="btn btn-glass btn-sm">Jouer</button></div></div><div class="game-preview"><div class="snake"></div><div class="food"></div></div></article>
+            <article class="tile glass compact p-w2h2"><span class="plugin-tag"><svg class="i sm"><use href="#i-music"/></svg>Musique</span><div class="player"><div class="cover"></div><div style="flex:1;min-width:0"><b>Glass Waves</b><p class="faint" style="font-size:12px">Lofi chrome · 2:14</p><div class="progress" style="--p:42%;margin-top:8px"><i></i></div></div><button class="icon-btn" aria-label="Lecture"><svg class="i sm"><use href="#i-play"/></svg></button></div></article>
+            <article class="tile glass compact t-add p-w2h1"><svg class="i"><use href="#i-plus"/></svg><b>Ajouter un plugin</b></article>
+          </div>
+        </div>
+        <div class="props"><code>plugin : nom, url, icône</code><code>size: '1x2' | '2x1' | '2x2' | '2x3'</code></div>
+        <p class="specs">Accueil (bento)</p>
+      </article>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var sw = document.getElementById('theme-toggle');
+    var params = new URLSearchParams(location.search);
+    function set(theme) { root.dataset.theme = theme; sw.setAttribute('aria-checked', String(theme === 'dark')); sw.previousElementSibling.textContent = theme === 'dark' ? 'Sombre' : 'Clair'; }
+    if (params.get('theme') === 'light') set('light');
+    sw.addEventListener('click', function () { set(root.dataset.theme === 'dark' ? 'light' : 'dark'); });
+    // Barres de défilement visibles seulement pendant le défilement
+    document.querySelectorAll('[data-autohide]').forEach(function (el) {
+      var t;
+      if (params.has('scrolling')) el.classList.add('is-scrolling');
+      el.addEventListener('scroll', function () {
+        el.classList.add('is-scrolling'); clearTimeout(t);
+        t = setTimeout(function () { el.classList.remove('is-scrolling'); }, 900);
+      }, { passive: true });
+    });
+  })();
+</script>
+</body>
+</html>
