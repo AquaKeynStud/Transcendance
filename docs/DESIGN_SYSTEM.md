@@ -1,12 +1,13 @@
 # Design system : « Liquid glass »
 
-> **Version :** 0.1 (brouillon)
+> **Version :** 0.2 (validée par aboumall)
 > **Date :** 2026-11-05
-> **Référence visuelle :** [mockups/liquid-glass-v8.html](mockups/liquid-glass-v8.html) (validée). Ouvrir `#ds` pour la planche de style.
+> **Référence visuelle :** [mockups/liquid-glass-v8.html](mockups/liquid-glass-v8.html) (validée).
+> **Palette et composants maquettés :** [mockups/design-system.html](mockups/design-system.html) (`?theme=light` pour le thème clair).
 > **Module visé :** `web.design_system` (mineur, 1 pt) : *« Custom-made design system with reusable components, including a proper color palette, typography, and icons (minimum: 10 reusable components). »*
 > **Spec technique :** [SPEC_TECH.md](SPEC_TECH.md) §11.5
 
-Ce document décrit la palette, la typographie, les autres fondations et les composants réutilisables du frontend. Les valeurs viennent de la maquette v8. Une valeur marquée ⚠️ est corrigée pour l'accessibilité par rapport à la v8 (§2.6).
+Ce document décrit la palette, la typographie, les autres fondations et les composants réutilisables du frontend. Les valeurs viennent de la maquette v8. Une valeur marquée ⚠️ a été corrigée pour l'accessibilité par rapport à la v8 (§2.6). Ces corrections sont validées et appliquées dans `design-system.html`.
 
 ---
 
@@ -18,7 +19,7 @@ Ce document décrit la palette, la typographie, les autres fondations et les com
 | Typographie | §3 |
 | Icônes | §4.4 (Lucide) |
 | Au moins 10 composants réutilisables | §5 : 24 composants, dont 13 au lot 1 |
-| *(preuve en soutenance)* Documentation | Page `/design-system` de la SPA (§6) |
+| *(preuve en soutenance)* Documentation | Page `/design-system` de la SPA (§6), maquettée dans `mockups/design-system.html` |
 
 ---
 
@@ -164,7 +165,7 @@ Courbe `cubic-bezier(.2, .8, .2, 1)`. Durées : 150 ms (clic), 200 ms (survol), 
 
 ## 5. Composants
 
-**Lot 1** = les 13 composants qui suffisent à valider le module (minimum 10), à faire en S2-S3. **Statut** : ✅ maquetté dans la v8, 🟡 partiellement maquetté, ⬜ pas encore maquetté.
+**Lot 1** = les 13 composants qui suffisent à valider le module (minimum 10), à faire en S2-S3. **Statut** : ✅ maquetté (tous les composants le sont dans `mockups/design-system.html`, avec leurs variantes et leurs états).
 
 ### 5.1 Primitives
 
@@ -180,7 +181,7 @@ Courbe `cubic-bezier(.2, .8, .2, 1)`. Durées : 150 ms (clic), 200 ms (survol), 
 | 8 | `Tabs` | Onglets segmentés | sélectionné, survol ; navigation au clavier (flèches) | `items`, `value`, `onChange` | Fil (FEED-01/02), profil (ACC-02), messages (DM-03), recherche | 1 | ✅ |
 | 9 | `Switch` | Interrupteur on/off | on, off, `disabled` | `checked`, `onChange`, `label` | Thème, compte privé (ACC-06) | 1 | ✅ |
 | 10 | `ProgressBar` | Progression | déterminée, avec libellé | `value`, `label` | Upload de médias (MEDIA-05) | 2 | ✅ |
-| 11 | `Spinner` / `Skeleton` | Chargement | spinner ; squelettes de post, de ligne, d'avatar | `shape`, `lines` | UI-06, tous les chargements | 2 | ⬜ |
+| 11 | `Spinner` / `Skeleton` | Chargement | spinner ; squelettes de post, de ligne, d'avatar | `shape`, `lines` | UI-06, tous les chargements | 2 | ✅ |
 | 12 | `Icon` | Habillage de Lucide aux tailles du système | 16 / 20 px | `name`, `size` | Partout | 1 | ✅ |
 
 ### 5.2 Retours et superpositions
@@ -189,20 +190,20 @@ Courbe `cubic-bezier(.2, .8, .2, 1)`. Durées : 150 ms (clic), 200 ms (survol), 
 |---|---|---|---|---|---|:-:|:-:|
 | 13 | `Toast` + `ToastProvider` | Confirmation de chaque action | `success`, `error`, `info` ; fermeture auto (4 s) et manuelle | `type`, `message`, `action` | **NOTIF-03** (toutes les créations, modifications, suppressions) | 1 | ✅ |
 | 14 | `Modal` | Fenêtre de dialogue | confirmation, formulaire, `danger` ; piège du focus, Échap, retour du focus | `title`, `open`, `onClose`, `actions` | Suppression (POST-07, ACC-09), bannissement (ADM-04), invitation visiteur (VIS-03), rédaction hors accueil | 1 | ✅ |
-| 15 | `Dropdown` | Menu contextuel « … » | éléments, séparateur, élément `danger` | `items`, `trigger` | Menu d'un post (modifier, supprimer, signaler), plugins | 2 | 🟡 (bouton seul) |
-| 16 | `EmptyState` | Liste vide | icône + texte + action | `icon`, `title`, `action` | UI-06 (fil vide, aucune notification, aucun résultat) | 2 | ⬜ |
+| 15 | `Dropdown` | Menu contextuel « … » | éléments, séparateur, élément `danger` | `items`, `trigger` | Menu d'un post (modifier, supprimer, signaler), plugins | 2 | ✅ |
+| 16 | `EmptyState` | Liste vide | icône + texte + action | `icon`, `title`, `action` | UI-06 (fil vide, aucune notification, aucun résultat) | 2 | ✅ |
 | 17 | `ScrollArea` | Zone qui défile avec barre masquée au repos et fondu en bas | `fade` | `fade`, `autoHide` | Fil, plugins, messages | 2 | ✅ |
 
 ### 5.3 Composants métier
 
 | # | Composant | Rôle | Variantes / états | Props principales | Utilisé par (spec) | Lot | Statut |
 |---|---|---|---|---|---|:-:|:-:|
-| 18 | `PostCard` | Post façon Reddit : en-tête, titre, contenu, médias, actions | normal, survol, `(modifié)`, « republié par », **supprimé** / supprimé par la modération, réponse (sans titre) | `post`, `context`, `onAction` | FEED, POST-04, ACC-02 | 1 | ✅ (réponse ⬜) |
+| 18 | `PostCard` | Post façon Reddit : en-tête, titre, contenu, médias, actions | normal, survol, `(modifié)`, « republié par », **supprimé** / supprimé par la modération, réponse (sans titre) | `post`, `context`, `onAction` | FEED, POST-04, ACC-02 | 1 | ✅ |
 | 19 | `PostAction` | Pastille d'action avec compteur | `reply`, `repost` (ambre), `like` (framboise) ; actif, survol, désactivé (post supprimé, compte privé : REPOST-03) | `kind`, `count`, `active` | PostCard (LIKE, REPOST) | 2 | ✅ |
-| 20 | `MediaGrid` | Médias d'un post | 1 à 4 images, GIF, 1 vidéo ; plein écran au clic | `media[]` | MEDIA-08 | 2 | 🟡 (1 image) |
+| 20 | `MediaGrid` | Médias d'un post | 1 à 4 images, GIF, 1 vidéo ; plein écran au clic | `media[]` | MEDIA-08 | 2 | ✅ |
 | 21 | `Composer` | Rédaction d'un post | titre (obligatoire) + contenu (optionnel) + médias + compteurs ; mode réponse (sans titre) | `mode`, `onSubmit` | POST-01, POST-03, MEDIA-04 | 2 | ✅ |
 | 22 | `NavItem` / `Sidebar` | Navigation principale | actif, badge ; replié (icônes) ; barre du bas sur mobile | `items`, `active` | FEED-04, toutes les pages | 2 | ✅ |
-| 23 | `UserListItem` | Ligne d'utilisateur | avec bouton S'abonner / Demandé / Abonné ; statut en ligne | `user`, `action` | SOC-06, recherche, admin (ADM-01) | 2 | ⬜ |
+| 23 | `UserListItem` | Ligne d'utilisateur | avec bouton S'abonner / Demandé / Abonné ; statut en ligne | `user`, `action` | SOC-06, recherche, admin (ADM-01) | 2 | ✅ |
 | 24 | `PluginTile` | Tuile de plugin (iframe isolée) | tailles 1×2, 2×1, 2×2, 2×3 ; en-tête avec étiquette et menu ; « Ajouter un plugin » | `plugin`, `size` | Accueil (bento) | 3 | ✅ |
 
 **Bilan :** 24 composants. Le **lot 1 en compte 13** : `GlassPanel`, `Button`, `IconButton`, `Input`, `Textarea`, `Avatar`, `Badge`, `Tabs`, `Switch`, `Icon`, `Toast`, `Modal`, plus `PostCard`. Le minimum de 10 du module est donc couvert dès le lot 1.
@@ -255,8 +256,8 @@ Le verre (`glass-fill`, `glass-edge`, flou) n'entre pas bien dans des classes ut
 
 ---
 
-## 8. À valider
+## 8. Décisions validées (2026-11-05)
 
-1. Les corrections de contraste marquées ⚠️ (§2.6), surtout pour le thème clair.
+1. Les corrections de contraste marquées ⚠️ (§2.6), dans les deux thèmes.
 2. Le découpage en lots (§5).
 3. La page `/design-system` comme documentation, sans Storybook.
