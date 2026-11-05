@@ -24,3 +24,4 @@ Ils servent à reprendre le travail d'une session à l'autre et à montrer à l'
 | 2026-11-05 | [2026-11-05_maquette-liquid-glass-v3.md](2026-11-05_maquette-liquid-glass-v3.md) | Maquette v3 : rédaction à droite, fond noir, Unbounded + Manrope |
 | 2026-11-05 | [2026-11-05_maquette-liquid-glass-v4.md](2026-11-05_maquette-liquid-glass-v4.md) | Maquette v4 : posts façon Reddit (titre + contenu), survol, barre de défilement |
 | 2026-11-05 | [2026-11-05_maquette-liquid-glass-v5.md](2026-11-05_maquette-liquid-glass-v5.md) | Maquette v5 : barres de défilement discrètes ; spec v0.4 (titre des posts obligatoire) |
+| 2026-11-05 | [2026-11-05_maquette-liquid-glass-v6.md](2026-11-05_maquette-liquid-glass-v6.md) | Maquette v6 : barres de défilement natives masquées au repos, fond #111214 |
