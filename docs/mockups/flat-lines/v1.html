@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette v1 · Flat lines · ft_transcendence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   Flat lines v1 : style plat et sobre.
+   Même composition que liquid-glass v8 :
+   nav | fil (défile dans sa colonne) | recherche + rédaction + plugins (bento).
+   Pas de verre, pas d'ombre, pas de dégradé : des aplats et des lignes grises de 1 px.
+   ===================================================================== */
+
+/* 1. TOKENS ============================================================ */
+:root {
+  --font: "Inter", system-ui, sans-serif;
+
+  --r-sm: 8px;
+  --r-md: 16px;
+  --r-pill: 999px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+
+  --success: #00ba7c;
+  --danger: #f4212e;
+  --warning: #ffd400;
+
+  --ease: cubic-bezier(.2, .8, .2, 1);
+}
+
+[data-theme="dark"] {
+  --bg: #000000;
+  --surface: #0a0a0b;        /* fond d'une tuile au survol, des blocs « creux » */
+  --hover: rgba(231, 233, 234, .06);
+  --line: #2f3336;           /* LA ligne grise : séparations, bords des tuiles */
+  --line-strong: #536471;
+  --text: #e7e9ea;
+  --text-2: #8b9298;
+  --text-3: #71767b;
+  --accent: #e7e9ea;         /* monochrome : l'accent est le texte */
+  --accent-ink: #0f1419;
+  --like: #ec3f86;
+  --repost: #ffa834;
+  --scroll-thumb: rgba(231, 233, 234, .28);
+  --placeholder: linear-gradient(135deg, #16181c, #2a2d31 55%, #16181c);
+}
+
+[data-theme="light"] {
+  --bg: #ffffff;
+  --surface: #f7f9f9;
+  --hover: rgba(15, 20, 25, .05);
+  --line: #eff3f4;
+  --line-strong: #cfd9de;
+  --text: #0f1419;
+  --text-2: #4b5862;
+  --text-3: #6b7780;
+  --accent: #0f1419;
+  --accent-ink: #ffffff;
+  --like: #c0185e;
+  --repost: #d97706;
+  --scroll-thumb: rgba(15, 20, 25, .25);
+  --placeholder: linear-gradient(135deg, #e6ecf0, #f7f9f9 55%, #dfe5e9);
+}
+
+/* 2. BASE ============================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4 { font-weight: 800; margin: 0; letter-spacing: -.01em; }
+b, strong { font-weight: 700; }
+p { margin: 0; }
+a { color: inherit; }
+button { font: inherit; color: inherit; cursor: pointer; }
+svg.i { width: 22px; height: 22px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+svg.i.sm { width: 18px; height: 18px; }
+svg.i.lg { width: 26px; height: 26px; }
+.muted { color: var(--text-2); }
+.faint { color: var(--text-3); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* 3. LAYOUT ============================================================
+   Trois colonnes centrées. Le fil est bordé à gauche et à droite par une ligne
+   et prend toute la hauteur. La colonne de droite reste en tuiles (bento). */
+.app {
+  display: grid; grid-template-columns: 260px minmax(0, 620px) 360px;
+  justify-content: center;
+  height: 100vh;
+}
+
+/* Nav gauche : pas de boîte, juste du texte et des icônes */
+.sidebar { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-3) var(--space-4) var(--space-3) var(--space-3); min-height: 0; }
+.brand { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); margin-bottom: var(--space-2); text-decoration: none; }
+.brand-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--text); color: var(--bg); display: grid; place-items: center; font-weight: 800; font-size: 17px; letter-spacing: -.04em; }
+.brand-name { font-size: 18px; font-weight: 800; letter-spacing: -.02em; }
+.nav { display: flex; flex-direction: column; gap: 2px; }
+.nav a { position: relative; display: flex; align-items: center; gap: var(--space-4); width: fit-content; padding: 10px var(--space-5) 10px var(--space-3); border-radius: var(--r-pill); text-decoration: none; font-size: 19px; font-weight: 400; transition: background .15s; }
+.nav a:hover { background: var(--hover); }
+.nav a.active { font-weight: 700; }
+.nav a.active svg { stroke-width: 2.4; }
+.nav a .badge { position: absolute; top: 4px; left: 26px; }
+.nav-sep { height: 1px; background: var(--line); margin: var(--space-3) var(--space-3); }
+.sidebar .spacer { flex: 1; }
+.sidebar-foot { display: flex; flex-direction: column; gap: var(--space-2); }
+.sidebar-foot .row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding: var(--space-2) var(--space-3); }
+.theme-label { display: inline-flex; gap: var(--space-2); align-items: center; font-size: 14px; }
+.me { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); border-radius: var(--r-pill); transition: background .15s; cursor: pointer; }
+.me:hover { background: var(--hover); }
+.me .who { min-width: 0; flex: 1; line-height: 1.25; }
+.me .who b { display: block; font-size: 15px; }
+.me .who span { font-size: 14px; color: var(--text-3); }
+
+/* Colonne centrale : le fil, bordé par deux lignes verticales */
+.center { min-height: 0; border-left: 1px solid var(--line); border-right: 1px solid var(--line); display: flex; flex-direction: column; }
+.feed { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.feed-head { flex: none; border-bottom: 1px solid var(--line); }
+.feed-head h2 { font-size: 20px; padding: var(--space-4) var(--space-4) var(--space-2); }
+.feed .scroll { flex: 1; min-height: 0; overflow-y: auto; }
+
+/* Colonne de droite : recherche, rédaction, plugins */
+.rail { display: flex; flex-direction: column; gap: var(--space-4); min-height: 0; padding: var(--space-2) 0 0 var(--space-6); }
+.rail-head { display: flex; align-items: center; justify-content: space-between; padding: 0 var(--space-1); }
+.rail-head h2 { font-size: 20px; }
+.plugins-scroll { flex: 1; min-height: 0; overflow-y: auto; padding-bottom: var(--space-4); }
+.plugins { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 64px; grid-auto-flow: dense; gap: var(--space-3); }
+
+/* Barres de défilement : natives, fines, sans fond, visibles seulement pendant le défilement */
+.feed .scroll, .plugins-scroll { scrollbar-width: thin; scrollbar-color: transparent transparent; }
+.feed .scroll.is-scrolling, .plugins-scroll.is-scrolling { scrollbar-color: var(--scroll-thumb) transparent; }
+
+/* Tuiles : un bord gris, des coins arrondis, pas d'ombre */
+.tile { border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); min-height: 0; overflow: hidden; background: var(--bg); }
+.tile-head { display: flex; align-items: center; gap: var(--space-2); }
+.tile-head h2 { font-size: 20px; }
+.tile-head .end { margin-left: auto; display: flex; gap: var(--space-2); align-items: center; }
+
+.p-w2h2 { grid-column: span 2; grid-row: span 2; }
+.p-w2h3 { grid-column: span 2; grid-row: span 3; }
+.p-w1h2 { grid-column: span 1; grid-row: span 2; }
+.p-w2h1 { grid-column: span 2; grid-row: span 1; }
+
+/* 4. COMPOSANTS ======================================================== */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); height: 36px; padding: 0 16px; border-radius: var(--r-pill); border: 1px solid transparent; font-weight: 700; font-size: 15px; white-space: nowrap; text-decoration: none; transition: background .15s, opacity .15s; }
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover { opacity: .9; }
+.btn-primary:disabled { opacity: .5; cursor: default; }
+.btn-outline { background: transparent; border-color: var(--line-strong); color: var(--text); }
+.btn-outline:hover { background: var(--hover); }
+.btn-ghost { background: transparent; color: var(--text); }
+.btn-ghost:hover { background: var(--hover); }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-danger:hover { opacity: .9; }
+.btn-lg { height: 52px; font-size: 17px; }
+.btn-sm { height: 32px; padding: 0 14px; font-size: 14px; }
+.btn-block { width: 100%; }
+
+.icon-btn { width: 36px; height: 36px; border-radius: 50%; border: 0; display: inline-grid; place-items: center; background: transparent; color: var(--text-2); transition: background .15s, color .15s; }
+.icon-btn:hover { background: var(--hover); color: var(--text); }
+
+/* Champs : fond plat, bord gris ; au focus, le bord passe à la couleur du texte */
+.field { display: flex; align-items: center; gap: var(--space-2); height: 44px; padding: 0 var(--space-4); border-radius: var(--r-sm); border: 1px solid var(--line-strong); background: transparent; color: var(--text-3); transition: border-color .15s; }
+.field input, .field textarea { flex: 1; min-width: 0; background: none; border: 0; outline: 0; color: var(--text); font: inherit; resize: none; }
+.field input::placeholder, .field textarea::placeholder { color: var(--text-3); }
+.field:focus-within { border-color: var(--text); color: var(--text); }
+.field.error { border-color: var(--danger); }
+.help { font-size: 13px; color: var(--text-3); margin-top: 6px; padding-left: 2px; }
+.help.error { color: var(--danger); }
+.search-bar { height: 44px; border-radius: var(--r-pill); border-color: var(--line); background: var(--surface); }
+.search-bar kbd { font-family: var(--font); font-size: 11px; color: var(--text-3); padding: 2px 6px; border-radius: 6px; border: 1px solid var(--line); }
+
+.badge { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: var(--r-pill); font-size: 11px; font-weight: 700; color: var(--accent-ink); background: var(--accent); box-shadow: 0 0 0 2px var(--bg); }
+.badge.neutral { color: var(--text-2); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+.badge.private { display: inline-flex; align-items: center; gap: 4px; color: var(--text-2); background: transparent; box-shadow: inset 0 0 0 1px var(--line-strong); font-weight: 600; }
+
+/* Avatar sans photo : disque gris uni, initiales */
+.avatar { --size: 40px; position: relative; flex: none; width: var(--size); height: var(--size); border-radius: 50%; display: grid; place-items: center;
+  font-weight: 700; font-size: calc(var(--size) * .4); letter-spacing: -.03em; line-height: 1;
+  color: var(--text); background: var(--line); }
+[data-theme="light"] .avatar { background: #dfe5e9; }
+.avatar.online::after { content: ""; position: absolute; right: 0; bottom: 0; width: 26%; height: 26%; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 2px var(--bg); }
+.avatar.xs { --size: 28px; } .avatar.sm { --size: 34px; } .avatar.lg { --size: 56px; } .avatar.xl { --size: 72px; }
+
+.switch { position: relative; width: 44px; height: 24px; border-radius: var(--r-pill); border: 0; padding: 0; background: var(--line-strong); transition: background .2s; flex: none; }
+.switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform .2s var(--ease), background .2s; }
+.switch[aria-checked="true"] { background: var(--accent); }
+.switch[aria-checked="true"]::after { transform: translateX(20px); background: var(--accent-ink); }
+
+/* Onglets : texte, et une barre sous l'onglet actif */
+.tabs { display: flex; }
+.tabs button { flex: 1; position: relative; border: 0; background: none; height: 52px; padding: 0 var(--space-4); color: var(--text-3); font-weight: 500; font-size: 15px; transition: background .15s; }
+.tabs button:hover { background: var(--hover); }
+.tabs button[aria-selected="true"] { color: var(--text); font-weight: 700; }
+.tabs button[aria-selected="true"]::after { content: ""; position: absolute; left: 50%; bottom: 0; translate: -50% 0; width: 56px; height: 4px; border-radius: 4px; background: var(--accent); }
+.tabs.inline button { flex: none; height: 44px; }
+.tabs.inline { border-bottom: 1px solid var(--line); }
+
+.progress { height: 4px; border-radius: var(--r-pill); background: var(--line); overflow: hidden; }
+.progress i { display: block; height: 100%; width: var(--p, 60%); border-radius: inherit; background: var(--accent); }
+
+.toast { display: inline-flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-radius: var(--r-sm); background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.toast .icon-btn { color: inherit; width: 28px; height: 28px; }
+
+/* Post : séparé du suivant par une ligne pleine largeur ; survol = fond très légèrement plus clair */
+.post { position: relative; padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--line); transition: background .15s; cursor: pointer; }
+.post:hover { background: rgba(231, 233, 234, .03); }
+[data-theme="light"] .post:hover { background: rgba(15, 20, 25, .03); }
+.post-context { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--text-3); margin-bottom: var(--space-2); }
+.post-context svg { color: var(--repost); }
+.post-head { display: flex; align-items: center; gap: var(--space-3); }
+.post-head .who { display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap; min-width: 0; }
+.post-head .who b { font-weight: 700; }
+.post-head .who span { color: var(--text-3); }
+.post-head .more { margin-left: auto; color: var(--text-3); }
+.post-title { margin-top: var(--space-3); font-size: 18px; font-weight: 800; line-height: 1.3; letter-spacing: -.01em; }
+.post-text { margin-top: var(--space-1); font-size: 15px; line-height: 1.5; color: var(--text); }
+.post-text a { color: var(--text); font-weight: 600; text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+.post-media { margin-top: var(--space-3); height: 260px; border-radius: var(--r-md); border: 1px solid var(--line); background: var(--placeholder); }
+.post-deleted { padding: var(--space-3) var(--space-4); border-radius: var(--r-sm); border: 1px solid var(--line); color: var(--text-3); font-size: 14px; }
+
+/* Actions : icône + chiffre, sans pastille ; la couleur et un disque apparaissent au survol */
+.post-actions { display: flex; gap: var(--space-6); margin-top: var(--space-3); margin-left: -8px; }
+.action { display: inline-flex; align-items: center; gap: 2px; border: 0; padding: 0; background: none; font-size: 13px; color: var(--text-3); transition: color .15s; }
+.action .ico { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; transition: background .15s; }
+.action:hover { color: var(--text); }
+.action:hover .ico { background: var(--hover); }
+.act-like:hover { color: var(--like); }
+.act-like:hover .ico { background: color-mix(in srgb, var(--like) 12%, transparent); }
+.act-like.liked { color: var(--like); }
+.act-like.liked svg { fill: currentColor; }
+.act-repost:hover { color: var(--repost); }
+.act-repost:hover .ico { background: color-mix(in srgb, var(--repost) 12%, transparent); }
+.act-repost.reposted { color: var(--repost); }
+.act-repost.reposted svg { stroke-width: 2.4; }
+.action svg { transition: transform .2s var(--ease); }
+.act-like:active svg, .act-repost:active svg { transform: scale(1.25); }
+
+.flex { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+.stack { display: flex; flex-direction: column; gap: var(--space-3); }
+code { font-family: ui-monospace, monospace; font-size: .88em; padding: 1px 5px; border-radius: 4px; background: var(--surface); border: 1px solid var(--line); }
+
+/* Rédaction : champs sans bord, séparés de la barre d'outils par une ligne */
+.composer-tile { flex: none; padding: 0; gap: 0; }
+.composer-tile .tile-head { padding: var(--space-3) var(--space-4) 0; }
+.composer-tile .tile-head h2 { font-size: 17px; }
+.composer-title, .composer-body { border: 0; background: none; padding: 0 var(--space-4); }
+.composer-title { height: 44px; }
+.composer-title input { font-size: 17px; font-weight: 700; }
+.composer-body { height: auto; padding-bottom: var(--space-3); }
+.composer-body textarea { font-size: 15px; }
+.composer-tile .tools { display: flex; align-items: center; gap: 2px; padding: var(--space-2) var(--space-3); border-top: 1px solid var(--line); }
+.composer-tile .tools .count { margin-left: auto; margin-right: var(--space-3); font-size: 13px; color: var(--text-3); }
+
+/* Plugins */
+.plugin-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text-3); }
+.weather { display: flex; align-items: center; gap: var(--space-4); }
+.weather .temp { font-size: 40px; font-weight: 800; line-height: 1; letter-spacing: -.03em; }
+.weather .forecast { margin-left: auto; display: flex; gap: var(--space-3); text-align: center; font-size: 12px; color: var(--text-3); }
+.weather .forecast b { display: block; color: var(--text); font-size: 14px; }
+.big-num { font-size: 26px; font-weight: 800; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.game-preview { flex: 1; border-radius: var(--r-sm); position: relative; border: 1px solid var(--line);
+  --grid: color-mix(in srgb, var(--line) 45%, transparent);
+  background: linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 14px 14px, linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 14px 14px; }
+.game-preview .snake { position: absolute; left: 20%; top: 50%; width: 96px; height: 10px; border-radius: 3px; background: var(--text); }
+.game-preview .food { position: absolute; left: 70%; top: 30%; width: 10px; height: 10px; border-radius: 50%; background: var(--like); }
+.player { display: flex; align-items: center; gap: var(--space-3); }
+.cover { width: 48px; height: 48px; border-radius: var(--r-sm); flex: none; background: var(--placeholder); border: 1px solid var(--line); }
+.player .icon-btn { border: 1px solid var(--line-strong); color: var(--text); }
+.t-add { align-items: center; justify-content: center; flex-direction: row; border-style: dashed; border-color: var(--line-strong); color: var(--text-2); cursor: pointer; transition: background .15s, color .15s; }
+.t-add:hover { background: var(--hover); color: var(--text); }
+
+/* 5. VUES (#home / #ds) ================================================= */
+.view { display: none; }
+.view:target, body:not(:has(.view:target)) #home { display: contents; }
+
+/* Planche de style : la page défile normalement */
+body:has(#ds:target) .app { height: auto; min-height: 100vh; grid-template-columns: 260px minmax(0, 1000px); }
+body:has(#ds:target) .sidebar { position: sticky; top: 0; height: 100vh; }
+.ds-wrap { border-left: 1px solid var(--line); min-height: 100vh; }
+.ds-title { padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--line); }
+.ds-title h1 { font-size: 20px; }
+.ds { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--space-4); padding: var(--space-5); }
+.ds .tile { grid-column: span 6; gap: var(--space-4); }
+.ds .tile.wide { grid-column: span 12; }
+.ds .tile.third { grid-column: span 4; }
+.ds h3 { font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: var(--space-3); }
+.swatch { border-radius: var(--r-sm); overflow: hidden; border: 1px solid var(--line); }
+.swatch i { display: block; height: 56px; border-bottom: 1px solid var(--line); }
+.swatch div { padding: var(--space-2) var(--space-3); font-size: 12px; }
+.swatch div b { display: block; font-size: 12px; }
+.swatch div span { color: var(--text-3); font-family: ui-monospace, monospace; font-size: 11px; }
+.type-scale > div { display: flex; align-items: baseline; gap: var(--space-4); padding: 8px 0; border-top: 1px solid var(--line); }
+.type-scale > div:first-child { border-top: 0; }
+.type-scale code { background: none; border: 0; padding: 0; width: 200px; flex: none; font-size: 11px; color: var(--text-3); }
+.modal { border: 1px solid var(--line-strong); border-radius: var(--r-md); padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); background: var(--bg); }
+.modal-backdrop { padding: var(--space-5); border-radius: var(--r-sm); background: rgba(91, 112, 131, .3); }
+
+/* 6. RESPONSIVE ========================================================
+   Sous 1180 px : nav réduite aux icônes, recherche + rédaction au-dessus du fil,
+   plugins en bande horizontale, la page défile normalement. */
+@media (max-width: 1280px) { .app { grid-template-columns: 240px minmax(0, 600px) 340px; } }
+@media (max-width: 1180px) {
+  .app { grid-template-columns: 80px minmax(0, 640px); height: auto; min-height: 100vh; }
+  .sidebar { position: sticky; top: 0; height: 100vh; align-items: center; padding: var(--space-3) var(--space-2); grid-row: 1 / span 2; }
+  .brand-name, .nav a .label, .me .who, .me .more, .sidebar-foot .row .label, .sidebar-foot .btn .label, .nav-sep { display: none; }
+  .nav a { padding: 12px; }
+  .nav a .badge { left: 28px; }
+  .sidebar-foot { align-items: center; }
+  .sidebar-foot .btn-lg { width: 52px; padding: 0; }
+  .rail { grid-column: 2; grid-row: 1; padding: var(--space-3) var(--space-4); border-left: 1px solid var(--line); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .center { grid-column: 2; grid-row: 2; }
+  .rail-head { display: none; }
+  .plugins-scroll { overflow-x: auto; overflow-y: hidden; padding-bottom: var(--space-2); }
+  .plugins { grid-auto-flow: column; grid-template-rows: 140px; grid-auto-columns: 220px; grid-template-columns: none; }
+  .plugins > .tile { grid-column: auto; grid-row: auto; }
+  .plugins > .t-add { width: 150px; }
+  .weather .forecast { display: none; }
+  .feed .scroll { overflow: visible; }
+  .ds .tile, .ds .tile.third { grid-column: span 12; }
+  body:has(#ds:target) .app { grid-template-columns: 80px minmax(0, 1fr); }
+}
+@media (max-width: 720px) {
+  .app { grid-template-columns: minmax(0, 1fr); padding-bottom: 56px; }
+  .sidebar { position: fixed; top: auto; bottom: 0; left: 0; right: 0; height: 56px; z-index: 10; flex-direction: row; padding: 0; background: var(--bg); border-top: 1px solid var(--line); }
+  .brand, .sidebar .spacer, .sidebar-foot, .nav-secondary { display: none; }
+  .nav { flex-direction: row; width: 100%; justify-content: space-around; }
+  .rail, .center { grid-column: 1; border-left: 0; border-right: 0; }
+  .post { padding: var(--space-3) var(--space-4); }
+  .post-title { font-size: 17px; }
+  .post-actions { gap: var(--space-3); justify-content: space-between; }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></symbol>
+  <symbol id="i-reply" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></symbol>
+  <symbol id="i-game" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4M8 10v4M15 12h.01M18 10h.01"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></symbol>
+  <symbol id="i-smile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.53 13.53 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><path d="m2 2 20 20"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-blocks" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/><path d="M17 3v8M13 7h8"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></symbol>
+</svg>
+
+<div class="app">
+
+  <!-- ================= NAV GAUCHE ================= -->
+  <aside class="sidebar" aria-label="Navigation principale">
+    <a class="brand" href="#home"><span class="brand-mark">t</span><span class="brand-name">transcendance</span></a>
+
+    <nav class="nav">
+      <a href="#home" class="active"><svg class="i lg"><use href="#i-home"/></svg><span class="label">Accueil</span></a>
+      <a href="#home"><svg class="i lg"><use href="#i-compass"/></svg><span class="label">Explorer</span></a>
+      <a href="#home"><svg class="i lg"><use href="#i-bell"/></svg><span class="label">Notifications</span><span class="badge">4</span></a>
+      <a href="#home"><svg class="i lg"><use href="#i-msg"/></svg><span class="label">Messages</span><span class="badge">2</span></a>
+      <a href="#home"><svg class="i lg"><use href="#i-user"/></svg><span class="label">Profil</span></a>
+    </nav>
+
+    <div class="nav-sep"></div>
+
+    <nav class="nav nav-secondary">
+      <a href="#home"><svg class="i lg"><use href="#i-blocks"/></svg><span class="label">Plugins</span></a>
+      <a href="#ds"><svg class="i lg"><use href="#i-grid"/></svg><span class="label">Design system</span></a>
+      <a href="#home"><svg class="i lg"><use href="#i-shield"/></svg><span class="label">Administration</span></a>
+      <a href="#home"><svg class="i lg"><use href="#i-settings"/></svg><span class="label">Paramètres</span></a>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <div class="sidebar-foot">
+      <button class="btn btn-primary btn-lg btn-block"><svg class="i sm"><use href="#i-plus"/></svg><span class="label">Publier</span></button>
+      <div class="row">
+        <span class="label faint theme-label"><svg class="i sm"><use href="#i-moon"/></svg>Thème sombre</span>
+        <button class="switch" role="switch" aria-checked="true" aria-label="Thème sombre" id="theme-toggle"></button>
+      </div>
+      <div class="me">
+        <div class="avatar online">A</div>
+        <div class="who"><b>aboumall</b><span>@aboumall</span></div>
+        <button class="icon-btn more" aria-label="Menu du compte (déconnexion)"><svg class="i sm"><use href="#i-more"/></svg></button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= VUE : ACCUEIL ================= -->
+  <div id="home" class="view">
+
+    <!-- Colonne centrale : le fil, sur toute la hauteur -->
+    <main class="center">
+      <section class="feed" aria-label="Fil">
+        <div class="feed-head">
+          <div class="tabs" role="tablist">
+            <button role="tab" aria-selected="true">Abonnements</button>
+            <button role="tab" aria-selected="false">Explorer</button>
+          </div>
+        </div>
+        <div class="scroll">
+          <article class="post">
+            <header class="post-head">
+              <div class="avatar online">LN</div>
+              <div class="who"><b>Léa N.</b><span>@lea_n · 12 min</span></div>
+              <button class="icon-btn more" aria-label="Options du post"><svg class="i sm"><use href="#i-more"/></svg></button>
+            </header>
+            <h3 class="post-title">Premier rendu du style « flat lines »</h3>
+            <p class="post-text">Plus de verre : des aplats, des lignes grises et c'est tout. Beaucoup plus léger à rendre. <a href="#">@nora</a> tu valides avant que je pousse la branche ?</p>
+            <div class="post-media"></div>
+            <footer class="post-actions">
+              <button class="action"><span class="ico"><svg class="i sm"><use href="#i-reply"/></svg></span>12</button>
+              <button class="action act-repost"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>4</button>
+              <button class="action act-like liked"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>86</button>
+            </footer>
+          </article>
+          <article class="post">
+            <div class="post-context"><svg class="i sm"><use href="#i-repeat"/></svg>Nora a republié</div>
+            <header class="post-head">
+              <div class="avatar">TK</div>
+              <div class="who"><b>Théo K.</b><span>@theok · 1 h · (modifié)</span></div>
+              <button class="icon-btn more" aria-label="Options du post"><svg class="i sm"><use href="#i-more"/></svg></button>
+            </header>
+            <h3 class="post-title">WebSocket : uniquement pour pousser</h3>
+            <p class="post-text">Petit rappel : toutes les actions passent par l'API REST. Le WebSocket ne fait que pousser les nouveautés. Une seule couche de permissions, moins de bugs.</p>
+            <footer class="post-actions">
+              <button class="action"><span class="ico"><svg class="i sm"><use href="#i-reply"/></svg></span>3</button>
+              <button class="action act-repost reposted"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>10</button>
+              <button class="action act-like"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>41</button>
+            </footer>
+          </article>
+          <article class="post"><div class="post-deleted">Post supprimé</div></article>
+          <article class="post">
+            <header class="post-head">
+              <div class="avatar online">N</div>
+              <div class="who"><b>Nora</b><span>@nora · 3 h</span></div>
+              <button class="icon-btn more" aria-label="Options du post"><svg class="i sm"><use href="#i-more"/></svg></button>
+            </header>
+            <h3 class="post-title">Bento ou liste classique pour l'accueil ?</h3>
+            <p class="post-text">Je penche pour le bento, avec le fil au centre et les plugins à droite. On garde quand même une vue liste pour les petits écrans. Vos avis ?</p>
+            <footer class="post-actions">
+              <button class="action"><span class="ico"><svg class="i sm"><use href="#i-reply"/></svg></span>27</button>
+              <button class="action act-repost reposted"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>3</button>
+              <button class="action act-like liked"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>65</button>
+            </footer>
+          </article>
+          <article class="post">
+            <header class="post-head">
+              <div class="avatar">SM</div>
+              <div class="who"><b>Sami M.</b><span>@sami · 5 h</span></div>
+              <button class="icon-btn more" aria-label="Options du post"><svg class="i sm"><use href="#i-more"/></svg></button>
+            </header>
+            <h3 class="post-title">MSW + TanStack Query : une config propre ?</h3>
+            <p class="post-text">Je cherche une config propre pour mocker la pagination par curseur. Quelqu'un a déjà un handler qui renvoie <code>next</code> correctement ?</p>
+            <footer class="post-actions">
+              <button class="action"><span class="ico"><svg class="i sm"><use href="#i-reply"/></svg></span>8</button>
+              <button class="action act-repost"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>1</button>
+              <button class="action act-like"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>19</button>
+            </footer>
+          </article>
+          <article class="post">
+            <header class="post-head">
+              <div class="avatar online">J</div>
+              <div class="who"><b>Jade</b><span>@jade · 8 h</span></div>
+              <button class="icon-btn more" aria-label="Options du post"><svg class="i sm"><use href="#i-more"/></svg></button>
+            </header>
+            <h3 class="post-title">Les pages légales, ce n'est pas qu'une formalité</h3>
+            <p class="post-text">Il faut un vrai contenu pour la soutenance (GR6) : données collectées, durée de conservation, droits RGPD, contact.</p>
+            <div class="post-media"></div>
+            <footer class="post-actions">
+              <button class="action"><span class="ico"><svg class="i sm"><use href="#i-reply"/></svg></span>5</button>
+              <button class="action act-repost"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>6</button>
+              <button class="action act-like"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>33</button>
+            </footer>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <!-- Colonne de droite : recherche + rédaction + plugins (bento) -->
+    <aside class="rail" aria-label="Recherche, publication et plugins">
+      <label class="field search-bar"><svg class="i sm"><use href="#i-search"/></svg><input placeholder="Rechercher"><kbd>Ctrl K</kbd></label>
+
+      <article class="tile composer-tile" aria-label="Publier">
+        <label class="field composer-title"><input placeholder="Titre" maxlength="120"></label>
+        <label class="field composer-body"><textarea rows="3" placeholder="Contenu (optionnel)"></textarea></label>
+        <div class="tools">
+          <button class="icon-btn" aria-label="Ajouter un média"><svg class="i sm"><use href="#i-image"/></svg></button>
+          <button class="icon-btn" aria-label="Emoji"><svg class="i sm"><use href="#i-smile"/></svg></button>
+          <span class="count">0 / 500</span>
+          <button class="btn btn-primary btn-sm">Publier</button>
+        </div>
+      </article>
+
+      <div class="rail-head"><h2>Plugins</h2><button class="btn btn-ghost btn-sm">Gérer</button></div>
+
+      <div class="plugins-scroll">
+        <div class="plugins">
+
+          <article class="tile p-w2h2">
+            <div class="tile-head">
+              <span class="plugin-tag"><svg class="i sm"><use href="#i-cloud"/></svg>Météo</span>
+              <div class="end"><button class="icon-btn" aria-label="Options" style="width:28px;height:28px"><svg class="i sm"><use href="#i-more"/></svg></button></div>
+            </div>
+            <div class="weather">
+              <div><div class="temp">9°</div><p class="faint" style="font-size:13px">Lyon · brumeux</p></div>
+              <div class="forecast"><div>jeu.<b>11°</b></div><div>ven.<b>8°</b></div><div>sam.<b>12°</b></div></div>
+            </div>
+          </article>
+
+          <article class="tile p-w1h2">
+            <span class="plugin-tag"><svg class="i sm"><use href="#i-clock"/></svg>Horloge</span>
+            <div><div class="big-num">18:42</div><p class="faint" style="font-size:12px;margin-top:4px">jeudi 5 nov.</p></div>
+          </article>
+
+          <article class="tile p-w1h2">
+            <span class="plugin-tag"><svg class="i sm"><use href="#i-timer"/></svg>Focus</span>
+            <div><div class="big-num">24:59</div><p class="faint" style="font-size:12px;margin-top:4px">session 2 / 4</p></div>
+          </article>
+
+          <article class="tile p-w2h3">
+            <div class="tile-head">
+              <span class="plugin-tag"><svg class="i sm"><use href="#i-game"/></svg>Snake</span>
+              <div class="end"><button class="btn btn-outline btn-sm">Jouer</button></div>
+            </div>
+            <div class="game-preview"><div class="snake"></div><div class="food"></div></div>
+          </article>
+
+          <article class="tile p-w2h2">
+            <span class="plugin-tag"><svg class="i sm"><use href="#i-music"/></svg>Musique</span>
+            <div class="player">
+              <div class="cover"></div>
+              <div style="flex:1;min-width:0">
+                <b>Flat Waves</b><p class="faint" style="font-size:12px">Lofi · 2:14</p>
+                <div class="progress" style="--p:42%;margin-top:8px"><i></i></div>
+              </div>
+              <button class="icon-btn" aria-label="Lecture"><svg class="i sm"><use href="#i-play"/></svg></button>
+            </div>
+          </article>
+
+          <article class="tile t-add p-w2h1">
+            <svg class="i sm"><use href="#i-plus"/></svg><b>Ajouter un plugin</b>
+          </article>
+
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ================= VUE : PLANCHE DE STYLE ================= -->
+  <div id="ds" class="view">
+    <div class="ds-wrap">
+      <header class="ds-title"><h1>Design system · Flat lines v1</h1></header>
+      <div class="ds">
+        <article class="tile wide">
+          <h3>Couleurs</h3>
+          <div class="swatches">
+            <div class="swatch"><i style="background:#000"></i><div><b>Fond</b><span>#000000</span></div></div>
+            <div class="swatch"><i style="background:#2f3336"></i><div><b>Ligne</b><span>#2F3336</span></div></div>
+            <div class="swatch"><i style="background:#536471"></i><div><b>Ligne forte</b><span>#536471</span></div></div>
+            <div class="swatch"><i style="background:#e7e9ea"></i><div><b>Texte / accent</b><span>#E7E9EA</span></div></div>
+            <div class="swatch"><i style="background:#71767b"></i><div><b>Texte discret</b><span>#71767B</span></div></div>
+            <div class="swatch"><i style="background:#00ba7c"></i><div><b>En ligne / succès</b><span>#00BA7C</span></div></div>
+            <div class="swatch"><i style="background:#ec3f86"></i><div><b>J'aime</b><span>#EC3F86</span></div></div>
+            <div class="swatch"><i style="background:#ffa834"></i><div><b>Republier</b><span>#FFA834</span></div></div>
+            <div class="swatch"><i style="background:#f4212e"></i><div><b>Erreur</b><span>#F4212E</span></div></div>
+            <div class="swatch"><i style="background:#ffd400"></i><div><b>Avertissement</b><span>#FFD400</span></div></div>
+          </div>
+        </article>
+
+        <article class="tile">
+          <h3>Typographie</h3>
+          <div class="type-scale">
+            <div><code>Display · Inter 800 / 28</code><span style="font-size:28px;font-weight:800;letter-spacing:-.02em">Transcendance</span></div>
+            <div><code>Titre · Inter 800 / 20</code><span style="font-size:20px;font-weight:800">Plugins</span></div>
+            <div><code>Titre de post · 800 / 18</code><span style="font-size:18px;font-weight:800">Bento ou liste ?</span></div>
+            <div><code>Texte · Inter 400 / 15</code><span>Des aplats et des lignes, rien de plus.</span></div>
+            <div><code>Légende · Inter 400 / 13</code><span class="faint" style="font-size:13px">il y a 5 min · (modifié)</span></div>
+          </div>
+        </article>
+
+        <article class="tile">
+          <h3>Boutons</h3>
+          <div class="flex">
+            <button class="btn btn-primary">Publier</button>
+            <button class="btn btn-outline">S'abonner</button>
+            <button class="btn btn-ghost">Annuler</button>
+            <button class="btn btn-danger">Supprimer</button>
+          </div>
+          <div class="flex">
+            <button class="btn btn-primary btn-sm">Petit</button>
+            <button class="btn btn-outline btn-sm">Petit</button>
+            <button class="btn btn-primary" disabled>Désactivé</button>
+            <button class="icon-btn" aria-label="Paramètres"><svg class="i"><use href="#i-settings"/></svg></button>
+            <button class="icon-btn" aria-label="Notifications"><svg class="i"><use href="#i-bell"/></svg></button>
+          </div>
+          <div class="flex" style="gap:var(--space-5)">
+            <button class="action"><span class="ico"><svg class="i sm"><use href="#i-reply"/></svg></span>12</button>
+            <button class="action act-repost"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>4</button>
+            <button class="action act-repost reposted"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>5</button>
+            <button class="action act-like"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>85</button>
+            <button class="action act-like liked"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>86</button>
+          </div>
+        </article>
+
+        <article class="tile">
+          <h3>Champs</h3>
+          <div class="stack">
+            <label class="field"><input placeholder="Nom d'utilisateur"><svg class="i sm"><use href="#i-user"/></svg></label>
+            <label class="field"><input type="password" value="motdepasse"><svg class="i sm"><use href="#i-eye-off"/></svg></label>
+            <div><label class="field error"><input value="ab"></label><p class="help error">3 à 20 caractères : lettres, chiffres et _</p></div>
+            <label class="field search-bar"><svg class="i sm"><use href="#i-search"/></svg><input placeholder="Rechercher"></label>
+          </div>
+        </article>
+
+        <article class="tile">
+          <h3>Contrôles</h3>
+          <div class="tabs inline" role="tablist"><button role="tab" aria-selected="true">Posts</button><button role="tab" aria-selected="false">Réponses</button><button role="tab" aria-selected="false">Médias</button><button role="tab" aria-selected="false">J'aime</button></div>
+          <div class="flex"><button class="switch" role="switch" aria-checked="true" aria-label="Exemple activé"></button><button class="switch" role="switch" aria-checked="false" aria-label="Exemple désactivé"></button><span class="faint">Compte privé</span></div>
+          <div class="stack"><div class="progress" style="--p:68%"><i></i></div><span class="faint" style="font-size:12px">Upload : video.mp4 · 68 %</span></div>
+        </article>
+
+        <article class="tile third">
+          <h3>Avatars sans photo</h3>
+          <div class="flex">
+            <div class="avatar xs online">J</div>
+            <div class="avatar sm online">LN</div>
+            <div class="avatar">TK</div>
+            <div class="avatar lg online">A</div>
+            <div class="avatar xl">SM</div>
+          </div>
+          <div class="flex"><span class="badge">4</span><span class="badge neutral">12</span><span class="badge private"><svg class="i sm" style="width:12px;height:12px"><use href="#i-lock"/></svg>Privé</span></div>
+        </article>
+
+        <article class="tile third">
+          <h3>Toast</h3>
+          <div><span class="toast"><svg class="i sm"><use href="#i-check"/></svg>Post publié<button class="icon-btn" aria-label="Fermer"><svg class="i sm"><use href="#i-x"/></svg></button></span></div>
+        </article>
+
+        <article class="tile third">
+          <h3>Fenêtre modale</h3>
+          <div class="modal-backdrop">
+            <div class="modal">
+              <h2 style="font-size:18px">Supprimer ce post ?</h2>
+              <p class="muted" style="font-size:14px">Il affichera « Post supprimé ». Cette action est définitive.</p>
+              <div class="stack" style="gap:8px"><button class="btn btn-danger btn-block">Supprimer</button><button class="btn btn-outline btn-block">Annuler</button></div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Barres de défilement visibles seulement pendant le défilement
+  document.querySelectorAll('.feed .scroll, .plugins-scroll').forEach(function (el) {
+    var t;
+    el.addEventListener('scroll', function () {
+      el.classList.add('is-scrolling');
+      clearTimeout(t);
+      t = setTimeout(function () { el.classList.remove('is-scrolling'); }, 900);
+    }, { passive: true });
+  });
+  // ?scrolling affiche la barre en permanence (pour les captures)
+  if (new URLSearchParams(location.search).has('scrolling')) {
+    document.querySelectorAll('.feed .scroll, .plugins-scroll').forEach(function (el) { el.classList.add('is-scrolling'); });
+  }
+  // Bascule clair / sombre. ?theme=light force le thème clair.
+  (function () {
+    var root = document.documentElement;
+    var sw = document.getElementById('theme-toggle');
+    function set(theme) { root.dataset.theme = theme; sw.setAttribute('aria-checked', String(theme === 'dark')); }
+    if (new URLSearchParams(location.search).get('theme') === 'light') set('light');
+    sw.addEventListener('click', function () { set(root.dataset.theme === 'dark' ? 'light' : 'dark'); });
+  })();
+</script>
+</body>
+</html>
