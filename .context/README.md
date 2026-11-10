@@ -34,3 +34,13 @@ Ils servent à reprendre le travail d'une session à l'autre et à montrer à l'
 | 2026-11-05 | [2026-11-05_design-system-palette-composants.md](2026-11-05_design-system-palette-composants.md) | Design system : palette, contrastes, table des 24 composants |
 | 2026-11-05 | [2026-11-05_maquette-design-system.md](2026-11-05_maquette-design-system.md) | Maquette du design system : palette des deux thèmes et 24 composants |
 | 2026-11-05 | [2026-11-05_statut-liquid-glass.md](2026-11-05_statut-liquid-glass.md) | Le liquid glass est un test ; pas de maquettes de pages pour l'instant |
+| 2026-11-10 | [2026-11-10_maquette-flat-lines-v1.md](2026-11-10_maquette-flat-lines-v1.md) | 2e DA « flat lines » : aplats et lignes grises, bento à droite ; maquettes rangées par DA dans `docs/mockups/<da>/` |
+| 2026-11-10 | [2026-11-10_maquette-flat-lines-v2.md](2026-11-10_maquette-flat-lines-v2.md) | Flat lines v2 : fond sombre anthracite `#16181C` au lieu du noir pur |
+| 2026-11-10 | [2026-11-10_maquette-flat-lines-v3.md](2026-11-10_maquette-flat-lines-v3.md) | Flat lines v3 : nav collée au bord gauche, fil et plugins centrés dans l'espace restant |
+| 2026-11-10 | [2026-11-10_maquette-flat-lines-v4.md](2026-11-10_maquette-flat-lines-v4.md) | Flat lines v4 : fil sans lignes verticales |
+| 2026-11-10 | [2026-11-10_maquette-flat-lines-v5.md](2026-11-10_maquette-flat-lines-v5.md) | Flat lines v5 : lignes horizontales du fil raccourcies (retrait de 20 px), survol arrondi |
+| 2026-11-10 | [2026-11-10_maquette-flat-lines-v6.md](2026-11-10_maquette-flat-lines-v6.md) | Flat lines v6 : panneau des commentaires (réponses) à droite du fil, fils dépliables |
+| 2026-11-10 | [2026-11-10_maquette-flat-lines-v7.md](2026-11-10_maquette-flat-lines-v7.md) | Flat lines v7 : commentaires insérés entre le fil et la colonne de droite, sur toute la largeur restante |
+| 2026-11-10 | [2026-11-10_maquette-flat-lines-v8.md](2026-11-10_maquette-flat-lines-v8.md) | Flat lines v8 : commentaires limités à 520 px, fond « carte » plus contrasté pour les composants |
+| 2026-11-10 | [2026-11-10_maquette-flat-lines-v9.md](2026-11-10_maquette-flat-lines-v9.md) | Flat lines v9 : marge de 24 px entre la nav et le fil quand les commentaires sont ouverts |
+| 2026-11-10 | [2026-11-10_maquette-flat-lines-v10.md](2026-11-10_maquette-flat-lines-v10.md) | Flat lines v10 : liens en bleu (mentions, Voir plus, Voir N réponses), post long tronqué avec « Voir plus » |

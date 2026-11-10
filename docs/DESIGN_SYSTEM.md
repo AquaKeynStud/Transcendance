@@ -2,8 +2,8 @@
 
 > **Version :** 0.2 (validée par aboumall)
 > **Date :** 2026-11-05
-> **Référence visuelle :** [mockups/liquid-glass-v8.html](mockups/liquid-glass-v8.html) (validée).
-> **Palette et composants maquettés :** [mockups/design-system.html](mockups/design-system.html) (`?theme=light` pour le thème clair).
+> **Référence visuelle :** [mockups/liquid-glass/v8.html](mockups/liquid-glass/v8.html) (validée).
+> **Palette et composants maquettés :** [mockups/liquid-glass/design-system.html](mockups/liquid-glass/design-system.html) (`?theme=light` pour le thème clair).
 > **Module visé :** `web.design_system` (mineur, 1 pt) : *« Custom-made design system with reusable components, including a proper color palette, typography, and icons (minimum: 10 reusable components). »*
 > **Spec technique :** [SPEC_TECH.md](SPEC_TECH.md) §11.5
 
@@ -21,7 +21,7 @@ Ce document décrit la palette, la typographie, les autres fondations et les com
 | Typographie | §3 |
 | Icônes | §4.4 (Lucide) |
 | Au moins 10 composants réutilisables | §5 : 24 composants, dont 13 au lot 1 |
-| *(preuve en soutenance)* Documentation | Page `/design-system` de la SPA (§6), maquettée dans `mockups/design-system.html` |
+| *(preuve en soutenance)* Documentation | Page `/design-system` de la SPA (§6), maquettée dans `mockups/liquid-glass/design-system.html` |
 
 ---
 
@@ -167,7 +167,7 @@ Courbe `cubic-bezier(.2, .8, .2, 1)`. Durées : 150 ms (clic), 200 ms (survol), 
 
 ## 5. Composants
 
-**Lot 1** = les 13 composants qui suffisent à valider le module (minimum 10), à faire en S2-S3. **Statut** : ✅ maquetté (tous les composants le sont dans `mockups/design-system.html`, avec leurs variantes et leurs états).
+**Lot 1** = les 13 composants qui suffisent à valider le module (minimum 10), à faire en S2-S3. **Statut** : ✅ maquetté (tous les composants le sont dans `mockups/liquid-glass/design-system.html`, avec leurs variantes et leurs états).
 
 ### 5.1 Primitives
 

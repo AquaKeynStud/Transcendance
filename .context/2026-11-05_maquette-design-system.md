@@ -6,7 +6,7 @@ aboumall a validé le doc du design system (corrections de contraste, lots, page
 
 ## Fait
 
-- **`docs/mockups/design-system.html`** (branche `front/chore/design-system`) : une page autonome qui préfigure la page `/design-system` de la SPA.
+- **`docs/mockups/liquid-glass/design-system.html`** (branche `front/chore/design-system`) : une page autonome qui préfigure la page `/design-system` de la SPA.
   - **Couleurs** : les deux thèmes côte à côte (sombre et clair), avec les **valeurs corrigées** (contraste). Chaque couleur montre son token, sa valeur, son usage et son ratio de contraste WCAG. Groupes : neutres, accent, couleurs fonctionnelles, matières (verre, survol, fond des fenêtres).
   - **Typographie** : l'échelle complète (Unbounded + Manrope).
   - **Fondations** : espacements, rayons, mouvement.
