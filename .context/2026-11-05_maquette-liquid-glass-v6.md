@@ -17,7 +17,7 @@ Avec la barre native, on ne contrôle plus la forme (arrondie ou non) : elle dé
 
 ## Fichier
 
-`docs/mockups/liquid-glass-v6.html` : `#ds` pour la planche de style, `?theme=light` pour le thème clair, `?scrolling` pour afficher les barres en permanence.
+`docs/mockups/liquid-glass/v6.html` : `#ds` pour la planche de style, `?theme=light` pour le thème clair, `?scrolling` pour afficher les barres en permanence.
 
 Vérifié avec des captures de Chrome headless : barres invisibles au repos, et visibles avec `?scrolling`.
 

@@ -18,7 +18,7 @@ Appliquer les retours d'aboumall sur la v1 (« bien pour une première version, 
 
 ## Fichier
 
-`docs/mockups/liquid-glass-v2.html` : `#ds` pour la planche de style, `?theme=light` pour le thème clair.
+`docs/mockups/liquid-glass/v2.html` : `#ds` pour la planche de style, `?theme=light` pour le thème clair.
 
 Plugins de démo dans la colonne de droite : Météo, Horloge, Focus (minuteur), Snake, Musique, « Ajouter un plugin ».
 
