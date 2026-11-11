@@ -10,8 +10,8 @@
 <style>
 /* =====================================================================
    Design system « Flat lines » : palette + tous les composants.
-   Référence : flat-lines/v10.html, avec des corrections de contraste (WCAG AA)
-   signalées ⚠️ dans la palette.
+   Référence : flat-lines/v11.html (= v10 + corrections de contraste WCAG AA, validées le 2026-11-11).
+   Les valeurs corrigées par rapport à la v10 sont signalées ⚠️ dans la palette.
    Même structure que liquid-glass/design-system.html, pour comparer les deux styles.
    ?theme=light : thème clair · ?scrolling : barres de défilement visibles
    ===================================================================== */
@@ -618,7 +618,7 @@ code { font-family: ui-monospace, monospace; font-size: .86em; padding: 1px 5px;
   <div class="in">
     <a class="brand" href="#top"><span class="brand-mark">t</span><span class="brand-name">transcendance</span></a>
     <nav aria-label="Sections">
-      <a href="#couleurs">Couleurs</a><a href="#typo">Typographie</a><a href="#fondations">Fondations</a><a href="#composants">Composants</a><a href="v10.html">Maquette v10</a>
+      <a href="#couleurs">Couleurs</a><a href="#typo">Typographie</a><a href="#fondations">Fondations</a><a href="#composants">Composants</a><a href="v11.html">Maquette v11</a>
     </nav>
     <div class="theme"><span id="theme-name">Sombre</span><button class="switch" role="switch" aria-checked="true" aria-label="Thème sombre" id="theme-toggle"></button></div>
   </div>
@@ -629,8 +629,8 @@ code { font-family: ui-monospace, monospace; font-size: .86em; padding: 1px 5px;
   <section class="hero">
     <span class="lbl">Module web.design_system · Flat lines</span>
     <h1>Design system « Flat lines »</h1>
-    <p>Palette, typographie, icônes et les 24 composants réutilisables du frontend, dans leurs variantes et leurs états, plus le panneau des commentaires ajouté dans les maquettes v6 à v10. Pas de verre, pas d'ombre, pas de dégradé : des aplats et des lignes grises de 1 px. Tout passe par des tokens (variables CSS) et le thème change avec l'attribut <code>data-theme</code>. Référence visuelle : <a href="v10.html">maquette flat lines v10</a>. Même contenu que la <a href="../liquid-glass/design-system.html">page du liquid glass</a>, pour comparer.</p>
-    <div class="flex"><span class="lot-badge">Lot 1 · 13 composants (S2-S3)</span><span class="lot-badge l2">Lot 2 · 10 composants</span><span class="lot-badge l3">Lot 3 · 1 composant</span><span class="lot-badge new">Proposé · 1 composant</span></div>
+    <p>Palette, typographie, icônes et les 25 composants réutilisables du frontend, dans leurs variantes et leurs états. Pas de verre, pas d'ombre, pas de dégradé : des aplats et des lignes grises de 1 px. Tout passe par des tokens (variables CSS) et le thème change avec l'attribut <code>data-theme</code>. Référence visuelle : <a href="v11.html">maquette flat lines v11</a>. Même contenu que la <a href="../liquid-glass/design-system.html">page du liquid glass</a>, pour comparer.</p>
+    <div class="flex"><span class="lot-badge">Lot 1 · 13 composants (S2-S3)</span><span class="lot-badge l2">Lot 2 · 11 composants</span><span class="lot-badge l3">Lot 3 · 1 composant</span></div>
   </section>
 
   <!-- ================= COULEURS ================= -->
@@ -701,7 +701,7 @@ code { font-family: ui-monospace, monospace; font-size: .86em; padding: 1px 5px;
       </div>
 
     </div>
-    <p class="faint" style="font-size:13px">Ratios : « fond de page · carte ». ⚠️ = valeur corrigée par rapport à la maquette v10 pour atteindre 4,5:1 (texte courant). Les bords de champ (<code>--line-strong</code>) restent sous 3:1, comme dans la v10 : à trancher (voir le rapport).</p>
+    <p class="faint" style="font-size:13px">Ratios : « fond de page · carte ». ⚠️ = valeur corrigée par rapport à la maquette v10 pour atteindre 4,5:1 (texte courant), appliquée dans la v11. Les bords de champ (<code>--line-strong</code>) restent sous 3:1, comme dans la v10 : choix assumé pour la légèreté du style (libellé, placeholder et bord au focus suffisent à repérer un champ).</p>
   </section>
 
   <!-- ================= TYPOGRAPHIE ================= -->
@@ -772,7 +772,7 @@ code { font-family: ui-monospace, monospace; font-size: .86em; padding: 1px 5px;
 
   <!-- ================= COMPOSANTS ================= -->
   <section class="section" id="composants">
-    <header><h2>Composants</h2><p>24 composants, numérotés comme dans docs/DESIGN_SYSTEM.md §5, plus un composant proposé (25).</p></header>
+    <header><h2>Composants</h2><p>25 composants, numérotés comme dans docs/DESIGN_SYSTEM.md §5.</p></header>
 
     <h3 class="sub">Primitives</h3>
     <div class="grid">
@@ -1251,7 +1251,7 @@ code { font-family: ui-monospace, monospace; font-size: .86em; padding: 1px 5px;
       </article>
 
       <article class="card c-12" id="cmp-25">
-        <div class="card-head"><span class="num">25</span><h3>CommentsPanel / CommentItem</h3><span class="lot-badge new lot">Proposé · à ajouter au §5</span></div>
+        <div class="card-head"><span class="num">25</span><h3>CommentsPanel / CommentItem</h3><span class="lot-badge l2 lot">Lot 2</span></div>
         <p class="desc">Ajouté par les maquettes flat lines v6 à v10 : le panneau des commentaires (réponses au sens de POST-03) s'ouvre entre le fil et la colonne de droite (360 à 520 px), en tiroir sous 1180 px. Commentaires du plus ancien au plus récent (POST-04), fils de réponses repliables, texte tronqué à 3 lignes, « Répondre » remplit le bandeau au-dessus du champ.</p>
         <div class="grid" style="gap:16px">
           <div class="c-6">

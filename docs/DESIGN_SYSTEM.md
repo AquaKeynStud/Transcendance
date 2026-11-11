@@ -1,15 +1,15 @@
-# Design system : « Liquid glass »
+# Design system : « Flat lines »
 
-> **Version :** 0.2 (validée par aboumall)
-> **Date :** 2026-11-05
-> **Référence visuelle :** [mockups/liquid-glass/v8.html](mockups/liquid-glass/v8.html) (validée).
-> **Palette et composants maquettés :** [mockups/liquid-glass/design-system.html](mockups/liquid-glass/design-system.html) (`?theme=light` pour le thème clair).
+> **Version :** 0.3 (direction artistique retenue par aboumall)
+> **Date :** 2026-11-11
+> **Référence visuelle :** [mockups/flat-lines/v11.html](mockups/flat-lines/v11.html) (`?comments` ouvre les commentaires, `#ds` la planche de style, `?theme=light` le thème clair).
+> **Palette et composants maquettés :** [mockups/flat-lines/design-system.html](mockups/flat-lines/design-system.html).
 > **Module visé :** `web.design_system` (mineur, 1 pt) : *« Custom-made design system with reusable components, including a proper color palette, typography, and icons (minimum: 10 reusable components). »*
 > **Spec technique :** [SPEC_TECH.md](SPEC_TECH.md) §11.5
 
-> ⚠️ **Statut : exploration, direction artistique non définitive.** Le « liquid glass » est un **test**. aboumall est satisfait de la maquette v8, mais ce style n'est peut-être pas adapté à un réseau social. D'autres maquettes avec d'autres thèmes viendront plus tard. Ce qui ne dépend pas du thème restera valable quel que soit le style retenu : la liste des composants (§5), leurs variantes et états, leurs props et le lien avec la spec. Les couleurs, matières et polices pourront changer.
+> **Direction artistique retenue : flat lines** (2026-11-11). Le « liquid glass » (maquettes [liquid-glass/v1 à v8](mockups/liquid-glass/), [liquid-glass/design-system.html](mockups/liquid-glass/design-system.html)) était un test. Il est conservé pour l'historique, mais n'est plus la référence.
 
-Ce document décrit la palette, la typographie, les autres fondations et les composants réutilisables du frontend. Les valeurs viennent de la maquette v8. Une valeur marquée ⚠️ a été corrigée pour l'accessibilité par rapport à la v8 (§2.6). Ces corrections sont validées et appliquées dans `design-system.html`.
+Ce document décrit la palette, la typographie, les autres fondations et les composants réutilisables du frontend. Les valeurs sont celles de la maquette flat lines v11. Une valeur marquée ⚠️ a été corrigée pour l'accessibilité par rapport à la v10 (§2.5). Ces corrections sont validées.
 
 ---
 
@@ -19,116 +19,112 @@ Ce document décrit la palette, la typographie, les autres fondations et les com
 |---|---|
 | Palette de couleurs | §2 |
 | Typographie | §3 |
-| Icônes | §4.4 (Lucide) |
-| Au moins 10 composants réutilisables | §5 : 24 composants, dont 13 au lot 1 |
-| *(preuve en soutenance)* Documentation | Page `/design-system` de la SPA (§6), maquettée dans `mockups/liquid-glass/design-system.html` |
+| Icônes | §4.5 (Lucide) |
+| Au moins 10 composants réutilisables | §5 : 25 composants, dont 13 au lot 1 |
+| *(preuve en soutenance)* Documentation | Page `/design-system` de la SPA (§6), maquettée dans `mockups/flat-lines/design-system.html` |
 
 ---
 
 ## 1. Principes
 
-1. **Monochrome.** L'interface est en blanc, gris et noir. La couleur est réservée à ce qui a un **sens** : aimer, republier, en ligne, erreur, avertissement.
-2. **Verre liquide.** Les surfaces sont translucides et floutées, avec un bord fin plus brillant aux coins. Le contenu (texte, images) n'est jamais en verre.
-3. **Peu de verre à la fois.** `backdrop-filter` coûte cher : le verre est réservé aux grandes surfaces (nav, tuiles, fenêtres). Un post dans le fil n'est pas une surface de verre, seule la tuile du fil l'est.
+1. **Monochrome.** L'interface est en noir, gris et blanc. La couleur est réservée à ce qui a un **sens** : liens, aimer, republier, en ligne, erreur, avertissement.
+2. **Aplats et lignes.** Pas de verre, pas d'ombre, pas de dégradé. Les blocs sont séparés par des lignes grises de 1 px.
+3. **Deux niveaux de surface.** Le contenu (nav, fil) est posé directement sur le fond de page. Les composants « posés » (tuiles, recherche, commentaires, menus, fenêtres) sont des **cartes** : un fond un peu plus clair que la page, avec un bord gris.
 4. **Deux thèmes.** Sombre par défaut, clair en option. Tous les composants passent par les **tokens** (variables CSS), jamais par des couleurs en dur.
-5. **Accessible.** Le texte respecte le contraste WCAG AA. `prefers-reduced-motion` et `prefers-reduced-transparency` sont respectés.
+5. **Accessible.** Le texte respecte le contraste WCAG AA (4,5:1) sur le fond de page **et** sur les cartes. `prefers-reduced-motion` est respecté.
 
 ---
 
 ## 2. Palette de couleurs
 
-### 2.1 Neutres
+### 2.1 Surfaces et lignes
 
 | Token | Sombre | Clair | Usage |
 |---|---|---|---|
-| `--bg` | `#111214` | `#DADCDF` | Fond de page |
-| `--text` | `#F4F5F7` | `#0C0D0F` | Texte principal, titres |
-| `--text-2` | `rgba(244,245,247,.66)` | `rgba(12,13,15,.66)` | Texte secondaire (contenu des posts, libellés) |
-| `--text-3` ⚠️ | `rgba(244,245,247,.52)` *(v8 : .42)* | `rgba(12,13,15,.58)` *(v8 : .45)* | Texte tertiaire (@username, dates, compteurs) |
-| `--line` | `rgba(255,255,255,.09)` | `rgba(12,13,15,.08)` | Séparateurs |
-| `--well` | `rgba(0,0,0,.28)` | `rgba(255,255,255,.45)` | Creux : champs, onglets, pastilles d'action |
-| `--well-edge` | `rgba(255,255,255,.09)` | `rgba(12,13,15,.10)` | Bord des creux |
-| — | `#8D939B` | `#8D939B` | Gris moyen (barres de progression, éléments décoratifs) |
+| `--bg` | `#16181C` | `#F3F5F7` | Fond de page |
+| `--surface` | `#1D2025` | `#FFFFFF` | Fond d'un bloc au survol, creux |
+| `--card` | `#202329` | `#FFFFFF` | Fond des cartes : tuiles, recherche, commentaires, menus, fenêtres |
+| `--card-line` | `#3A3F47` | `#DBE2E7` | Bord des cartes |
+| `--well` | `#16181C` | `#F3F5F7` | Creux dans une carte (champ « Ajouter un commentaire… ») |
+| `--line` | `#33373D` | `#E4E9EC` | La ligne grise : séparations, nav, onglets |
+| `--line-strong` | `#5B636D` | `#CFD9DE` | Bord des champs, boutons secondaires |
+| `--avatar` | `#3A3F46` | `#DFE5E9` | Fond des avatars sans photo |
 
-### 2.2 Accent
+### 2.2 Texte, accent et liens
 
-En sombre, l'accent est un **blanc perle**. En clair, c'est un **graphite**.
+L'accent est la couleur du texte : le bouton principal est **blanc sur fond sombre** en thème sombre, **noir sur fond clair** en thème clair.
 
 | Token | Sombre | Clair | Usage |
 |---|---|---|---|
-| `--accent` | `#FFFFFF` | `#15171A` | Anneau de focus, éléments actifs |
-| `--accent-fill` | dégradé `#FFFFFF → #E4E7EB → #AEB4BC` | dégradé `#4A4F56 → #24272B → #0C0D0F` | Bouton principal, badges de compteur |
-| `--accent-ink` | `#0B0C0E` | `#FFFFFF` | Texte posé sur `--accent-fill` |
-| `--accent-soft` | `rgba(255,255,255,.14)` | `rgba(12,13,15,.12)` | Halo de focus des champs |
+| `--text` / `--accent` | `#E7E9EA` | `#0F1419` | Texte, titres, bouton principal, onglet actif |
+| `--accent-ink` | `#16181C` | `#FFFFFF` | Texte posé sur l'accent (bouton principal, toast) |
+| `--text-2` | `#9AA0A6` | `#4B5862` | Texte secondaire, « Répondre » |
+| `--text-3` ⚠️ | `#8A9096` *(v10 : #80868C)* | `#5F6B74` *(v10 : #6B7780)* | @username, dates, compteurs |
+| `--link` ⚠️ | `#4EA1FF` | `#1765C4` *(v10 : #1A6FD6)* | Mentions `@pseudo`, « Voir plus », « Voir N réponses », lien vers un post |
 
 ### 2.3 Couleurs fonctionnelles
 
+Chaque couleur fonctionnelle a **une valeur par thème** (en v10, le thème clair reprenait celles du sombre).
+
 | Token | Sombre | Clair | Sens |
 |---|---|---|---|
-| `--like` ⚠️ | `#F0508F` *(v8 : #EC3F86)* | `#C0185E` | J'aime (framboise pourpre) |
-| `--repost` ⚠️ | `#FFA834` | `#A8530A` *(v8 : #D97706)* | Republier (ambre orangé) |
-| `--success` ⚠️ | `#3DDC97` | `#12985F` *(v8 : #3DDC97)* | En ligne, succès |
-| `--danger` ⚠️ | `#FF5C7A` | `#C42347` *(v8 : #FF5C7A)* | Erreur, suppression |
-| `--warning` ⚠️ | `#FFC857` | `#92600A` *(v8 : #FFC857)* | Avertissement |
+| `--like` ⚠️ | `#F0508F` *(v10 : #EC3F86)* | `#C0185E` | J'aime (framboise pourpre) |
+| `--repost` ⚠️ | `#FFA834` | `#B45309` *(v10 : #D97706)* | Republier (ambre orangé) |
+| `--success` ⚠️ | `#00BA7C` | `#007A52` *(v10 : #00BA7C)* | En ligne, succès |
+| `--danger` ⚠️ | `#FF5A64` *(v10 : #F4212E)* | `#C81E28` *(v10 : #F4212E)* | Texte d'erreur, action destructrice |
+| `--danger-fill` (nouveau) | `#C81E28` | `#C81E28` | Fond du bouton Supprimer (texte blanc) |
+| `--warning` ⚠️ | `#FFD400` | `#8A5A00` *(v10 : #FFD400)* | Avertissement, limite de caractères proche |
 
-**États des actions J'aime / Republier :** au repos l'action est en `--text-2`. Au survol, l'icône et le chiffre prennent la couleur. Quand l'action est active, on ajoute un fond `color-mix(couleur 14 %)` et un bord `color-mix(couleur 38 %)`, sans halo. Le cœur est rempli et l'icône de republication s'épaissit (trait 2,3).
+**États des actions J'aime / Republier :** au repos, l'icône et le compteur sont en `--text-3`. Au survol, ils prennent la couleur, avec un disque teinté derrière l'icône. Quand l'action est active, la couleur reste ; le cœur est rempli et l'icône de republication s'épaissit. Pas de pastille, pas de halo.
 
-### 2.4 Matières
+### 2.4 États
 
-| Token | Sombre | Clair | Rôle |
+| Token | Sombre | Clair | Usage |
 |---|---|---|---|
-| `--glass-fill` | dégradé 140° blanc `.10 → .045 → .065` | dégradé 140° blanc `.72 → .38 → .55` | Remplissage du verre |
-| `--glass-edge` | dégradé 140° blanc `.75 → .12 → .03 → .10 → .55` | dégradé 140° blanc `1 → .5 → .2 → .9` | Bord de 1 px, plus brillant aux coins (masque `content-box`) |
-| `--glass-shadow` | `0 24px 60px -24px rgba(0,0,0,.7)` + reflets intérieurs haut/bas | `0 24px 50px -28px rgba(20,22,26,.55)` + reflets | Profondeur |
-| `--blur` | `22px` + `saturate(160%)` | idem | Flou de l'arrière-plan |
-| `--chrome` | dégradé 160° `#FFF → #CFD3D8 → #5F646B → #ECEEF1 → #8F949B → #2C2F33` | version claire | Logo, curseur des interrupteurs, pochettes |
-| `--post-hover` | `rgba(255,255,255,.055)` + bord `.08` | `rgba(255,255,255,.6)` + bord `.9` | Survol d'un post |
-| `--scroll-thumb` | `rgba(255,255,255,.32)` | `rgba(12,13,15,.3)` | Barre de défilement (visible seulement pendant le défilement) |
+| `--hover` | `rgba(231,233,234,.07)` | `rgba(15,20,25,.05)` | Survol : nav, boutons, posts, commentaires |
+| `--overlay` | `rgba(8,9,11,.66)` | `rgba(15,20,25,.4)` | Fond derrière les fenêtres modales |
+| `--scroll-thumb` | `rgba(231,233,234,.3)` | `rgba(15,20,25,.25)` | Barre de défilement (visible seulement pendant le défilement) |
 
-**Réfraction (optionnelle, Chrome) :** filtre SVG `feTurbulence` + `feDisplacementMap` dans `backdrop-filter` sur les boutons « pill ». Si le navigateur ne le gère pas, on retombe sur un simple flou.
+### 2.5 Contrastes (WCAG)
 
-### 2.5 Avatars sans photo
+Les ratios sont donnés **sur le fond de page · sur une carte**. Seuil : **4,5:1** pour le texte, **3:1** pour les éléments non textuels.
 
-Pas de couleur : un cercle de verre (`radial-gradient` blanc `.22 → .04 → .10`) et les initiales en blanc, en Unbounded 600, à 38 % du diamètre. En thème clair, les initiales sont en `--text`.
-
-### 2.6 Contrastes (WCAG)
-
-Les contrastes sont mesurés sur une tuile de verre : environ `#202123` en sombre et `#EEEFF1` en clair. Le seuil est de **4,5:1** pour le texte et de **3:1** pour les éléments non textuels (points, icônes seules).
-
-| Couleur | Sombre (v8 → corrigé) | Clair (v8 → corrigé) |
+| Couleur | Sombre | Clair |
 |---|---|---|
-| `--text` | 14,8 | 16,9 |
-| `--text-2` | 7,2 | 6,0 |
-| `--text-3` | 3,8 ❌ → **5,0** | 3,0 ❌ → **4,6** |
-| `--like` | 4,3 ❌ → **4,8** | 5,2 |
-| `--repost` | 8,4 | 2,8 ❌ → **4,7** |
-| `--success` (point, 3:1) | 9,1 | 1,5 ❌ → **3,2** |
-| `--danger` | 5,4 | 2,6 ❌ → **5,0** |
-| `--warning` | 10,5 | 1,3 ❌ → **4,7** |
-| Texte blanc sur bouton Supprimer | 3,0 ❌ → **4,7** (fond `#E04A68 → #C92A4A`) | idem |
+| `--text` | 14,6 · 12,9 | 16,9 · 18,5 |
+| `--text-2` | 6,7 · 6,0 | 6,7 · 7,3 |
+| `--text-3` | 4,9 · 4,3 ❌ → **5,5 · 4,9** | 4,2 ❌ → **5,0 · 5,5** |
+| `--link` | 6,7 · 5,9 | 4,5 de justesse → **5,2 · 5,7** |
+| `--like` | 4,2 sur carte ❌ → **5,3 · 4,7** | 5,4 · 5,9 |
+| `--repost` | 9,2 · 8,2 | 2,9 ❌ → **4,6 · 5,0** |
+| `--success` | 7,0 · 6,2 | 2,3 ❌ → **4,9 · 5,4** |
+| `--danger` | 3,8 sur carte ❌ → **5,8 · 5,2** | 3,8 ❌ → **5,2 · 5,7** |
+| `--warning` | 12,4 · 11,0 | 1,3 ❌ → **5,4 · 5,9** |
+| Texte blanc sur bouton Supprimer | 4,1 ❌ → **5,7** (fond `--danger-fill`) | idem |
 
-**Conséquence :** en thème clair, les couleurs fonctionnelles de la v8 étaient celles du thème sombre. Elles reçoivent leurs propres valeurs, plus foncées. En sombre, les corrections sont à peine visibles.
+**Bords des champs (`--line-strong`) :** 2,9:1 en sombre et 1,3:1 en clair, sous les 3:1 de WCAG 1.4.11. **Décision : on les garde tels quels**, pour la légèreté du style. Un champ reste identifiable par son libellé, son placeholder et, au focus, son bord de la couleur du texte.
 
 ---
 
 ## 3. Typographie
 
-Deux polices gratuites (Google Fonts, licence OFL), à **auto-héberger** dans le build pour ne pas dépendre de Google en production (RGPD).
+Une seule police : **Inter**, de 400 à 800. Gratuite (licence OFL), à **auto-héberger** dans le build pour ne pas dépendre de Google en production (RGPD).
 
-| Rôle | Police | Graisse | Taille | Usage |
-|---|---|---|---|---|
-| Display | Unbounded | 700 | 28 px | Titres de page, logo (16 px) |
-| Titre | Unbounded | 600 | 20 px | Titre de section, chiffres des plugins (26 à 40 px) |
-| Titre de post | Unbounded | 600 | 19 px (17 px sur mobile) | Titre des posts |
-| Sous-titre | Unbounded | 600 | 15 px | Titres de tuiles (Fil, Plugins) |
-| Texte de post | Manrope | 500 | 15 px, interligne 1,6 | Contenu des posts |
-| Texte | Manrope | 500 | 14 px, interligne 1,45 | Interface |
-| Gras | Manrope | 700 à 800 | — | Noms, boutons, onglets |
-| Légende | Manrope | 500 | 12 à 13 px | @username, dates, compteurs |
-| Sur-titre | Manrope | 500 | 11 à 13 px, majuscules, espacement .08 à .14 em | Libellés « MENU », « MÉTÉO » |
-| Code | `ui-monospace` | — | 0,88 em | Code inline dans les posts |
-
-Unbounded est réservée aux titres et aux chiffres : elle est trop large pour du texte courant.
+| Rôle | Graisse | Taille | Usage |
+|---|---|---|---|
+| Display | 800 | 28 px | Titres de page, logo |
+| Titre de page | 800 | 20 px | Titre de section, « Plugins » |
+| Titre de post | 800 | 18 px, interligne 1,3 | Titre des posts |
+| Titre de carte | 800 | 17 px | « Commentaires », en-têtes de carte |
+| Nav | 400 (actif 700) | 19 px | Éléments de la nav |
+| Chiffre | 800, chiffres tabulaires | 26 à 40 px | Chiffres des plugins (horloge, météo) |
+| Texte de post | 400 | 15 px, interligne 1,5 | Contenu des posts |
+| Commentaire | 400 | 14 px, interligne 1,45 | Texte des commentaires |
+| Gras | 700 | — | Noms, boutons |
+| Lien | 600, couleur `--link` | 13 à 15 px | Mentions, « Voir plus » |
+| Légende | 400 | 13 px | @username, dates, compteurs |
+| Sur-titre | 600 | 12 à 13 px, majuscules | Libellés « MÉTÉO », « COULEURS » |
+| Code | `ui-monospace` | 0,88 em | Code inline dans les posts |
 
 ---
 
@@ -136,79 +132,88 @@ Unbounded est réservée aux titres et aux chiffres : elle est trop large pour d
 
 ### 4.1 Espacements
 
-`4 · 8 · 12 · 16 · 24 · 32 px` (`--space-1` à `--space-6`). Marge de page : `28 px` (14 px sur mobile). Espace entre les blocs : `20 px` (14 px sur mobile).
+`4 · 8 · 12 · 16 · 20 · 24 px` (`--space-1` à `--space-6`). Entre les colonnes : 24 px.
 
 ### 4.2 Rayons
 
 | Token | Valeur | Usage |
 |---|---|---|
-| `--r-sm` | 12 px | Éléments de nav, petits creux |
-| `--r-md` | 18 px | Champs multi-lignes, posts, médias |
-| `--r-lg` | 28 px | Tuiles, nav, fenêtres |
-| `--r-pill` | 999 px | Boutons, champs, onglets, badges |
+| `--r-sm` | 8 px | Champs, menus, toasts |
+| `--r-md` | 16 px | Cartes, survol des posts, médias |
+| `--r-pill` | 999 px | Boutons, nav, recherche, champ de commentaire |
 
-### 4.3 Mouvement
+### 4.3 Lignes
 
-Courbe `cubic-bezier(.2, .8, .2, 1)`. Durées : 150 ms (clic), 200 ms (survol), 250 ms (interrupteur), 350 ms (barre de défilement), 400 ms (changement de thème). Tout est coupé si `prefers-reduced-motion: reduce`.
+Toujours **1 px**. Dans le fil, les lignes entre les posts s'arrêtent à **20 px** des bords (16 px sur mobile, variable `--rule-inset`) ; elles disparaissent autour d'un post survolé. L'onglet actif est souligné d'une barre de **4 px**. Les éléments « ajouter » (plugin) ont un bord en tirets.
 
-### 4.4 Icônes
+### 4.4 Mouvement
 
-**Lucide** (`lucide-react`), trait 1,7, en 20 px (16 px dans les boutons et les pastilles). Une icône seule dans un bouton a toujours un `aria-label`.
+Courbe `cubic-bezier(.2, .8, .2, 1)`. Durées : 150 ms (survol, couleurs), 200 ms (interrupteur, icônes), 250 ms (ouverture du panneau des commentaires), 900 ms (délai avant de masquer la barre de défilement). Tout est coupé si `prefers-reduced-motion: reduce`.
 
-### 4.5 Points de rupture
+### 4.5 Icônes
+
+**Lucide** (`lucide-react`), trait 1,8 (2,4 pour l'élément actif). Tailles : 22 px par défaut, 18 px dans les boutons et les actions, 26 px dans la nav. Une icône seule dans un bouton a toujours un `aria-label`.
+
+### 4.6 Mise en page et points de rupture
+
+Largeurs : nav 275 px · fil 620 px · colonne de droite 360 px · commentaires 360 à 520 px.
 
 | Largeur | Mise en page |
 |---|---|
-| > 1180 px | 3 colonnes : nav · fil · recherche + rédaction + plugins. Seuls le fil et les plugins défilent |
-| ≤ 1180 px | Nav réduite aux icônes. Recherche, rédaction et bande de plugins horizontale au-dessus du fil. La page défile |
-| ≤ 720 px | Une colonne, nav en barre en bas de l'écran |
+| ≥ 1500 px | Nav collée à gauche · fil et colonne de droite (recherche, rédaction, plugins) centrés dans l'espace restant. Commentaires ouverts : nav · fil · commentaires (centrés) · colonne de droite |
+| 1181 à 1499 px | Idem, mais les commentaires ouverts remplacent la colonne de droite |
+| ≤ 1180 px | Nav réduite aux icônes. Recherche, rédaction et plugins au-dessus du fil. Commentaires en tiroir à droite (420 px max) |
+| ≤ 720 px | Une colonne, nav en barre en bas de l'écran, commentaires en plein écran |
+
+Seuls le fil, les plugins et la liste des commentaires défilent (page fixe au-dessus de 1180 px).
 
 ---
 
 ## 5. Composants
 
-**Lot 1** = les 13 composants qui suffisent à valider le module (minimum 10), à faire en S2-S3. **Statut** : ✅ maquetté (tous les composants le sont dans `mockups/liquid-glass/design-system.html`, avec leurs variantes et leurs états).
+**Lot 1** = les 13 composants qui suffisent à valider le module (minimum 10), à faire en S2-S3. **Statut** : ✅ maquetté (tous les composants le sont dans `mockups/flat-lines/design-system.html`, avec leurs variantes et leurs états).
 
 ### 5.1 Primitives
 
 | # | Composant | Rôle | Variantes / états | Props principales | Utilisé par (spec) | Lot | Statut |
 |---|---|---|---|---|---|:-:|:-:|
-| 1 | `GlassPanel` | Surface de verre de base (tuiles, nav, fenêtres) | `default`, `compact`, `dashed` (ajout) ; `interactive` (survol) | `as`, `padding`, `radius` | Toutes les pages | 1 | ✅ |
-| 2 | `Button` | Action principale ou secondaire | `primary`, `glass`, `ghost`, `danger` ; `sm`/`md` ; `loading`, `disabled`, `block` ; réfraction optionnelle | `variant`, `size`, `icon`, `loading` | Partout (NOTIF-03, POST, SOC) | 1 | ✅ |
-| 3 | `IconButton` | Bouton rond avec une seule icône | `sm`/`md` ; point d'indication (`dot`) | `icon`, `label` (obligatoire), `dot` | Rédaction, menus, nav réduite | 1 | ✅ |
-| 4 | `Input` | Champ texte d'une ligne | `default`, `error` + aide, `disabled` ; icône ou bouton à droite (mot de passe visible) | `label`, `error`, `hint`, `leading`, `trailing` | AUTH, ACC, SEARCH | 1 | ✅ |
-| 5 | `Textarea` | Champ multi-lignes | compteur de caractères, hauteur automatique, `error` | `maxLength`, `showCount`, `autosize` | POST-01, DM-01, ACC-03 (bio) | 1 | ✅ |
-| 6 | `Avatar` | Photo de profil ou initiales sur verre | `xs` 28 · `sm` 34 · `md` 40 · `lg` 56 · `xl` 72 ; statut en ligne | `src`, `name`, `size`, `online` | Partout (ACC-01, ACC-04, ACC-07) | 1 | ✅ |
-| 7 | `Badge` | Compteur ou étiquette | `count` (accent), `neutral`, `private` (cadenas) | `variant`, `children` | Nav, profil (ACC-01), NOTIF-01, DM-02 | 1 | ✅ |
-| 8 | `Tabs` | Onglets segmentés | sélectionné, survol ; navigation au clavier (flèches) | `items`, `value`, `onChange` | Fil (FEED-01/02), profil (ACC-02), messages (DM-03), recherche | 1 | ✅ |
-| 9 | `Switch` | Interrupteur on/off | on, off, `disabled` | `checked`, `onChange`, `label` | Thème, compte privé (ACC-06) | 1 | ✅ |
-| 10 | `ProgressBar` | Progression | déterminée, avec libellé | `value`, `label` | Upload de médias (MEDIA-05) | 2 | ✅ |
-| 11 | `Spinner` / `Skeleton` | Chargement | spinner ; squelettes de post, de ligne, d'avatar | `shape`, `lines` | UI-06, tous les chargements | 2 | ✅ |
-| 12 | `Icon` | Habillage de Lucide aux tailles du système | 16 / 20 px | `name`, `size` | Partout | 1 | ✅ |
+| 1 | `Panel` | Carte de base (tuiles, recherche, commentaires, menus, fenêtres) : fond `--card`, bord 1 px, sans ombre | `default` (16 px), `roomy` (24 px) ; `interactive` (survol), `dashed` (ajout) | `as`, `padding`, `interactive`, `dashed` | Toutes les pages | 1 | ✅ |
+| 2 | `Button` | Action principale ou secondaire, forme « pill » | `primary` (plein), `outline` (contour gris), `ghost`, `danger` ; `sm`/`md`/`lg` ; `loading`, `disabled`, `block` | `variant`, `size`, `icon`, `loading` | Partout (NOTIF-03, POST, SOC, ADM) | 1 | ✅ |
+| 3 | `IconButton` | Bouton rond avec une seule icône | `sm`/`md` ; `outline` ; point d'indication (`dot`) ; `disabled` | `icon`, `label` (obligatoire), `dot` | Rédaction, menus, nav réduite, en-têtes | 1 | ✅ |
+| 4 | `Input` | Champ texte d'une ligne, bord gris, bord couleur du texte au focus | `default`, `error` + aide, `disabled` ; éléments à gauche ou à droite (mot de passe visible) | `label`, `hint`, `error`, `leading`, `trailing` | AUTH-01/02, ACC-03/05, SEARCH | 1 | ✅ |
+| 5 | `Textarea` | Champ multi-lignes | compteur (avertissement près de la limite, erreur au-delà), hauteur automatique, `error` | `maxLength`, `showCount`, `autosize` | POST-01 (500), DM-01 (1 000), ACC-03 (bio, 160) | 1 | ✅ |
+| 6 | `Avatar` | Photo de profil ou initiales sur disque gris uni | `xs` · `sm` · `md` · `lg` · `xl` ; point vert en ligne | `src`, `name`, `size`, `online` | Partout (ACC-01, ACC-04, ACC-07) | 1 | ✅ |
+| 7 | `Badge` | Compteur ou étiquette | `count` (plein), `neutral`, `private` (cadenas), `danger` (contour) ; `99+` | `variant`, `max` | Nav (NOTIF-01, DM-02), profil (ACC-01), admin | 1 | ✅ |
+| 8 | `Tabs` | Onglets en texte, barre de 4 px sous l'actif | sélectionné, survol ; `fill` ; navigation au clavier (flèches) | `items`, `value`, `onChange` | FEED-01/02, ACC-02, DM-03, recherche, admin | 1 | ✅ |
+| 9 | `Switch` | Interrupteur on/off | on, off, `disabled` | `checked`, `onChange`, `label` | Thème, ACC-06 (compte privé) | 1 | ✅ |
+| 10 | `ProgressBar` | Progression, barre fine de 4 px | déterminée, avec libellé, erreur | `value`, `label`, `error` | MEDIA-05 (upload) | 2 | ✅ |
+| 11 | `Spinner` / `Skeleton` | Chargement | anneau ; squelettes de post, de ligne, d'avatar, de texte | `shape`, `lines` | UI-06, tous les chargements | 2 | ✅ |
+| 12 | `Icon` | Habillage de Lucide aux tailles du système | 14 / 18 / 22 / 26 px | `name`, `size`, `label` | Partout | 1 | ✅ |
 
 ### 5.2 Retours et superpositions
 
 | # | Composant | Rôle | Variantes / états | Props principales | Utilisé par (spec) | Lot | Statut |
 |---|---|---|---|---|---|:-:|:-:|
-| 13 | `Toast` + `ToastProvider` | Confirmation de chaque action | `success`, `error`, `info` ; fermeture auto (4 s) et manuelle | `type`, `message`, `action` | **NOTIF-03** (toutes les créations, modifications, suppressions) | 1 | ✅ |
-| 14 | `Modal` | Fenêtre de dialogue | confirmation, formulaire, `danger` ; piège du focus, Échap, retour du focus | `title`, `open`, `onClose`, `actions` | Suppression (POST-07, ACC-09), bannissement (ADM-04), invitation visiteur (VIS-03), rédaction hors accueil | 1 | ✅ |
-| 15 | `Dropdown` | Menu contextuel « … » | éléments, séparateur, élément `danger` | `items`, `trigger` | Menu d'un post (modifier, supprimer, signaler), plugins | 2 | ✅ |
-| 16 | `EmptyState` | Liste vide | icône + texte + action | `icon`, `title`, `action` | UI-06 (fil vide, aucune notification, aucun résultat) | 2 | ✅ |
-| 17 | `ScrollArea` | Zone qui défile avec barre masquée au repos et fondu en bas | `fade` | `fade`, `autoHide` | Fil, plugins, messages | 2 | ✅ |
+| 13 | `Toast` + `ToastProvider` | Confirmation de chaque action : bloc inversé (fond couleur du texte), pastille de couleur pour le type | `success`, `error`, `info` (avec « Annuler ») ; fermeture auto (4 s) et manuelle | `type`, `message`, `action`, `duration` | **NOTIF-03** (toutes les créations, modifications, suppressions) | 1 | ✅ |
+| 14 | `Modal` | Fenêtre de dialogue en carte, boutons empilés pleine largeur | confirmation, formulaire, `danger` ; piège du focus, Échap, retour du focus | `title`, `open`, `onClose`, `actions`, `variant` | Suppression (POST-07, ACC-09), bannissement (ADM-04), invitation visiteur (VIS-03), rédaction hors accueil | 1 | ✅ |
+| 15 | `Dropdown` | Menu contextuel « … » en carte | éléments, séparateur, élément `danger` | `trigger`, `items` | Menu d'un post (POST-06/07, ADM-09), plugins, admin | 2 | ✅ |
+| 16 | `EmptyState` | Liste vide | icône cerclée + titre + texte + action | `icon`, `title`, `description`, `action` | UI-06 (fil vide, aucune notification, aucun résultat) | 2 | ✅ |
+| 17 | `ScrollArea` | Zone qui défile : barre native fine, sans fond, visible seulement pendant le défilement, fondu en bas | `fade`, `autoHide` | `fade`, `autoHide` | Fil, plugins, commentaires, messages, listes | 2 | ✅ |
 
 ### 5.3 Composants métier
 
 | # | Composant | Rôle | Variantes / états | Props principales | Utilisé par (spec) | Lot | Statut |
 |---|---|---|---|---|---|:-:|:-:|
-| 18 | `PostCard` | Post façon Reddit : en-tête, titre, contenu, médias, actions | normal, survol, `(modifié)`, « republié par », **supprimé** / supprimé par la modération, réponse (sans titre) | `post`, `context`, `onAction` | FEED, POST-04, ACC-02 | 1 | ✅ |
-| 19 | `PostAction` | Pastille d'action avec compteur | `reply`, `repost` (ambre), `like` (framboise) ; actif, survol, désactivé (post supprimé, compte privé : REPOST-03) | `kind`, `count`, `active` | PostCard (LIKE, REPOST) | 2 | ✅ |
-| 20 | `MediaGrid` | Médias d'un post | 1 à 4 images, GIF, 1 vidéo ; plein écran au clic | `media[]` | MEDIA-08 | 2 | ✅ |
-| 21 | `Composer` | Rédaction d'un post | titre (obligatoire) + contenu (optionnel) + médias + compteurs ; mode réponse (sans titre) | `mode`, `onSubmit` | POST-01, POST-03, MEDIA-04 | 2 | ✅ |
-| 22 | `NavItem` / `Sidebar` | Navigation principale | actif, badge ; replié (icônes) ; barre du bas sur mobile | `items`, `active` | FEED-04, toutes les pages | 2 | ✅ |
-| 23 | `UserListItem` | Ligne d'utilisateur | avec bouton S'abonner / Demandé / Abonné ; statut en ligne | `user`, `action` | SOC-06, recherche, admin (ADM-01) | 2 | ✅ |
-| 24 | `PluginTile` | Tuile de plugin (iframe isolée) | tailles 1×2, 2×1, 2×2, 2×3 ; en-tête avec étiquette et menu ; « Ajouter un plugin » | `plugin`, `size` | Accueil (bento) | 3 | ✅ |
+| 18 | `PostCard` | Post façon Reddit, posé sur le fond : en-tête, titre, contenu tronqué à 4 lignes (« Voir plus »), médias, actions | normal, survol (fond arrondi), `(modifié)`, « republié par », **supprimé** / supprimé par la modération, réponse (sans titre), commentaires ouverts | `post`, `variant`, `context`, `deleted`, `open`, `onAction` | FEED-01/02, POST-01 à 08, ACC-02 | 1 | ✅ |
+| 19 | `PostAction` | Icône + compteur, sans pastille | `reply`, `repost` (ambre), `like` (framboise) ; actif, survol (disque teinté), désactivé (post supprimé, compte privé : REPOST-03) | `kind`, `count`, `active`, `disabled` | LIKE-01, REPOST-01/03, POST-03 | 2 | ✅ |
+| 20 | `MediaGrid` | Médias d'un post, bord 1 px | 1 à 4 images, GIF, 1 vidéo ; plein écran au clic | `media[]`, `onOpen` | MEDIA-02, MEDIA-08 | 2 | ✅ |
+| 21 | `Composer` | Rédaction en carte | titre (obligatoire) + contenu (optionnel) + médias + compteurs ; mode réponse (sans titre) | `mode`, `replyTo`, `onSubmit`, `maxMedia` | POST-01, POST-03, MEDIA-04/05 | 2 | ✅ |
+| 22 | `NavItem` / `Sidebar` | Navigation principale collée à gauche, ligne verticale, pas de panneau | actif (gras), badge, survol en pastille ; repliée (icônes) ; barre du bas sur mobile | `items`, `active`, `collapsed` | FEED-04, toutes les pages | 2 | ✅ |
+| 23 | `UserListItem` | Ligne d'utilisateur | S'abonner / Demandé / Abonné / Accepter-Refuser ; statut en ligne ; action admin | `user`, `relation`, `action`, `admin` | SOC-01 à 06, SEARCH-01, ADM-01 | 2 | ✅ |
+| 24 | `PluginTile` | Tuile de plugin en bento (iframe isolée) | tailles 1×2, 2×1, 2×2, 2×3 ; en-tête avec étiquette et menu ; « Ajouter un plugin » | `plugin`, `size` | Accueil (bento) | 3 | ✅ |
+| 25 | `CommentsPanel` / `CommentItem` | Panneau des commentaires (réponses au sens de POST-03) d'un post, ouvert par sa bulle | en-tête (nombre, lien vers le post, fermer) ; commentaire (texte tronqué à 3 lignes, média, J'aime) ; fils repliables « Voir N réponses » / « Masquer » ; bandeau « En réponse à @… » ; champ en creux, envoi inactif si vide ; inséré entre fil et colonne de droite (≥ 1500 px), à la place de la colonne de droite (1181-1499 px), tiroir (≤ 1180 px) | `post`, `comments[]`, `open`, `onClose`, `onReply`, `onSubmit` | POST-03, POST-04, LIKE-01 | 2 | ✅ |
 
-**Bilan :** 24 composants. Le **lot 1 en compte 13** : `GlassPanel`, `Button`, `IconButton`, `Input`, `Textarea`, `Avatar`, `Badge`, `Tabs`, `Switch`, `Icon`, `Toast`, `Modal`, plus `PostCard`. Le minimum de 10 du module est donc couvert dès le lot 1.
+**Bilan :** 25 composants. Le **lot 1 en compte 13** : `Panel`, `Button`, `IconButton`, `Input`, `Textarea`, `Avatar`, `Badge`, `Tabs`, `Switch`, `Icon`, `Toast`, `Modal`, plus `PostCard`. Le minimum de 10 du module est donc couvert dès le lot 1. Lot 2 : 11 composants, lot 3 : 1.
 
 ---
 
@@ -220,46 +225,67 @@ La page `/design-system` (lien « Design system » dans la nav) sert de preuve p
 - les icônes utilisées ;
 - chaque composant, avec ses variantes, ses états et ses props.
 
-La maquette v8 (`#ds`) en est le point de départ. Storybook n'est pas nécessaire.
+La maquette `mockups/flat-lines/design-system.html` en est le point de départ. Storybook n'est pas nécessaire.
 
 ---
 
 ## 7. Passage au code (Tailwind)
 
-Les tokens deviennent des variables CSS, et le thème Tailwind pointe vers elles. Le changement de thème se fait alors avec un seul attribut `data-theme` sur `<html>`.
+Les tokens deviennent des variables CSS, et le thème Tailwind pointe vers elles. Le changement de thème se fait alors avec un seul attribut `data-theme` sur `<html>`. Le style flat lines passe presque directement en classes utilitaires (bords, aplats, `divide-y`) : aucun composant n'a besoin d'une classe CSS dédiée.
 
 ```css
 /* src/design-system/tokens.css (extrait) */
 @import "tailwindcss";
 
 @theme {
-  --font-display: "Unbounded", system-ui, sans-serif;
-  --font-body: "Manrope", system-ui, sans-serif;
-  --radius-sm: 12px;
-  --radius-md: 18px;
-  --radius-lg: 28px;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 16px;
   --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-card-line: var(--card-line);
+  --color-line: var(--line);
   --color-text: var(--text);
+  --color-link: var(--link);
   --color-like: var(--like);
   --color-repost: var(--repost);
+  --color-danger-fill: var(--danger-fill);
   /* … */
 }
 
+:root { --danger-fill: #c81e28; }
+
 [data-theme="dark"] {
-  --bg: #111214;
-  --text: #f4f5f7;
+  --bg: #16181c;
+  --card: #202329;
+  --card-line: #3a3f47;
+  --line: #33373d;
+  --text: #e7e9ea;
+  --text-3: #8a9096;
+  --link: #4ea1ff;
   --like: #f0508f;
   --repost: #ffa834;
+  --danger: #ff5a64;
+  /* … */
+}
+
+[data-theme="light"] {
+  --bg: #f3f5f7;
+  --card: #ffffff;
   /* … */
 }
 ```
 
-Le verre (`glass-fill`, `glass-edge`, flou) n'entre pas bien dans des classes utilitaires : il devient le composant `GlassPanel`, avec une classe CSS dédiée.
-
 ---
 
-## 8. Décisions validées (2026-11-05)
+## 8. Décisions validées
 
-1. Les corrections de contraste marquées ⚠️ (§2.6), dans les deux thèmes.
-2. Le découpage en lots (§5).
-3. La page `/design-system` comme documentation, sans Storybook.
+**2026-11-05 (toujours valables) :**
+1. Le découpage en lots (§5).
+2. La page `/design-system` comme documentation, sans Storybook.
+
+**2026-11-11 :**
+1. Direction artistique **flat lines**, à la place du liquid glass.
+2. Les corrections de contraste marquées ⚠️ (§2.5) et le token `--danger-fill`, appliqués dans la maquette v11.
+3. Les bords des champs gardent les valeurs de la v10 (sous 3:1), §2.5.
+4. Le panneau des commentaires devient le composant **25** (`CommentsPanel` / `CommentItem`), au lot 2.

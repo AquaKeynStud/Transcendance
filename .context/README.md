@@ -5,7 +5,8 @@ Ils servent à reprendre le travail d'une session à l'autre et à montrer à l'
 
 ## État de la direction artistique
 
-⚠️ Le style **« liquid glass »** (maquettes v1 à v8, `design-system.html`) est un **test**. aboumall est satisfait de la v8, mais le style n'est peut-être pas adapté à un réseau social : d'autres maquettes avec d'autres thèmes suivront. **Pas de maquettes de pages pour l'instant.** La table des composants reste la référence, quel que soit le thème.
+✅ **Direction retenue : « flat lines »** (2026-11-11). Référence : `docs/mockups/flat-lines/v11.html` et `docs/mockups/flat-lines/design-system.html`, documentée dans `docs/DESIGN_SYSTEM.md` (v0.3, 25 composants).
+Le **« liquid glass »** (`docs/mockups/liquid-glass/`) était un test : il est gardé pour l'historique.
 
 ## Convention
 
@@ -45,3 +46,4 @@ Ils servent à reprendre le travail d'une session à l'autre et à montrer à l'
 | 2026-11-10 | [2026-11-10_maquette-flat-lines-v9.md](2026-11-10_maquette-flat-lines-v9.md) | Flat lines v9 : marge de 24 px entre la nav et le fil quand les commentaires sont ouverts |
 | 2026-11-10 | [2026-11-10_maquette-flat-lines-v10.md](2026-11-10_maquette-flat-lines-v10.md) | Flat lines v10 : liens en bleu (mentions, Voir plus, Voir N réponses), post long tronqué avec « Voir plus » |
 | 2026-11-11 | [2026-11-11_design-system-flat-lines.md](2026-11-11_design-system-flat-lines.md) | Design system flat lines : palette des deux thèmes (contrastes corrigés), 24 composants + panneau des commentaires proposé |
+| 2026-11-11 | [2026-11-11_flat-lines-v11-retenue.md](2026-11-11_flat-lines-v11-retenue.md) | Flat lines retenue : maquette v11 (contrastes corrigés), `DESIGN_SYSTEM.md` v0.3, composant 25 `CommentsPanel` au lot 2 |
