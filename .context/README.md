@@ -44,3 +44,4 @@ Ils servent à reprendre le travail d'une session à l'autre et à montrer à l'
 | 2026-11-10 | [2026-11-10_maquette-flat-lines-v8.md](2026-11-10_maquette-flat-lines-v8.md) | Flat lines v8 : commentaires limités à 520 px, fond « carte » plus contrasté pour les composants |
 | 2026-11-10 | [2026-11-10_maquette-flat-lines-v9.md](2026-11-10_maquette-flat-lines-v9.md) | Flat lines v9 : marge de 24 px entre la nav et le fil quand les commentaires sont ouverts |
 | 2026-11-10 | [2026-11-10_maquette-flat-lines-v10.md](2026-11-10_maquette-flat-lines-v10.md) | Flat lines v10 : liens en bleu (mentions, Voir plus, Voir N réponses), post long tronqué avec « Voir plus » |
+| 2026-11-11 | [2026-11-11_design-system-flat-lines.md](2026-11-11_design-system-flat-lines.md) | Design system flat lines : palette des deux thèmes (contrastes corrigés), 24 composants + panneau des commentaires proposé |

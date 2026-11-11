@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design system · Flat lines · ft_transcendence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   Design system « Flat lines » : palette + tous les composants.
+   Référence : flat-lines/v10.html, avec des corrections de contraste (WCAG AA)
+   signalées ⚠️ dans la palette.
+   Même structure que liquid-glass/design-system.html, pour comparer les deux styles.
+   ?theme=light : thème clair · ?scrolling : barres de défilement visibles
+   ===================================================================== */
+
+/* 1. TOKENS ============================================================ */
+:root {
+  --font: "Inter", system-ui, sans-serif;
+
+  --r-sm: 8px;
+  --r-md: 16px;
+  --r-pill: 999px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+
+  --danger-fill: #c81e28;   /* fond du bouton Supprimer (texte blanc 5,7:1), les deux thèmes */
+  --ease: cubic-bezier(.2, .8, .2, 1);
+}
+
+[data-theme="dark"] {
+  --bg: #16181c;
+  --surface: #1d2025;
+  --hover: rgba(231, 233, 234, .07);
+  --line: #33373d;
+  --card: #202329;
+  --card-line: #3a3f47;
+  --well: #16181c;
+  --avatar: #3a3f46;
+  --line-strong: #5b636d;
+  --text: #e7e9ea;
+  --text-2: #9aa0a6;
+  --text-3: #8a9096;         /* ⚠️ v10 : #80868c (4,3:1 sur les cartes) */
+  --accent: #e7e9ea;
+  --accent-ink: #16181c;
+  --like: #f0508f;           /* ⚠️ v10 : #ec3f86 (4,2:1 sur les cartes) */
+  --repost: #ffa834;
+  --link: #4ea1ff;
+  --success: #00ba7c;
+  --danger: #ff5a64;         /* ⚠️ v10 : #f4212e (3,8:1 sur les cartes) */
+  --warning: #ffd400;
+  --scroll-thumb: rgba(231, 233, 234, .3);
+  --overlay: rgba(8, 9, 11, .66);
+  --placeholder: linear-gradient(135deg, #202328, #383c42 55%, #202328);
+  --ph2: linear-gradient(200deg, #2a2d33, #43484f);
+  --ph3: linear-gradient(160deg, #4a4f57, #2a2d33 60%, #1d2025);
+  --ph4: repeating-linear-gradient(115deg, #22252a 0 18px, #2d3036 18px 36px);
+}
+
+[data-theme="light"] {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --hover: rgba(15, 20, 25, .05);
+  --line: #e4e9ec;
+  --card: #ffffff;
+  --card-line: #dbe2e7;
+  --well: #f3f5f7;
+  --avatar: #dfe5e9;
+  --line-strong: #cfd9de;
+  --text: #0f1419;
+  --text-2: #4b5862;
+  --text-3: #5f6b74;         /* ⚠️ v10 : #6b7780 (4,2:1 sur le fond) */
+  --accent: #0f1419;
+  --accent-ink: #ffffff;
+  --like: #c0185e;
+  --repost: #b45309;         /* ⚠️ v10 : #d97706 (2,9:1) */
+  --link: #1765c4;           /* ⚠️ v10 : #1a6fd6 (4,5:1 de justesse) */
+  --success: #007a52;        /* ⚠️ v10 : #00ba7c (2,3:1) */
+  --danger: #c81e28;         /* ⚠️ v10 : #f4212e (3,8:1) */
+  --warning: #8a5a00;        /* ⚠️ v10 : #ffd400 (1,3:1) */
+  --scroll-thumb: rgba(15, 20, 25, .25);
+  --overlay: rgba(15, 20, 25, .4);
+  --placeholder: linear-gradient(135deg, #e6ecf0, #f7f9f9 55%, #dfe5e9);
+  --ph2: linear-gradient(200deg, #dfe5e9, #c9d2d8);
+  --ph3: linear-gradient(160deg, #f7f9f9, #cfd9de 60%, #b9c4cb);
+  --ph4: repeating-linear-gradient(115deg, #e6ecf0 0 18px, #d7dfe4 18px 36px);
+}
+
+/* 2. BASE ============================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; min-height: 100vh;
+  font-family: var(--font); font-size: 15px; font-weight: 400; line-height: 1.4;
+  color: var(--text); background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4 { font-weight: 800; margin: 0; letter-spacing: -.01em; }
+b, strong { font-weight: 700; }
+p { margin: 0; }
+a { color: inherit; }
+button { font: inherit; color: inherit; cursor: pointer; }
+svg.i { width: 22px; height: 22px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+svg.i.sm { width: 18px; height: 18px; }
+svg.i.xs { width: 14px; height: 14px; }
+svg.i.lg { width: 26px; height: 26px; }
+.muted { color: var(--text-2); }
+.faint { color: var(--text-3); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+code { font-family: ui-monospace, monospace; font-size: .86em; padding: 1px 5px; border-radius: 4px; background: var(--surface); border: 1px solid var(--line); }
+.flex { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+.stack { display: flex; flex-direction: column; gap: var(--space-3); }
+
+/* 3. COMPOSANTS (repris de flat-lines v10) ============================= */
+
+/* Surface : carte à bord gris, aucun relief */
+.tile { border: 1px solid var(--card-line); border-radius: var(--r-md); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); min-height: 0; overflow: hidden; background: var(--card); }
+.tile.roomy { padding: var(--space-6); }
+.tile.interactive { cursor: pointer; transition: background .15s; }
+.tile.interactive:hover, .tile.interactive.is-hover { background: color-mix(in srgb, var(--card) 100%, var(--text) 4%); }
+.tile-head { display: flex; align-items: center; gap: var(--space-2); }
+.tile-head .end { margin-left: auto; display: flex; gap: var(--space-2); align-items: center; }
+.t-add { align-items: center; justify-content: center; flex-direction: row; border-style: dashed; border-color: var(--line-strong); background: transparent; color: var(--text-2); cursor: pointer; transition: background .15s, color .15s; }
+.t-add:hover { background: var(--hover); color: var(--text); }
+.p-w2h2 { grid-column: span 2; grid-row: span 2; }
+.p-w2h3 { grid-column: span 2; grid-row: span 3; }
+.p-w1h2 { grid-column: span 1; grid-row: span 2; }
+.p-w2h1 { grid-column: span 2; grid-row: span 1; }
+
+/* Boutons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); height: 36px; padding: 0 16px; border-radius: var(--r-pill); border: 1px solid transparent; font-weight: 700; font-size: 15px; white-space: nowrap; text-decoration: none; transition: background .15s, opacity .15s; }
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover, .btn-primary.is-hover { opacity: .9; }
+.btn-outline { background: transparent; border-color: var(--line-strong); color: var(--text); }
+.btn-outline:hover, .btn-outline.is-hover { background: var(--hover); }
+.btn-ghost { background: transparent; color: var(--text); }
+.btn-ghost:hover, .btn-ghost.is-hover { background: var(--hover); }
+.btn-danger { background: var(--danger-fill); color: #fff; }
+.btn-danger:hover { opacity: .9; }
+.btn-lg { height: 52px; font-size: 17px; padding: 0 24px; }
+.btn-sm { height: 32px; padding: 0 14px; font-size: 14px; }
+.btn-block { width: 100%; }
+.btn[disabled], .icon-btn[disabled], .action[disabled], .switch[disabled] { opacity: .45; cursor: not-allowed; }
+.btn[disabled]:hover { opacity: .45; background: inherit; }
+
+.icon-btn { position: relative; width: 36px; height: 36px; border-radius: 50%; border: 0; display: inline-grid; place-items: center; background: transparent; color: var(--text-2); transition: background .15s, color .15s; }
+.icon-btn:hover, .icon-btn.is-hover { background: var(--hover); color: var(--text); }
+.icon-btn.outline { border: 1px solid var(--line-strong); color: var(--text); }
+.icon-btn.sm { width: 28px; height: 28px; }
+.icon-btn .dot { position: absolute; top: 6px; right: 7px; width: 8px; height: 8px; border-radius: 50%; background: var(--link); box-shadow: 0 0 0 2px var(--card); }
+
+/* Champs */
+.field { display: flex; align-items: center; gap: var(--space-2); height: 44px; padding: 0 var(--space-4); border-radius: var(--r-sm); border: 1px solid var(--line-strong); background: transparent; color: var(--text-3); transition: border-color .15s; }
+.field input, .field textarea { flex: 1; min-width: 0; background: none; border: 0; outline: 0; color: var(--text); font: inherit; resize: none; }
+.field input::placeholder, .field textarea::placeholder { color: var(--text-3); }
+.field:focus-within, .field.is-focus { border-color: var(--text); color: var(--text); }
+.field.error { border-color: var(--danger); }
+.field.disabled { opacity: .45; }
+.field-area { height: auto; align-items: flex-start; padding: var(--space-3) var(--space-4); }
+.field-label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.help { font-size: 13px; color: var(--text-3); margin-top: 6px; padding-left: 2px; }
+.help.error { color: var(--danger); }
+.count { font-size: 13px; color: var(--text-3); }
+.count.warn { color: var(--warning); font-weight: 600; } .count.over { color: var(--danger); font-weight: 700; }
+.search-bar { height: 44px; border-radius: var(--r-pill); border-color: var(--card-line); background: var(--card); }
+.search-bar kbd { font-family: var(--font); font-size: 11px; color: var(--text-3); padding: 2px 6px; border-radius: 6px; border: 1px solid var(--line); }
+
+/* Badges */
+.badge { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: var(--r-pill); font-size: 11px; font-weight: 700; color: var(--accent-ink); background: var(--accent); }
+.badge.neutral { color: var(--text-2); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+.badge.private { display: inline-flex; align-items: center; gap: 4px; color: var(--text-2); background: transparent; box-shadow: inset 0 0 0 1px var(--line-strong); font-weight: 600; }
+.badge.mod { display: inline-flex; align-items: center; gap: 4px; color: var(--danger); background: transparent; box-shadow: inset 0 0 0 1px var(--danger); font-weight: 600; }
+
+/* Avatar : disque gris uni, initiales */
+.avatar { --size: 40px; position: relative; flex: none; width: var(--size); height: var(--size); border-radius: 50%; display: grid; place-items: center;
+  font-weight: 700; font-size: calc(var(--size) * .4); letter-spacing: -.03em; line-height: 1; color: var(--text); background: var(--avatar); }
+.avatar.online::after { content: ""; position: absolute; right: 0; bottom: 0; width: 26%; height: 26%; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 2px var(--card); }
+.avatar.photo { background: var(--ph3); color: transparent; }
+.avatar.xs { --size: 28px; } .avatar.sm { --size: 34px; } .avatar.lg { --size: 56px; } .avatar.xl { --size: 72px; }
+
+/* Interrupteur */
+.switch { position: relative; width: 44px; height: 24px; border-radius: var(--r-pill); border: 0; padding: 0; background: var(--line-strong); transition: background .2s; flex: none; }
+.switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform .2s var(--ease), background .2s; }
+.switch[aria-checked="true"] { background: var(--accent); }
+.switch[aria-checked="true"]::after { transform: translateX(20px); background: var(--accent-ink); }
+
+/* Onglets : texte, barre de 4 px sous l'onglet actif */
+.tabs { display: flex; border-bottom: 1px solid var(--line); }
+.tabs button { flex: 1; position: relative; border: 0; background: none; height: 48px; padding: 0 var(--space-4); color: var(--text-3); font-weight: 500; font-size: 15px; transition: background .15s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.tabs button:hover { background: var(--hover); }
+.tabs button[aria-selected="true"] { color: var(--text); font-weight: 700; }
+.tabs button[aria-selected="true"]::after { content: ""; position: absolute; left: 50%; bottom: -1px; translate: -50% 0; width: 56px; height: 4px; border-radius: 4px; background: var(--accent); }
+.tabs.inline button { flex: none; }
+
+/* Progression */
+.progress { height: 4px; border-radius: var(--r-pill); background: var(--line); overflow: hidden; }
+.progress i { display: block; height: 100%; width: var(--p, 60%); border-radius: inherit; background: var(--accent); }
+.progress.error i { background: var(--danger); }
+
+/* Spinner et squelettes */
+.spin { --s: 22px; width: var(--s); height: var(--s); flex: none; border-radius: 50%; border: 2.5px solid var(--line-strong); border-top-color: var(--text); animation: spin .8s linear infinite; }
+.spin.sm { --s: 16px; border-width: 2px; }
+.spin.lg { --s: 36px; border-width: 3px; }
+.btn-primary .spin { border-color: color-mix(in srgb, var(--accent-ink) 30%, transparent); border-top-color: var(--accent-ink); }
+@keyframes spin { to { transform: rotate(360deg); } }
+.sk { display: block; border-radius: 6px; background: linear-gradient(90deg, var(--line) 0%, color-mix(in srgb, var(--line-strong) 55%, var(--line)) 40%, var(--line) 80%) 0 0 / 300% 100%; animation: shimmer 1.4s ease-in-out infinite; }
+.sk.circle { border-radius: 50%; }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+@media (prefers-reduced-motion: reduce) { .sk, .spin { animation: none; } }
+
+/* Toast : bloc inversé (couleur du texte en fond) */
+.toast { display: flex; align-items: center; gap: var(--space-3); padding: 10px 8px 10px var(--space-4); border-radius: var(--r-sm); background: var(--accent); color: var(--accent-ink); font-weight: 600; font-size: 14px; max-width: 420px; }
+.toast .ico { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+.toast .ico svg { width: 14px; height: 14px; stroke-width: 2.6; }
+.toast .ico.success { background: var(--success); color: #fff; }
+.toast .ico.error { background: var(--danger-fill); color: #fff; }
+.toast .ico.info { box-shadow: inset 0 0 0 1.5px currentColor; }
+.toast .end { margin-left: auto; display: flex; align-items: center; gap: 2px; }
+.toast .undo { border: 0; background: none; padding: 4px 8px; font-weight: 700; font-size: 14px; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.toast .icon-btn { color: inherit; width: 28px; height: 28px; opacity: .7; }
+.toast .icon-btn:hover { background: color-mix(in srgb, var(--accent-ink) 12%, transparent); opacity: 1; }
+.toast-stack { display: flex; flex-direction: column; gap: var(--space-2); }
+
+/* Fenêtre modale */
+.overlay-demo { position: relative; min-height: 260px; border-radius: var(--r-sm); display: grid; place-items: center; padding: var(--space-5);
+  background: linear-gradient(var(--overlay), var(--overlay)), repeating-linear-gradient(0deg, var(--line) 0 1px, transparent 1px 28px), var(--bg); }
+.modal { width: min(400px, 100%); border: 1px solid var(--card-line); border-radius: var(--r-md); padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); background: var(--card); }
+.modal-head { display: flex; align-items: flex-start; gap: var(--space-3); }
+.modal-head h4 { font-size: 19px; flex: 1; }
+.modal-head .icon-btn { margin: -6px -8px 0 0; }
+.modal .actions { display: flex; flex-direction: column; gap: var(--space-2); margin-top: var(--space-2); }
+
+/* Menu « … » */
+.menu { width: 240px; padding: var(--space-1) 0; border-radius: var(--r-sm); border: 1px solid var(--card-line); background: var(--card); display: flex; flex-direction: column; }
+.menu button { display: flex; align-items: center; gap: var(--space-3); width: 100%; border: 0; background: none; text-align: left; padding: 10px var(--space-4); font-weight: 600; font-size: 15px; color: var(--text); }
+.menu button:hover, .menu button.is-hover { background: var(--hover); }
+.menu button.danger { color: var(--danger); }
+.menu hr { border: 0; height: 1px; background: var(--line); margin: var(--space-1) var(--space-4); }
+.dropdown-demo { display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-1); }
+
+/* État vide */
+.empty { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--space-2); padding: var(--space-6) var(--space-4); }
+.empty .ring { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; color: var(--text-2); border: 1px solid var(--line-strong); margin-bottom: var(--space-2); }
+.empty h4 { font-size: 20px; }
+.empty p { color: var(--text-3); max-width: 300px; font-size: 14px; }
+.empty .btn { margin-top: var(--space-2); }
+
+/* Zone qui défile */
+.scroll-demo { height: 210px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: transparent transparent;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 40px), transparent); }
+.scroll-demo.is-scrolling { scrollbar-color: var(--scroll-thumb) transparent; }
+.row-item { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3); border-radius: var(--r-sm); }
+.row-item:hover { background: var(--hover); }
+
+/* Post */
+.feedlike { --rule-inset: var(--space-5); }
+.post { position: relative; padding: var(--space-4) var(--space-5); border-radius: var(--r-md); transition: background .15s; cursor: pointer; }
+.post::after { content: ""; position: absolute; left: var(--rule-inset, var(--space-5)); right: var(--rule-inset, var(--space-5)); bottom: 0; height: 1px; background: var(--line); transition: opacity .15s; }
+.post:last-child::after { display: none; }
+.post:hover, .post.is-hover { background: rgba(231, 233, 234, .03); }
+[data-theme="light"] .post:hover, [data-theme="light"] .post.is-hover { background: rgba(15, 20, 25, .03); }
+.post:hover::after, .post.is-hover::after, .post:has(+ .post:hover)::after, .post:has(+ .post.is-hover)::after, .post:has(+ .post.is-open)::after { opacity: 0; }
+.post.is-open { background: rgba(231, 233, 234, .05); }
+[data-theme="light"] .post.is-open { background: rgba(15, 20, 25, .05); }
+.post.is-open::after { opacity: 0; }
+.post.is-open .act-reply { color: var(--text); }
+.post.is-open .act-reply .ico { background: var(--hover); }
+.post.is-open .act-reply svg { fill: currentColor; fill-opacity: .15; stroke-width: 2.2; }
+.post-context { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--text-3); margin-bottom: var(--space-2); }
+.post-context svg { color: var(--repost); }
+.post-head { display: flex; align-items: center; gap: var(--space-3); }
+.post-head .who { display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap; min-width: 0; }
+.post-head .who span { color: var(--text-3); }
+.post-head .more { margin-left: auto; color: var(--text-3); }
+.post-title { margin-top: var(--space-3); font-size: 18px; font-weight: 800; line-height: 1.3; letter-spacing: -.01em; }
+.post-text { margin-top: var(--space-1); font-size: 15px; line-height: 1.5; color: var(--text); }
+.post.reply .post-text { margin-top: var(--space-2); }
+.post-text a, .c-text a { color: var(--link); font-weight: 600; text-decoration: none; }
+.post-text a:hover, .c-text a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.clamp { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4; overflow: hidden; }
+.c-text.clamp { -webkit-line-clamp: 3; line-clamp: 3; }
+.clamp.expanded { display: block; -webkit-line-clamp: unset; line-clamp: none; }
+.see-more { display: inline-block; margin-top: var(--space-1); border: 0; padding: 0; background: none; font-size: 14px; font-weight: 600; color: var(--link); }
+.see-more:hover { text-decoration: underline; text-underline-offset: 3px; }
+.post-media { margin-top: var(--space-3); height: 220px; border-radius: var(--r-md); border: 1px solid var(--line); background: var(--placeholder); }
+.post-deleted { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-4); border-radius: var(--r-sm); border: 1px solid var(--line); color: var(--text-3); font-size: 14px; }
+.replying-line { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+.replying-line a { color: var(--link); font-weight: 600; text-decoration: none; }
+
+/* Actions d'un post : icône + chiffre, disque au survol */
+.post-actions { display: flex; gap: var(--space-6); margin-top: var(--space-3); margin-left: -8px; }
+.action { display: inline-flex; align-items: center; gap: 2px; border: 0; padding: 0; background: none; font-size: 13px; color: var(--text-3); transition: color .15s; }
+.action .ico { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; transition: background .15s; }
+.action:hover, .action.is-hover { color: var(--text); }
+.action:hover .ico, .action.is-hover .ico { background: var(--hover); }
+.act-like:hover, .act-like.is-hover { color: var(--like); }
+.act-like:hover .ico, .act-like.is-hover .ico { background: color-mix(in srgb, var(--like) 12%, transparent); }
+.act-like.liked { color: var(--like); }
+.act-like.liked svg { fill: currentColor; }
+.act-repost:hover, .act-repost.is-hover { color: var(--repost); }
+.act-repost:hover .ico, .act-repost.is-hover .ico { background: color-mix(in srgb, var(--repost) 12%, transparent); }
+.act-repost.reposted { color: var(--repost); }
+.act-repost.reposted svg { stroke-width: 2.4; }
+.action[disabled]:hover { color: var(--text-3); }
+.action[disabled]:hover .ico { background: none; }
+.action svg { transition: transform .2s var(--ease); }
+.act-like:active svg, .act-repost:active svg { transform: scale(1.25); }
+
+/* Médias */
+.mg { display: grid; gap: 2px; border-radius: var(--r-md); overflow: hidden; height: 200px; border: 1px solid var(--line); }
+.mg > div { position: relative; min-height: 0; }
+.mg.n1 { grid-template-columns: 1fr; }
+.mg.n2 { grid-template-columns: 1fr 1fr; }
+.mg.n3 { grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; } .mg.n3 > :first-child { grid-row: span 2; }
+.mg.n4 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+.ph1 { background: var(--placeholder); } .ph2 { background: var(--ph2); } .ph3 { background: var(--ph3); } .ph4 { background: var(--ph4); }
+.video { position: relative; height: 200px; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); }
+.video .play { position: absolute; inset: 0; margin: auto; width: 56px; height: 56px; border-radius: 50%; border: 0; display: grid; place-items: center; background: var(--accent); color: var(--accent-ink); }
+.video .play svg { fill: currentColor; stroke: none; margin-left: 3px; }
+.video .dur { position: absolute; right: 10px; bottom: 10px; font-size: 12px; font-weight: 700; padding: 2px 7px; border-radius: 4px; color: #fff; background: rgba(0, 0, 0, .65); }
+.video .gif { position: absolute; left: 10px; bottom: 10px; font-size: 11px; font-weight: 800; padding: 2px 6px; border-radius: 4px; color: #fff; background: rgba(0, 0, 0, .65); }
+.lightbox { position: relative; height: 300px; border-radius: var(--r-sm); overflow: hidden; background: rgba(0, 0, 0, .9); display: grid; place-items: center; }
+.lightbox .img { width: 66%; height: 78%; }
+.lightbox .icon-btn { position: absolute; color: #fff; background: rgba(255, 255, 255, .12); }
+.lightbox .icon-btn:hover { background: rgba(255, 255, 255, .22); }
+.lightbox .x { top: 12px; left: 12px; }
+.lightbox .nav-arrow { top: 50%; translate: 0 -50%; }
+.lightbox .nav-arrow.l { left: 12px; } .lightbox .nav-arrow.r { right: 12px; }
+.lightbox .counter { position: absolute; bottom: 12px; font-size: 13px; color: rgba(255, 255, 255, .8); font-weight: 600; }
+
+/* Rédaction */
+.composer-tile { padding: 0; gap: 0; }
+.composer-title, .composer-body { border: 0; background: none; padding: 0 var(--space-4); }
+.composer-title { height: 44px; }
+.composer-title input { font-size: 17px; font-weight: 700; }
+.composer-body { height: auto; padding-bottom: var(--space-3); }
+.composer-tile .help { padding: 0 var(--space-4); margin: -6px 0 var(--space-2); }
+.composer-tile .tools { display: flex; align-items: center; gap: 2px; padding: var(--space-2) var(--space-3); border-top: 1px solid var(--line); }
+.composer-tile .tools .count { margin-left: auto; margin-right: var(--space-3); }
+.composer-tile.has-error .composer-title { box-shadow: inset 2px 0 0 var(--danger); }
+.attach { display: flex; gap: var(--space-2); padding: 0 var(--space-4) var(--space-3); }
+.attach .thumb { position: relative; width: 84px; height: 84px; border-radius: var(--r-sm); overflow: hidden; flex: none; border: 1px solid var(--line); }
+.attach .thumb .rm { position: absolute; top: 5px; right: 5px; width: 22px; height: 22px; border-radius: 50%; border: 0; display: grid; place-items: center; color: #fff; background: rgba(0, 0, 0, .65); }
+.attach .thumb .up { position: absolute; left: 8px; right: 8px; bottom: 8px; }
+.composer-replying { padding: var(--space-3) var(--space-4) 0; font-size: 13px; color: var(--text-3); }
+.composer-replying a { color: var(--link); font-weight: 600; text-decoration: none; }
+
+/* Nav : démos */
+.side-demo { display: flex; gap: var(--space-5); align-items: flex-start; flex-wrap: wrap; }
+.side-frame { height: 560px; border: 1px solid var(--line); border-radius: var(--r-sm); overflow: hidden; display: flex; background: var(--bg); }
+.side-frame .sidebar { border-right: 1px solid var(--line); }
+.side-frame .fill { width: 80px; }
+.sidebar { width: 260px; display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-3) var(--space-4) var(--space-3) var(--space-3); }
+.brand { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); margin-bottom: var(--space-2); text-decoration: none; }
+.brand-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--text); color: var(--bg); display: grid; place-items: center; font-weight: 800; font-size: 17px; letter-spacing: -.04em; flex: none; }
+.brand-name { font-size: 18px; font-weight: 800; letter-spacing: -.02em; }
+.nav { display: flex; flex-direction: column; gap: 2px; }
+.nav a { position: relative; display: flex; align-items: center; gap: var(--space-4); width: fit-content; padding: 10px var(--space-5) 10px var(--space-3); border-radius: var(--r-pill); text-decoration: none; font-size: 19px; transition: background .15s; }
+.nav a:hover, .nav a.is-hover { background: var(--hover); }
+.nav a.active { font-weight: 700; }
+.nav a.active svg { stroke-width: 2.4; }
+.nav a .badge { position: absolute; top: 4px; left: 26px; box-shadow: 0 0 0 2px var(--bg); }
+.nav-sep { height: 1px; background: var(--line); margin: var(--space-3); }
+.sidebar .spacer { flex: 1; }
+.me { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); border-radius: var(--r-pill); }
+.me:hover { background: var(--hover); }
+.me .who { min-width: 0; flex: 1; line-height: 1.25; }
+.me .who b { display: block; font-size: 15px; }
+.me .who span { font-size: 14px; color: var(--text-3); }
+.me .avatar.online::after { box-shadow: 0 0 0 2px var(--bg); }
+.sidebar.collapsed { width: 80px; align-items: center; padding: var(--space-3) var(--space-2); }
+.sidebar.collapsed .brand-name, .sidebar.collapsed .label, .sidebar.collapsed .me .who, .sidebar.collapsed .me .icon-btn, .sidebar.collapsed .nav-sep { display: none; }
+.sidebar.collapsed .nav a { padding: 12px; }
+.sidebar.collapsed .nav a .badge { left: 28px; }
+.sidebar.collapsed .btn-lg { width: 52px; padding: 0; }
+.phone { width: 360px; max-width: 100%; height: 220px; border: 1px solid var(--line); border-radius: var(--r-sm); overflow: hidden; display: flex; flex-direction: column; background: var(--bg); }
+.phone .screen { flex: 1; padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); }
+.bottom-bar { display: flex; justify-content: space-around; align-items: center; height: 56px; border-top: 1px solid var(--line); background: var(--bg); }
+.bottom-bar a { position: relative; display: grid; place-items: center; width: 52px; height: 44px; color: var(--text); }
+.bottom-bar a.active svg { stroke-width: 2.4; }
+.bottom-bar a .badge { position: absolute; top: 2px; right: 6px; box-shadow: 0 0 0 2px var(--bg); }
+
+/* Ligne d'utilisateur */
+.user-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); transition: background .15s; position: relative; }
+.user-row + .user-row::before { content: ""; position: absolute; top: 0; left: var(--space-4); right: var(--space-4); height: 1px; background: var(--line); }
+.user-row:hover, .user-row.is-hover { background: var(--hover); }
+.user-row .txt { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.user-row .txt b { display: flex; align-items: center; gap: 6px; }
+.user-row .txt span { font-size: 14px; color: var(--text-3); }
+.user-row .end { display: flex; gap: var(--space-2); }
+
+/* Plugins */
+.plugins.demo-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 64px; grid-auto-flow: dense; gap: var(--space-3); }
+.plugin-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text-3); }
+.weather { display: flex; align-items: center; gap: var(--space-4); }
+.weather .temp { font-size: 40px; font-weight: 800; line-height: 1; letter-spacing: -.03em; }
+.weather .forecast { margin-left: auto; display: flex; gap: var(--space-3); text-align: center; font-size: 12px; color: var(--text-3); }
+.weather .forecast b { display: block; color: var(--text); font-size: 14px; }
+.big-num { font-size: 26px; font-weight: 800; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.game-preview { flex: 1; border-radius: var(--r-sm); position: relative; border: 1px solid var(--line);
+  --grid: color-mix(in srgb, var(--line) 45%, transparent);
+  background: linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 14px 14px, linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 14px 14px; }
+.game-preview .snake { position: absolute; left: 20%; top: 50%; width: 96px; height: 10px; border-radius: 3px; background: var(--text); }
+.game-preview .food { position: absolute; left: 70%; top: 30%; width: 10px; height: 10px; border-radius: 50%; background: var(--like); }
+.player { display: flex; align-items: center; gap: var(--space-3); }
+.cover { width: 48px; height: 48px; border-radius: var(--r-sm); flex: none; background: var(--placeholder); border: 1px solid var(--line); }
+
+/* Panneau des commentaires (v6 à v10) */
+.cpanel { height: 600px; max-width: 520px; display: flex; flex-direction: column; border: 1px solid var(--card-line); border-radius: var(--r-md); background: var(--card); overflow: hidden; }
+.cpanel-head { position: relative; display: flex; align-items: flex-start; gap: var(--space-2); padding: var(--space-4) var(--space-3) var(--space-3) var(--space-4); }
+.cpanel-head::after { content: ""; position: absolute; left: var(--space-4); right: var(--space-4); bottom: 0; height: 1px; background: var(--line); }
+.cpanel-head .titles { flex: 1; min-width: 0; }
+.cpanel-head h2 { font-size: 17px; }
+.cpanel-head h2 .n { color: var(--text-3); font-weight: 500; margin-left: 4px; }
+.cpanel-sub { margin-top: 2px; font-size: 13px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cpanel-sub a { color: var(--link); font-weight: 600; text-decoration: none; }
+.cpanel-head .icon-btn { margin-top: -6px; }
+.clist { flex: 1; min-height: 0; overflow-y: auto; padding: var(--space-2) 0; scrollbar-width: thin; scrollbar-color: transparent transparent; }
+.clist.is-scrolling { scrollbar-color: var(--scroll-thumb) transparent; }
+.comment { display: flex; gap: var(--space-3); padding: var(--space-3) var(--space-4); transition: background .15s; }
+.comment:hover { background: var(--hover); }
+.comment .c-body { flex: 1; min-width: 0; }
+.c-head { display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap; font-size: 14px; }
+.c-head span { color: var(--text-3); font-size: 13px; }
+.c-text { margin-top: 2px; font-size: 14px; line-height: 1.45; }
+.c-media { margin-top: var(--space-2); width: 220px; max-width: 100%; height: 124px; border-radius: var(--r-sm); border: 1px solid var(--line); background: var(--placeholder); }
+.c-meta { display: flex; align-items: center; gap: var(--space-4); margin-top: 6px; font-size: 13px; color: var(--text-3); }
+.c-reply { border: 0; padding: 0; background: none; font-size: 13px; font-weight: 600; color: var(--text-2); }
+.c-reply:hover { color: var(--text); text-decoration: underline; }
+.c-like { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; border: 0; padding: 0; background: none; font-size: 13px; color: var(--text-3); transition: color .15s; }
+.c-like:hover, .c-like.liked { color: var(--like); }
+.c-like.liked svg { fill: currentColor; }
+.c-like svg { width: 16px; height: 16px; }
+.c-toggle { display: flex; align-items: center; gap: var(--space-2); margin: 0 0 var(--space-1) 62px; border: 0; padding: 4px 0; background: none; font-size: 13px; font-weight: 600; color: var(--link); }
+.c-toggle::before { content: ""; width: 24px; height: 1px; background: var(--line-strong); }
+.c-toggle:hover { text-decoration: underline; text-underline-offset: 3px; }
+.c-toggle svg { width: 14px; height: 14px; transition: transform .2s var(--ease); }
+.thread.open > .c-toggle svg { transform: rotate(180deg); }
+.c-replies { display: none; padding-left: 46px; }
+.thread.open > .c-replies { display: block; }
+.c-replies .comment { padding-top: var(--space-2); padding-bottom: var(--space-2); }
+.cpanel-foot { flex: none; border-top: 1px solid var(--line); padding: var(--space-3) var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); }
+.replying { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-3); }
+.replying b { color: var(--text-2); }
+.replying .icon-btn { width: 24px; height: 24px; margin-left: auto; }
+.c-input { display: flex; align-items: center; gap: var(--space-2); }
+.c-input .field { flex: 1; min-width: 0; height: 40px; padding: 0 4px 0 var(--space-4); border-radius: var(--r-pill); border-color: var(--card-line); background: var(--well); }
+.c-input .field .icon-btn { width: 32px; height: 32px; }
+.send { width: 36px; height: 36px; flex: none; border: 0; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: var(--accent-ink); }
+.send:disabled { opacity: .35; cursor: default; }
+.send svg { width: 18px; height: 18px; stroke-width: 2.2; }
+
+/* =====================================================================
+   PAGE DE DOCUMENTATION
+   ===================================================================== */
+.doc-head { position: sticky; top: 0; z-index: 20; background: var(--bg); border-bottom: 1px solid var(--line); }
+.doc-head .in { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: var(--space-5); padding: var(--space-2) var(--space-6); }
+.doc-head .brand { margin: 0; padding: var(--space-2) 0; }
+.doc-head nav { display: flex; gap: 2px; margin-left: auto; flex-wrap: wrap; }
+.doc-head nav a { color: var(--text-2); text-decoration: none; font-weight: 600; font-size: 14px; padding: 8px 12px; border-radius: var(--r-pill); }
+.doc-head nav a:hover { color: var(--text); background: var(--hover); }
+.doc-head .theme { display: flex; align-items: center; gap: var(--space-2); color: var(--text-3); font-size: 13px; }
+
+.doc { max-width: 1200px; margin: 0 auto; padding: var(--space-7) var(--space-6) 80px; display: flex; flex-direction: column; gap: var(--space-4); }
+.hero { display: flex; flex-direction: column; gap: var(--space-3); padding-bottom: var(--space-6); border-bottom: 1px solid var(--line); }
+.hero h1 { font-size: 34px; letter-spacing: -.02em; }
+.hero p { color: var(--text-2); max-width: 780px; font-size: 16px; line-height: 1.55; }
+.hero p a { color: var(--link); font-weight: 600; text-decoration: none; }
+.hero p a:hover { text-decoration: underline; }
+
+.section { scroll-margin-top: 72px; display: flex; flex-direction: column; gap: var(--space-4); margin-top: var(--space-6); }
+.section > header { display: flex; align-items: baseline; gap: var(--space-4); flex-wrap: wrap; }
+.section > header h2 { font-size: 26px; letter-spacing: -.02em; }
+.section > header p { color: var(--text-3); }
+.sub { font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); margin-top: var(--space-4); padding-bottom: var(--space-2); border-bottom: 1px solid var(--line); }
+
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--space-4); align-items: start; }
+.c-12 { grid-column: span 12; } .c-8 { grid-column: span 8; } .c-6 { grid-column: span 6; } .c-4 { grid-column: span 4; } .c-3 { grid-column: span 3; }
+.masonry { columns: 2; column-gap: var(--space-4); }
+.masonry > .card { break-inside: avoid; margin-bottom: var(--space-4); width: 100%; display: flex; }
+
+.card { border: 1px solid var(--card-line); border-radius: var(--r-md); background: var(--card); padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+.card-head { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+.card-head .num { font-size: 13px; font-weight: 700; color: var(--text-3); min-width: 22px; font-variant-numeric: tabular-nums; }
+.card-head h3 { font-size: 18px; }
+.card-head .lot { margin-left: auto; }
+.card .desc { color: var(--text-2); font-size: 14px; line-height: 1.5; }
+.card .specs { font-size: 13px; color: var(--text-3); }
+.demo { position: relative; border-radius: var(--r-sm); background: var(--bg); border: 1px solid var(--line); padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-5); overflow: hidden; }
+.demo.flush { padding: 0; gap: 0; }
+.demo .avatar.online::after, .demo .badge { box-shadow: 0 0 0 2px var(--bg); }
+.demo .badge.neutral, .demo .badge.private, .demo .badge.mod { box-shadow: inset 0 0 0 1px var(--line-strong); }
+.demo .badge.mod { box-shadow: inset 0 0 0 1px var(--danger); }
+.lbl { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); font-weight: 600; }
+.variant { display: flex; flex-direction: column; gap: var(--space-2); }
+.props { display: flex; flex-wrap: wrap; gap: 6px; }
+.props code { font-size: 12px; }
+.lot-badge { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: var(--r-pill); background: var(--accent); color: var(--accent-ink); white-space: nowrap; }
+.lot-badge.l2 { background: transparent; color: var(--text); box-shadow: inset 0 0 0 1px var(--line-strong); }
+.lot-badge.l3 { background: transparent; color: var(--text-3); box-shadow: inset 0 0 0 1px var(--line); }
+.lot-badge.new { background: transparent; color: var(--link); box-shadow: inset 0 0 0 1px var(--link); }
+
+/* Palette */
+.theme-panel { padding: var(--space-5); border-radius: var(--r-md); background: var(--bg); color: var(--text); border: 1px solid var(--line); display: flex; flex-direction: column; gap: var(--space-5); }
+.theme-panel > h3 { font-size: 17px; display: flex; align-items: center; gap: var(--space-2); }
+.theme-panel > h3 .faint { font-size: 13px; font-weight: 400; }
+.pal-group { display: flex; flex-direction: column; gap: var(--space-2); }
+.pal { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-3); }
+.sw { border-radius: var(--r-sm); overflow: hidden; background: var(--card); border: 1px solid var(--card-line); display: flex; flex-direction: column; }
+.sw .chip { height: 60px; position: relative; display: grid; place-items: center; font-weight: 800; font-size: 18px; border-bottom: 1px solid var(--card-line); }
+.sw .chip.split { grid-template-columns: 1fr 1fr; }
+.sw .chip.split > span { height: 100%; width: 100%; display: grid; place-items: center; }
+.sw .meta { padding: 8px 10px 10px; display: flex; flex-direction: column; gap: 2px; font-size: 12px; }
+.sw .meta code { background: none; border: 0; padding: 0; color: var(--text-3); font-size: 11.5px; }
+.sw .meta code.tok { color: var(--text); font-weight: 700; font-size: 12px; }
+.sw .meta .use { color: var(--text-3); font-size: 12px; line-height: 1.35; }
+.sw .meta .was { color: var(--text-3); font-size: 11.5px; }
+.ratio { display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; margin-top: 4px; font-size: 11.5px; font-weight: 700; padding: 1px 7px; border-radius: var(--r-pill); box-shadow: inset 0 0 0 1px var(--line-strong); color: var(--text-2); }
+.ratio i { font-style: normal; color: var(--success); }
+.ratio.fix { box-shadow: inset 0 0 0 1px var(--warning); }
+.ratio.fix i { color: var(--warning); }
+
+/* Typo et fondations */
+.type-row { display: grid; grid-template-columns: 280px 1fr; gap: var(--space-4); align-items: baseline; padding: 10px 0; border-top: 1px solid var(--line); }
+.type-row:first-child { border-top: 0; }
+.type-row code { background: none; border: 0; padding: 0; color: var(--text-3); font-size: 12px; }
+.space-row { display: flex; align-items: center; gap: var(--space-3); font-size: 13px; color: var(--text-3); }
+.space-row code { background: none; border: 0; padding: 0; white-space: nowrap; color: var(--text-3); font-size: 12px; }
+.space-row i { display: block; background: var(--text); border-radius: 2px; flex: none; }
+.radius-demo { width: 84px; height: 60px; background: var(--bg); border: 1px solid var(--line-strong); }
+.line-demo { display: flex; flex-direction: column; gap: var(--space-3); }
+.line-demo .row { display: flex; align-items: center; gap: var(--space-3); font-size: 13px; color: var(--text-3); }
+.line-demo .row span:first-child { width: 120px; height: 0; flex: none; }
+.icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 0; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.icon-cell { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 6px; font-size: 11.5px; color: var(--text-3); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.icon-cell svg { color: var(--text); }
+
+/* Responsive de la page */
+@media (max-width: 1100px) {
+  .c-8, .c-6, .c-4, .c-3 { grid-column: span 12; }
+  .masonry { columns: 1; }
+  .doc-head nav { display: none; }
+  .type-row { grid-template-columns: 1fr; gap: 4px; }
+  .plugins.demo-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .doc { padding: var(--space-5) var(--space-4) 60px; }
+  .doc-head .in { padding: var(--space-2) var(--space-4); }
+  .hero h1 { font-size: 26px; }
+  .card { padding: var(--space-4); }
+  .demo { padding: var(--space-4); }
+  .post-actions { gap: var(--space-3); }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></symbol>
+  <symbol id="i-reply" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></symbol>
+  <symbol id="i-game" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4M8 10v4M15 12h.01M18 10h.01"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></symbol>
+  <symbol id="i-smile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.53 13.53 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><path d="m2 2 20 20"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-blocks" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/><path d="M17 3v8M13 7h8"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></symbol>
+  <symbol id="i-arrow-l" viewBox="0 0 24 24"><path d="M19 12H5M11 19l-7-7 7-7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.7 3.86a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+  <symbol id="i-user-plus" viewBox="0 0 24 24"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0"/><path d="M19 8v6M16 11h6"/></symbol>
+  <symbol id="i-user-check" viewBox="0 0 24 24"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0"/><path d="m16 11 2 2 4-4"/></symbol>
+  <symbol id="i-maximize" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></symbol>
+  <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m5.7 5.7 12.6 12.6"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
+  <symbol id="i-at" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></symbol>
+</svg>
+
+<header class="doc-head">
+  <div class="in">
+    <a class="brand" href="#top"><span class="brand-mark">t</span><span class="brand-name">transcendance</span></a>
+    <nav aria-label="Sections">
+      <a href="#couleurs">Couleurs</a><a href="#typo">Typographie</a><a href="#fondations">Fondations</a><a href="#composants">Composants</a><a href="v10.html">Maquette v10</a>
+    </nav>
+    <div class="theme"><span id="theme-name">Sombre</span><button class="switch" role="switch" aria-checked="true" aria-label="Thème sombre" id="theme-toggle"></button></div>
+  </div>
+</header>
+
+<main class="doc" id="top">
+
+  <section class="hero">
+    <span class="lbl">Module web.design_system · Flat lines</span>
+    <h1>Design system « Flat lines »</h1>
+    <p>Palette, typographie, icônes et les 24 composants réutilisables du frontend, dans leurs variantes et leurs états, plus le panneau des commentaires ajouté dans les maquettes v6 à v10. Pas de verre, pas d'ombre, pas de dégradé : des aplats et des lignes grises de 1 px. Tout passe par des tokens (variables CSS) et le thème change avec l'attribut <code>data-theme</code>. Référence visuelle : <a href="v10.html">maquette flat lines v10</a>. Même contenu que la <a href="../liquid-glass/design-system.html">page du liquid glass</a>, pour comparer.</p>
+    <div class="flex"><span class="lot-badge">Lot 1 · 13 composants (S2-S3)</span><span class="lot-badge l2">Lot 2 · 10 composants</span><span class="lot-badge l3">Lot 3 · 1 composant</span><span class="lot-badge new">Proposé · 1 composant</span></div>
+  </section>
+
+  <!-- ================= COULEURS ================= -->
+  <section class="section" id="couleurs">
+    <header><h2>Couleurs</h2><p>Monochrome : la couleur est réservée à ce qui a un sens (liens, J'aime, Republier, états). Contrastes WCAG mesurés sur le fond de page puis sur une carte.</p></header>
+    <div class="grid">
+
+      <div class="theme-panel c-6" data-theme="dark">
+        <h3><svg class="i sm"><use href="#i-moon"/></svg>Thème sombre <span class="faint">par défaut</span></h3>
+        <div class="pal-group"><span class="lbl">Surfaces et lignes</span><div class="pal">
+          <div class="sw"><div class="chip" style="background:var(--bg)"></div><div class="meta"><code class="tok">--bg</code><code>#16181C</code><span class="use">Fond de page, creux dans une carte (--well)</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--card)"></div><div class="meta"><code class="tok">--card</code><code>#202329</code><span class="use">Tuiles, recherche, commentaires, menus, fenêtres</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;inset:12px 14px;border-radius:8px;border:1px solid var(--card-line);background:var(--card)"></span></div><div class="meta"><code class="tok">--card-line</code><code>#3A3F47</code><span class="use">Bord des cartes</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;left:14px;right:14px;height:1px;background:var(--line)"></span></div><div class="meta"><code class="tok">--line</code><code>#33373D</code><span class="use">La ligne grise : séparations, nav, onglets</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;inset:14px 18px;border-radius:8px;border:1px solid var(--line-strong)"></span></div><div class="meta"><code class="tok">--line-strong</code><code>#5B636D</code><span class="use">Bord des champs, boutons secondaires</span><span class="ratio">2,9 · 2,6</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--avatar);font-size:15px">LN</div><div class="meta"><code class="tok">--avatar</code><code>#3A3F46</code><span class="use">Avatar sans photo</span></div></div>
+        </div></div>
+        <div class="pal-group"><span class="lbl">Texte et liens</span><div class="pal">
+          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--text)">Aa</span><span style="background:var(--card);color:var(--text)">Aa</span></div><div class="meta"><code class="tok">--text</code><code>#E7E9EA</code><span class="use">Texte, titres, accent</span><span class="ratio"><i>✓</i> 14,6 · 12,9</span></div></div>
+          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--text-2)">Aa</span><span style="background:var(--card);color:var(--text-2)">Aa</span></div><div class="meta"><code class="tok">--text-2</code><code>#9AA0A6</code><span class="use">Texte secondaire, « Répondre »</span><span class="ratio"><i>✓</i> 6,7 · 6,0</span></div></div>
+          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--text-3)">Aa</span><span style="background:var(--card);color:var(--text-3)">Aa</span></div><div class="meta"><code class="tok">--text-3</code><code>#8A9096</code><span class="use">@username, dates, compteurs</span><span class="was">⚠️ v10 : #80868C</span><span class="ratio fix"><i>✓</i> 5,5 · 4,9</span></div></div>
+          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--link)">@nora</span><span style="background:var(--card);color:var(--link)">Voir</span></div><div class="meta"><code class="tok">--link</code><code>#4EA1FF</code><span class="use">Mentions, « Voir plus », « Voir N réponses »</span><span class="ratio"><i>✓</i> 6,7 · 5,9</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--accent);color:var(--accent-ink)">Aa</div><div class="meta"><code class="tok">--accent-ink</code><code>#16181C</code><span class="use">Texte sur l'accent (bouton principal, toast)</span><span class="ratio"><i>✓</i> 14,6</span></div></div>
+        </div></div>
+        <div class="pal-group"><span class="lbl">Couleurs fonctionnelles</span><div class="pal">
+          <div class="sw"><div class="chip" style="background:var(--like)"></div><div class="meta"><code class="tok">--like</code><code>#F0508F</code><span class="use">J'aime</span><span class="was">⚠️ v10 : #EC3F86</span><span class="ratio fix"><i>✓</i> 5,3 · 4,7</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--repost)"></div><div class="meta"><code class="tok">--repost</code><code>#FFA834</code><span class="use">Republier</span><span class="ratio"><i>✓</i> 9,2 · 8,2</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--success)"></div><div class="meta"><code class="tok">--success</code><code>#00BA7C</code><span class="use">En ligne, succès</span><span class="ratio"><i>✓</i> 7,0 · 6,2</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--danger)"></div><div class="meta"><code class="tok">--danger</code><code>#FF5A64</code><span class="use">Texte d'erreur, action destructrice</span><span class="was">⚠️ v10 : #F4212E</span><span class="ratio fix"><i>✓</i> 5,8 · 5,2</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--danger-fill);color:#fff;font-size:14px">Supprimer</div><div class="meta"><code class="tok">--danger-fill</code><code>#C81E28</code><span class="use">Fond du bouton Supprimer</span><span class="ratio fix"><i>✓</i> blanc 5,7</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--warning)"></div><div class="meta"><code class="tok">--warning</code><code>#FFD400</code><span class="use">Avertissement, limite proche</span><span class="ratio"><i>✓</i> 12,4 · 11,0</span></div></div>
+        </div></div>
+        <div class="pal-group"><span class="lbl">États</span><div class="pal">
+          <div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;inset:12px 14px;border-radius:999px;background:var(--hover)"></span></div><div class="meta"><code class="tok">--hover</code><code>rgba(231,233,234,.07)</code><span class="use">Survol : nav, boutons, lignes</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--overlay)"></div><div class="meta"><code class="tok">--overlay</code><code>rgba(8,9,11,.66)</code><span class="use">Fond des fenêtres modales</span></div></div>
+        </div></div>
+      </div>
+
+      <div class="theme-panel c-6" data-theme="light">
+        <h3><svg class="i sm"><use href="#i-sun"/></svg>Thème clair</h3>
+        <div class="pal-group"><span class="lbl">Surfaces et lignes</span><div class="pal">
+          <div class="sw"><div class="chip" style="background:var(--bg)"></div><div class="meta"><code class="tok">--bg</code><code>#F3F5F7</code><span class="use">Fond de page, creux dans une carte (--well)</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--card)"></div><div class="meta"><code class="tok">--card</code><code>#FFFFFF</code><span class="use">Tuiles, recherche, commentaires, menus, fenêtres</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;inset:12px 14px;border-radius:8px;border:1px solid var(--card-line);background:var(--card)"></span></div><div class="meta"><code class="tok">--card-line</code><code>#DBE2E7</code><span class="use">Bord des cartes</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;left:14px;right:14px;height:1px;background:var(--line)"></span></div><div class="meta"><code class="tok">--line</code><code>#E4E9EC</code><span class="use">La ligne grise : séparations, nav, onglets</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;inset:14px 18px;border-radius:8px;border:1px solid var(--line-strong)"></span></div><div class="meta"><code class="tok">--line-strong</code><code>#CFD9DE</code><span class="use">Bord des champs, boutons secondaires</span><span class="ratio">1,3 · 1,4</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--avatar);font-size:15px">LN</div><div class="meta"><code class="tok">--avatar</code><code>#DFE5E9</code><span class="use">Avatar sans photo</span></div></div>
+        </div></div>
+        <div class="pal-group"><span class="lbl">Texte et liens</span><div class="pal">
+          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--text)">Aa</span><span style="background:var(--card);color:var(--text)">Aa</span></div><div class="meta"><code class="tok">--text</code><code>#0F1419</code><span class="use">Texte, titres, accent</span><span class="ratio"><i>✓</i> 16,9 · 18,5</span></div></div>
+          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--text-2)">Aa</span><span style="background:var(--card);color:var(--text-2)">Aa</span></div><div class="meta"><code class="tok">--text-2</code><code>#4B5862</code><span class="use">Texte secondaire, « Répondre »</span><span class="ratio"><i>✓</i> 6,7 · 7,3</span></div></div>
+          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--text-3)">Aa</span><span style="background:var(--card);color:var(--text-3)">Aa</span></div><div class="meta"><code class="tok">--text-3</code><code>#5F6B74</code><span class="use">@username, dates, compteurs</span><span class="was">⚠️ v10 : #6B7780</span><span class="ratio fix"><i>✓</i> 5,0 · 5,5</span></div></div>
+          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--link)">@nora</span><span style="background:var(--card);color:var(--link)">Voir</span></div><div class="meta"><code class="tok">--link</code><code>#1765C4</code><span class="use">Mentions, « Voir plus », « Voir N réponses »</span><span class="was">⚠️ v10 : #1A6FD6</span><span class="ratio fix"><i>✓</i> 5,2 · 5,7</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--accent);color:var(--accent-ink)">Aa</div><div class="meta"><code class="tok">--accent-ink</code><code>#FFFFFF</code><span class="use">Texte sur l'accent (bouton principal, toast)</span><span class="ratio"><i>✓</i> 18,5</span></div></div>
+        </div></div>
+        <div class="pal-group"><span class="lbl">Couleurs fonctionnelles</span><div class="pal">
+          <div class="sw"><div class="chip" style="background:var(--like)"></div><div class="meta"><code class="tok">--like</code><code>#C0185E</code><span class="use">J'aime</span><span class="ratio"><i>✓</i> 5,4 · 5,9</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--repost)"></div><div class="meta"><code class="tok">--repost</code><code>#B45309</code><span class="use">Republier</span><span class="was">⚠️ v10 : #D97706</span><span class="ratio fix"><i>✓</i> 4,6 · 5,0</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--success)"></div><div class="meta"><code class="tok">--success</code><code>#007A52</code><span class="use">En ligne, succès</span><span class="was">⚠️ v10 : #00BA7C</span><span class="ratio fix"><i>✓</i> 4,9 · 5,4</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--danger)"></div><div class="meta"><code class="tok">--danger</code><code>#C81E28</code><span class="use">Texte d'erreur, action destructrice</span><span class="was">⚠️ v10 : #F4212E</span><span class="ratio fix"><i>✓</i> 5,2 · 5,7</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--danger-fill);color:#fff;font-size:14px">Supprimer</div><div class="meta"><code class="tok">--danger-fill</code><code>#C81E28</code><span class="use">Fond du bouton Supprimer</span><span class="ratio fix"><i>✓</i> blanc 5,7</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--warning)"></div><div class="meta"><code class="tok">--warning</code><code>#8A5A00</code><span class="use">Avertissement, limite proche</span><span class="was">⚠️ v10 : #FFD400</span><span class="ratio fix"><i>✓</i> 5,4 · 5,9</span></div></div>
+        </div></div>
+        <div class="pal-group"><span class="lbl">États</span><div class="pal">
+          <div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;inset:12px 14px;border-radius:999px;background:var(--hover)"></span></div><div class="meta"><code class="tok">--hover</code><code>rgba(15,20,25,.05)</code><span class="use">Survol : nav, boutons, lignes</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--overlay)"></div><div class="meta"><code class="tok">--overlay</code><code>rgba(15,20,25,.4)</code><span class="use">Fond des fenêtres modales</span></div></div>
+        </div></div>
+      </div>
+
+    </div>
+    <p class="faint" style="font-size:13px">Ratios : « fond de page · carte ». ⚠️ = valeur corrigée par rapport à la maquette v10 pour atteindre 4,5:1 (texte courant). Les bords de champ (<code>--line-strong</code>) restent sous 3:1, comme dans la v10 : à trancher (voir le rapport).</p>
+  </section>
+
+  <!-- ================= TYPOGRAPHIE ================= -->
+  <section class="section" id="typo">
+    <header><h2>Typographie</h2><p>Inter seule, de 400 à 800. Gratuite (licence OFL), auto-hébergée en production.</p></header>
+    <article class="card">
+      <div>
+        <div class="type-row"><code>Display · Inter 800 · 28</code><span style="font-weight:800;font-size:28px;letter-spacing:-.02em">Transcendance</span></div>
+        <div class="type-row"><code>Titre de page · Inter 800 · 20</code><span style="font-weight:800;font-size:20px">Paramètres du compte</span></div>
+        <div class="type-row"><code>Titre de post · Inter 800 · 18 / 1,3</code><span style="font-weight:800;font-size:18px;line-height:1.3">Premier rendu du style « flat lines »</span></div>
+        <div class="type-row"><code>Titre de carte · Inter 800 · 17</code><span style="font-weight:800;font-size:17px">Commentaires <span class="faint" style="font-weight:500">12</span></span></div>
+        <div class="type-row"><code>Nav · Inter 400 · 19 (actif 700)</code><span style="font-size:19px"><b>Accueil</b> · Explorer · Messages</span></div>
+        <div class="type-row"><code>Chiffre · Inter 800 · 26–40, tabulaire</code><span style="font-weight:800;font-size:34px;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums">18:42</span></div>
+        <div class="type-row"><code>Texte de post · Inter 400 · 15 / 1,5</code><span style="font-size:15px;line-height:1.5">Des aplats, des lignes grises et c'est tout. <a href="#" style="color:var(--link);font-weight:600;text-decoration:none">@nora</a> tu valides ?</span></div>
+        <div class="type-row"><code>Commentaire · Inter 400 · 14 / 1,45</code><span style="font-size:14px;line-height:1.45">Validé pour moi, le fil est plus aéré.</span></div>
+        <div class="type-row"><code>Gras · Inter 700</code><span style="font-weight:700">Léa N. · S'abonner · Publier</span></div>
+        <div class="type-row"><code>Lien · Inter 600 · couleur --link</code><span style="font-weight:600;color:var(--link);font-size:14px">Voir plus · Voir 2 réponses</span></div>
+        <div class="type-row"><code>Légende · Inter 400 · 13</code><span class="faint" style="font-size:13px">@lea_n · 12 min · (modifié)</span></div>
+        <div class="type-row"><code>Sur-titre · Inter 600 · 12–13 · MAJ.</code><span class="lbl">Couleurs · Météo · Variantes</span></div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= FONDATIONS ================= -->
+  <section class="section" id="fondations">
+    <header><h2>Fondations</h2><p>Espacements, rayons, lignes, mouvement.</p></header>
+    <div class="grid">
+      <article class="card c-3"><h3 style="font-size:16px">Espacements</h3>
+        <div class="stack">
+          <div class="space-row"><code style="width:104px">--space-1 · 4</code><i style="width:4px;height:4px"></i></div>
+          <div class="space-row"><code style="width:104px">--space-2 · 8</code><i style="width:8px;height:8px"></i></div>
+          <div class="space-row"><code style="width:104px">--space-3 · 12</code><i style="width:12px;height:12px"></i></div>
+          <div class="space-row"><code style="width:104px">--space-4 · 16</code><i style="width:16px;height:16px"></i></div>
+          <div class="space-row"><code style="width:104px">--space-5 · 20</code><i style="width:20px;height:20px"></i></div>
+          <div class="space-row"><code style="width:104px">--space-6 · 24</code><i style="width:24px;height:24px"></i></div>
+        </div>
+        <p class="faint" style="font-size:12.5px">Nav 275 px · fil 620 px · colonne de droite 360 px · commentaires 360 à 520 px. Entre colonnes : 24 px.</p>
+      </article>
+      <article class="card c-3"><h3 style="font-size:16px">Rayons</h3>
+        <div class="flex">
+          <div class="variant" style="align-items:center"><div class="radius-demo" style="border-radius:8px"></div><span class="lbl">sm · 8</span></div>
+          <div class="variant" style="align-items:center"><div class="radius-demo" style="border-radius:16px"></div><span class="lbl">md · 16</span></div>
+          <div class="variant" style="align-items:center"><div class="radius-demo" style="border-radius:999px"></div><span class="lbl">pill</span></div>
+        </div>
+        <p class="faint" style="font-size:12.5px">sm : champs, menus, toasts · md : cartes, posts, médias · pill : boutons, nav, recherche.</p>
+      </article>
+      <article class="card c-3"><h3 style="font-size:16px">Lignes</h3>
+        <div class="line-demo">
+          <div class="row"><span style="border-top:1px solid var(--line)"></span>--line · séparation</div>
+          <div class="row"><span style="border-top:1px solid var(--card-line)"></span>--card-line · carte</div>
+          <div class="row"><span style="border-top:1px solid var(--line-strong)"></span>--line-strong · champ</div>
+          <div class="row"><span style="border-top:4px solid var(--accent);border-radius:4px;width:56px"></span>onglet actif · 4 px</div>
+          <div class="row"><span style="border-top:1px dashed var(--line-strong)"></span>tirets · ajout</div>
+        </div>
+        <p class="faint" style="font-size:12.5px">Toujours 1 px. Dans le fil, les lignes s'arrêtent à 20 px des bords.</p>
+      </article>
+      <article class="card c-3"><h3 style="font-size:16px">Mouvement</h3>
+        <div class="stack" style="gap:8px">
+          <div class="space-row"><code style="width:92px">150 ms</code>survol, couleurs</div>
+          <div class="space-row"><code style="width:92px">200 ms</code>interrupteur, icônes</div>
+          <div class="space-row"><code style="width:92px">250 ms</code>panneau des commentaires</div>
+          <div class="space-row"><code style="width:92px">900 ms</code>barre de défilement masquée</div>
+        </div>
+        <p class="faint" style="font-size:12.5px">Courbe unique <code>cubic-bezier(.2,.8,.2,1)</code>. Coupé si prefers-reduced-motion.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ================= COMPOSANTS ================= -->
+  <section class="section" id="composants">
+    <header><h2>Composants</h2><p>24 composants, numérotés comme dans docs/DESIGN_SYSTEM.md §5, plus un composant proposé (25).</p></header>
+
+    <h3 class="sub">Primitives</h3>
+    <div class="grid">
+      <article class="card c-12" id="cmp-1">
+        <div class="card-head"><span class="num">01</span><h3>Panel</h3><span class="faint" style="font-size:13px">(GlassPanel dans le liquid glass)</span><span class="lot-badge lot">Lot 1</span></div>
+        <p class="desc">Surface de base : tuiles, recherche, commentaires, menus, fenêtres. Un fond « carte » un peu plus clair que la page, un bord gris de 1 px, aucune ombre. La nav et le fil n'ont pas de panneau : ils sont posés sur le fond, séparés par des lignes.</p>
+        <div class="demo">
+          <div class="variant"><span class="lbl">default · roomy · interactive (survol) · dashed (ajout)</span>
+            <div class="flex">
+              <div class="tile" style="width:170px;height:110px"><b>default</b><span class="faint" style="font-size:13px">padding 16</span></div>
+              <div class="tile roomy" style="width:170px;height:110px"><b>roomy</b><span class="faint" style="font-size:13px">padding 24</span></div>
+              <div class="tile interactive is-hover" style="width:170px;height:110px"><b>interactive</b><span class="faint" style="font-size:13px">survol</span></div>
+              <div class="tile t-add" style="width:170px;height:110px"><svg class="i sm"><use href="#i-plus"/></svg><b>dashed</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="props"><code>as</code><code>padding: 'default' | 'roomy'</code><code>interactive</code><code>dashed</code></div>
+        <p class="specs">Toutes les pages</p>
+      </article>
+
+      <article class="card c-12" id="cmp-2">
+        <div class="card-head"><span class="num">02</span><h3>Button</h3><span class="lot-badge lot">Lot 1</span></div>
+        <p class="desc">Action principale ou secondaire. Forme « pill ». Le principal est plein (couleur du texte), le secondaire a un contour gris, le fantôme n'a rien.</p>
+        <div class="demo">
+          <div class="variant"><span class="lbl">Variantes</span><div class="flex"><button class="btn btn-primary"><svg class="i sm"><use href="#i-send"/></svg>Publier</button><button class="btn btn-outline">S'abonner</button><button class="btn btn-ghost">Annuler</button><button class="btn btn-danger"><svg class="i sm"><use href="#i-trash"/></svg>Supprimer</button></div></div>
+          <div class="variant"><span class="lbl">Tailles : sm 32 · md 36 · lg 52</span><div class="flex"><button class="btn btn-primary btn-sm">Petit</button><button class="btn btn-primary">Moyen</button><button class="btn btn-primary btn-lg"><svg class="i sm"><use href="#i-plus"/></svg>Publier</button><button class="btn btn-outline btn-sm">Petit</button><button class="btn btn-outline">Moyen</button></div></div>
+          <div class="variant"><span class="lbl">États : survol · chargement · désactivé</span><div class="flex"><button class="btn btn-outline is-hover">Survol</button><button class="btn btn-ghost is-hover">Survol</button><button class="btn btn-primary"><span class="spin sm"></span>Publication…</button><button class="btn btn-primary" disabled>Désactivé</button><button class="btn btn-outline" disabled>Désactivé</button></div></div>
+          <div class="variant"><span class="lbl">Pleine largeur (nav, fenêtres)</span><div class="stack" style="max-width:320px"><button class="btn btn-primary btn-lg btn-block"><svg class="i sm"><use href="#i-plus"/></svg>Publier</button><button class="btn btn-outline btn-block">Annuler</button></div></div>
+        </div>
+        <div class="props"><code>variant: 'primary' | 'outline' | 'ghost' | 'danger'</code><code>size: 'sm' | 'md' | 'lg'</code><code>icon</code><code>loading</code><code>disabled</code><code>block</code></div>
+        <p class="specs">Partout · NOTIF-03, POST, SOC, ADM</p>
+      </article>
+
+      <div class="masonry c-12">
+        <article class="card" id="cmp-3">
+          <div class="card-head"><span class="num">03</span><h3>IconButton</h3><span class="lot-badge lot">Lot 1</span></div>
+          <p class="desc">Bouton rond avec une seule icône, gris au repos, disque au survol. Le libellé accessible (aria-label) est obligatoire.</p>
+          <div class="demo">
+            <div class="variant"><span class="lbl">sm · md · survol · point · contour · désactivé</span><div class="flex"><button class="icon-btn sm" aria-label="Image"><svg class="i sm"><use href="#i-image"/></svg></button><button class="icon-btn" aria-label="Paramètres"><svg class="i"><use href="#i-settings"/></svg></button><button class="icon-btn is-hover" aria-label="Options"><svg class="i"><use href="#i-more"/></svg></button><button class="icon-btn" aria-label="Notifications, nouvelles"><svg class="i"><use href="#i-bell"/></svg><span class="dot"></span></button><button class="icon-btn outline" aria-label="Lecture"><svg class="i sm"><use href="#i-play"/></svg></button><button class="icon-btn" disabled aria-label="Supprimer (désactivé)"><svg class="i"><use href="#i-trash"/></svg></button></div></div>
+          </div>
+          <div class="props"><code>icon</code><code>label (obligatoire)</code><code>size: 'sm' | 'md'</code><code>dot</code><code>outline</code><code>disabled</code></div>
+          <p class="specs">Rédaction, menus, nav réduite, en-têtes</p>
+        </article>
+
+        <article class="card" id="cmp-4">
+          <div class="card-head"><span class="num">04</span><h3>Input</h3><span class="lot-badge lot">Lot 1</span></div>
+          <p class="desc">Champ texte d'une ligne. Fond transparent, bord gris ; au focus, le bord prend la couleur du texte. Libellé, aide, erreur, éléments à gauche ou à droite.</p>
+          <div class="demo">
+            <div class="variant"><span class="lbl">Avec libellé · focus</span><div><span class="field-label">Nom d'utilisateur</span><label class="field is-focus"><input value="aboumall"><svg class="i sm"><use href="#i-user"/></svg></label></div></div>
+            <div class="variant"><span class="lbl">Mot de passe · erreur</span><div class="stack"><label class="field"><input type="password" value="motdepasse"><svg class="i sm"><use href="#i-eye-off"/></svg></label><div><label class="field error"><input value="ab"></label><p class="help error">3 à 20 caractères : lettres, chiffres et _</p></div></div></div>
+            <div class="variant"><span class="lbl">Recherche · désactivé</span><div class="stack"><label class="field search-bar"><svg class="i sm"><use href="#i-search"/></svg><input placeholder="Rechercher"><kbd>Ctrl K</kbd></label><label class="field disabled"><input placeholder="Désactivé" disabled></label></div></div>
+          </div>
+          <div class="props"><code>label</code><code>hint</code><code>error</code><code>leading</code><code>trailing</code><code>disabled</code></div>
+          <p class="specs">AUTH-01/02, ACC-03/05, SEARCH</p>
+        </article>
+
+        <article class="card" id="cmp-5">
+          <div class="card-head"><span class="num">05</span><h3>Textarea</h3><span class="lot-badge lot">Lot 1</span></div>
+          <p class="desc">Champ multi-lignes avec compteur. Le compteur passe en avertissement près de la limite, puis en erreur au-delà.</p>
+          <div class="demo">
+            <div class="variant"><span class="lbl">Normal</span><div class="stack" style="gap:6px"><label class="field field-area"><textarea rows="2" placeholder="Contenu (optionnel)"></textarea></label><span class="count" style="align-self:flex-end">0 / 500</span></div></div>
+            <div class="variant"><span class="lbl">Limite proche · dépassée</span><div class="stack" style="gap:6px"><label class="field field-area"><textarea rows="2">Bio presque pleine, il reste peu de place pour écrire…</textarea></label><span class="count warn" style="align-self:flex-end">152 / 160</span><label class="field field-area error"><textarea rows="2">Ce message dépasse la limite autorisée…</textarea></label><span class="count over" style="align-self:flex-end">512 / 500</span></div></div>
+          </div>
+          <div class="props"><code>maxLength</code><code>showCount</code><code>autosize</code><code>error</code></div>
+          <p class="specs">POST-01 (500), DM-01 (1 000), ACC-03 (bio, 160)</p>
+        </article>
+
+        <article class="card" id="cmp-6">
+          <div class="card-head"><span class="num">06</span><h3>Avatar</h3><span class="lot-badge lot">Lot 1</span></div>
+          <p class="desc">Photo de profil, ou initiales sur un disque gris uni. Point vert si la personne est en ligne.</p>
+          <div class="demo">
+            <div class="variant"><span class="lbl">Tailles : xs 28 · sm 34 · md 40 · lg 56 · xl 72</span><div class="flex"><div class="avatar xs">J</div><div class="avatar sm">LN</div><div class="avatar">TK</div><div class="avatar lg">A</div><div class="avatar xl">SM</div></div></div>
+            <div class="variant"><span class="lbl">En ligne · avec photo</span><div class="flex"><div class="avatar online">N</div><div class="avatar lg online">A</div><div class="avatar lg photo" role="img" aria-label="Photo de profil"></div><div class="avatar xl photo online" role="img" aria-label="Photo de profil"></div></div></div>
+          </div>
+          <div class="props"><code>src</code><code>name</code><code>size: 'xs' | 'sm' | 'md' | 'lg' | 'xl'</code><code>online</code></div>
+          <p class="specs">ACC-01, ACC-04, ACC-07 · partout</p>
+        </article>
+
+        <article class="card" id="cmp-7">
+          <div class="card-head"><span class="num">07</span><h3>Badge</h3><span class="lot-badge lot">Lot 1</span></div>
+          <p class="desc">Compteur ou étiquette courte. Le compteur est plein (accent), les étiquettes n'ont qu'un contour.</p>
+          <div class="demo">
+            <div class="variant"><span class="lbl">count · neutral · private · rôle · modération</span><div class="flex"><span class="badge">4</span><span class="badge">99+</span><span class="badge neutral">12</span><span class="badge private"><svg class="i xs"><use href="#i-lock"/></svg>Privé</span><span class="badge neutral">Admin</span><span class="badge mod"><svg class="i xs"><use href="#i-ban"/></svg>Banni</span></div></div>
+          </div>
+          <div class="props"><code>variant: 'count' | 'neutral' | 'private' | 'danger'</code><code>max (99+)</code></div>
+          <p class="specs">Nav (NOTIF-01, DM-02), profil (ACC-01), admin</p>
+        </article>
+
+        <article class="card" id="cmp-8">
+          <div class="card-head"><span class="num">08</span><h3>Tabs</h3><span class="lot-badge lot">Lot 1</span></div>
+          <p class="desc">Onglets en texte, avec une barre de 4 px sous l'onglet actif et une ligne sous l'ensemble. Navigation au clavier avec les flèches (role tablist).</p>
+          <div class="demo">
+            <div class="variant"><span class="lbl">Fil (pleine largeur)</span><div class="tabs" role="tablist"><button role="tab" aria-selected="true">Abonnements</button><button role="tab" aria-selected="false">Explorer</button></div></div>
+            <div class="variant"><span class="lbl">Profil</span><div class="tabs inline" role="tablist"><button role="tab" aria-selected="true">Posts</button><button role="tab" aria-selected="false">Réponses</button><button role="tab" aria-selected="false">Médias</button><button role="tab" aria-selected="false">J'aime</button></div></div>
+            <div class="variant"><span class="lbl">Avec compteur</span><div class="tabs inline" role="tablist"><button role="tab" aria-selected="true">Messages</button><button role="tab" aria-selected="false">Demandes <span class="badge">3</span></button></div></div>
+          </div>
+          <div class="props"><code>items</code><code>value</code><code>onChange</code><code>fill</code></div>
+          <p class="specs">FEED-01/02, ACC-02, DM-03, recherche, admin</p>
+        </article>
+
+        <article class="card" id="cmp-9">
+          <div class="card-head"><span class="num">09</span><h3>Switch</h3><span class="lot-badge lot">Lot 1</span></div>
+          <p class="desc">Interrupteur on/off (role switch). Activé : fond de la couleur du texte, curseur inversé.</p>
+          <div class="demo">
+            <div class="variant"><span class="lbl">États</span><div class="flex"><button class="switch" role="switch" aria-checked="true" aria-label="Activé"></button><button class="switch" role="switch" aria-checked="false" aria-label="Désactivé"></button><button class="switch" role="switch" aria-checked="true" disabled aria-label="Activé, non modifiable"></button><button class="switch" role="switch" aria-checked="false" disabled aria-label="Désactivé, non modifiable"></button></div></div>
+            <div class="variant"><span class="lbl">Avec libellé</span><div style="display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:380px"><span style="display:flex;flex-direction:column"><b>Compte privé</b><span class="faint" style="font-size:13px">Les nouveaux abonnés doivent être acceptés</span></span><button class="switch" role="switch" aria-checked="true" aria-label="Compte privé"></button></div></div>
+          </div>
+          <div class="props"><code>checked</code><code>onChange</code><code>label</code><code>disabled</code></div>
+          <p class="specs">Thème, ACC-06 (compte privé)</p>
+        </article>
+
+        <article class="card" id="cmp-10">
+          <div class="card-head"><span class="num">10</span><h3>ProgressBar</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+          <p class="desc">Progression déterminée, fine (4 px), avec libellé.</p>
+          <div class="demo">
+            <div class="variant"><span class="lbl">Valeurs</span><div class="stack"><div class="progress" style="--p:25%"><i></i></div><div class="progress" style="--p:68%"><i></i></div><div class="progress" style="--p:100%"><i></i></div></div></div>
+            <div class="variant"><span class="lbl">Avec libellé · erreur</span><div class="stack">
+              <div class="stack" style="gap:6px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>video.mp4</span><span class="faint">68 %</span></div><div class="progress" style="--p:68%"><i></i></div></div>
+              <div class="stack" style="gap:6px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>gros-fichier.mov</span><span style="color:var(--danger)">Format non accepté</span></div><div class="progress error" style="--p:100%"><i></i></div></div>
+            </div></div>
+          </div>
+          <div class="props"><code>value</code><code>label</code><code>error</code></div>
+          <p class="specs">MEDIA-05 (upload)</p>
+        </article>
+
+        <article class="card" id="cmp-11">
+          <div class="card-head"><span class="num">11</span><h3>Spinner / Skeleton</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+          <p class="desc">Chargement : un anneau pour les actions courtes, des squelettes gris pour le contenu.</p>
+          <div class="demo">
+            <div class="variant"><span class="lbl">Spinner</span><div class="flex"><span class="spin sm"></span><span class="spin"></span><span class="spin lg"></span><button class="btn btn-outline"><span class="spin sm"></span>Chargement…</button></div></div>
+            <div class="variant"><span class="lbl">Squelette de post</span><div class="stack" style="gap:10px"><div style="display:flex;gap:12px;align-items:center"><span class="sk circle" style="width:40px;height:40px"></span><span class="sk" style="width:160px;height:12px"></span></div><span class="sk" style="width:70%;height:18px;margin-top:4px"></span><span class="sk" style="width:100%;height:12px"></span><span class="sk" style="width:85%;height:12px"></span></div></div>
+          </div>
+          <div class="props"><code>shape: 'post' | 'row' | 'avatar' | 'text'</code><code>lines</code></div>
+          <p class="specs">UI-06, tous les chargements</p>
+        </article>
+      </div>
+
+      <article class="card c-12" id="cmp-12">
+        <div class="card-head"><span class="num">12</span><h3>Icon</h3><span class="lot-badge lot">Lot 1</span></div>
+        <p class="desc">Habillage de Lucide (lucide-react) aux tailles du système : 22 px, 18 px dans les boutons et les actions, 26 px dans la nav. Trait 1,8 (2,4 pour l'élément actif).</p>
+        <div class="demo flush">
+          <div class="icon-grid">
+            <div class="icon-cell"><svg class="i"><use href="#i-home"/></svg><span>home</span></div><div class="icon-cell"><svg class="i"><use href="#i-compass"/></svg><span>compass</span></div><div class="icon-cell"><svg class="i"><use href="#i-bell"/></svg><span>bell</span></div><div class="icon-cell"><svg class="i"><use href="#i-msg"/></svg><span>msg</span></div><div class="icon-cell"><svg class="i"><use href="#i-search"/></svg><span>search</span></div><div class="icon-cell"><svg class="i"><use href="#i-user"/></svg><span>user</span></div><div class="icon-cell"><svg class="i"><use href="#i-settings"/></svg><span>settings</span></div><div class="icon-cell"><svg class="i"><use href="#i-shield"/></svg><span>shield</span></div><div class="icon-cell"><svg class="i"><use href="#i-plus"/></svg><span>plus</span></div><div class="icon-cell"><svg class="i"><use href="#i-logout"/></svg><span>logout</span></div><div class="icon-cell"><svg class="i"><use href="#i-heart"/></svg><span>heart</span></div><div class="icon-cell"><svg class="i"><use href="#i-repeat"/></svg><span>repeat</span></div><div class="icon-cell"><svg class="i"><use href="#i-reply"/></svg><span>reply</span></div><div class="icon-cell"><svg class="i"><use href="#i-send"/></svg><span>send</span></div><div class="icon-cell"><svg class="i"><use href="#i-arrow-up"/></svg><span>arrow-up</span></div><div class="icon-cell"><svg class="i"><use href="#i-at"/></svg><span>at</span></div><div class="icon-cell"><svg class="i"><use href="#i-moon"/></svg><span>moon</span></div><div class="icon-cell"><svg class="i"><use href="#i-sun"/></svg><span>sun</span></div><div class="icon-cell"><svg class="i"><use href="#i-cloud"/></svg><span>cloud</span></div><div class="icon-cell"><svg class="i"><use href="#i-game"/></svg><span>game</span></div><div class="icon-cell"><svg class="i"><use href="#i-more"/></svg><span>more</span></div><div class="icon-cell"><svg class="i"><use href="#i-image"/></svg><span>image</span></div><div class="icon-cell"><svg class="i"><use href="#i-smile"/></svg><span>smile</span></div><div class="icon-cell"><svg class="i"><use href="#i-eye"/></svg><span>eye</span></div><div class="icon-cell"><svg class="i"><use href="#i-eye-off"/></svg><span>eye-off</span></div><div class="icon-cell"><svg class="i"><use href="#i-grid"/></svg><span>grid</span></div><div class="icon-cell"><svg class="i"><use href="#i-lock"/></svg><span>lock</span></div><div class="icon-cell"><svg class="i"><use href="#i-blocks"/></svg><span>blocks</span></div><div class="icon-cell"><svg class="i"><use href="#i-check"/></svg><span>check</span></div><div class="icon-cell"><svg class="i"><use href="#i-chevron"/></svg><span>chevron</span></div><div class="icon-cell"><svg class="i"><use href="#i-arrow"/></svg><span>arrow</span></div><div class="icon-cell"><svg class="i"><use href="#i-x"/></svg><span>x</span></div><div class="icon-cell"><svg class="i"><use href="#i-clock"/></svg><span>clock</span></div><div class="icon-cell"><svg class="i"><use href="#i-timer"/></svg><span>timer</span></div><div class="icon-cell"><svg class="i"><use href="#i-music"/></svg><span>music</span></div><div class="icon-cell"><svg class="i"><use href="#i-play"/></svg><span>play</span></div><div class="icon-cell"><svg class="i"><use href="#i-pencil"/></svg><span>pencil</span></div><div class="icon-cell"><svg class="i"><use href="#i-trash"/></svg><span>trash</span></div><div class="icon-cell"><svg class="i"><use href="#i-flag"/></svg><span>flag</span></div><div class="icon-cell"><svg class="i"><use href="#i-link"/></svg><span>link</span></div><div class="icon-cell"><svg class="i"><use href="#i-info"/></svg><span>info</span></div><div class="icon-cell"><svg class="i"><use href="#i-alert"/></svg><span>alert</span></div><div class="icon-cell"><svg class="i"><use href="#i-inbox"/></svg><span>inbox</span></div><div class="icon-cell"><svg class="i"><use href="#i-user-plus"/></svg><span>user-plus</span></div><div class="icon-cell"><svg class="i"><use href="#i-user-check"/></svg><span>user-check</span></div><div class="icon-cell"><svg class="i"><use href="#i-maximize"/></svg><span>maximize</span></div><div class="icon-cell"><svg class="i"><use href="#i-ban"/></svg><span>ban</span></div>
+          </div>
+        </div>
+        <div class="props"><code>name</code><code>size: 14 | 18 | 22 | 26</code><code>label (si l'icône est seule)</code></div>
+        <p class="specs">Partout</p>
+      </article>
+    </div>
+
+    <h3 class="sub">Retours et superpositions</h3>
+    <div class="grid"><div class="masonry c-12">
+      <article class="card" id="cmp-13">
+        <div class="card-head"><span class="num">13</span><h3>Toast</h3><span class="lot-badge lot">Lot 1</span></div>
+        <p class="desc">Confirmation de chaque création, modification et suppression. Bloc inversé (fond de la couleur du texte), fermeture automatique après 4 s ou manuelle. Pile en bas, au centre sur mobile.</p>
+        <div class="demo">
+          <div class="toast-stack">
+            <div class="toast" role="status"><span class="ico success"><svg class="i"><use href="#i-check"/></svg></span><span>Post publié</span><span class="end"><button class="icon-btn" aria-label="Fermer"><svg class="i sm"><use href="#i-x"/></svg></button></span></div>
+            <div class="toast" role="status"><span class="ico info"><svg class="i"><use href="#i-trash"/></svg></span><span>Post supprimé</span><span class="end"><button class="undo">Annuler</button></span></div>
+            <div class="toast" role="status"><span class="ico info"><svg class="i"><use href="#i-user-check"/></svg></span><span>Demande envoyée à @sami</span><span class="end"><button class="icon-btn" aria-label="Fermer"><svg class="i sm"><use href="#i-x"/></svg></button></span></div>
+            <div class="toast" role="alert"><span class="ico error"><svg class="i"><use href="#i-alert"/></svg></span><span>Échec de l'envoi, réessayez</span><span class="end"><button class="icon-btn" aria-label="Fermer"><svg class="i sm"><use href="#i-x"/></svg></button></span></div>
+          </div>
+        </div>
+        <div class="props"><code>type: 'success' | 'error' | 'info'</code><code>message</code><code>action</code><code>duration</code></div>
+        <p class="specs">NOTIF-03 (toutes les actions)</p>
+      </article>
+
+      <article class="card" id="cmp-14">
+        <div class="card-head"><span class="num">14</span><h3>Modal</h3><span class="lot-badge lot">Lot 1</span></div>
+        <p class="desc">Fenêtre de dialogue en carte, sur un fond assombri. Boutons empilés en pleine largeur. Piège du focus, fermeture avec Échap, retour du focus à l'élément d'origine.</p>
+        <div class="demo flush">
+          <div class="overlay-demo">
+            <div class="modal" role="dialog" aria-label="Supprimer ce post ?">
+              <div class="modal-head"><h4>Supprimer ce post ?</h4></div>
+              <p class="muted" style="font-size:14px;line-height:1.5">Il affichera « Post supprimé ». Les réponses sont conservées. Cette action est définitive.</p>
+              <div class="actions"><button class="btn btn-danger btn-block">Supprimer</button><button class="btn btn-outline btn-block">Annuler</button></div>
+            </div>
+          </div>
+          <div class="overlay-demo" style="border-top:1px solid var(--line);border-radius:0">
+            <div class="modal" role="dialog" aria-label="Rejoignez la conversation">
+              <div class="modal-head"><h4>Rejoignez la conversation</h4><button class="icon-btn" aria-label="Fermer"><svg class="i sm"><use href="#i-x"/></svg></button></div>
+              <p class="muted" style="font-size:14px;line-height:1.5">Connectez-vous pour aimer, répondre et suivre des personnes. Vous reviendrez sur cette page.</p>
+              <div class="actions"><button class="btn btn-primary btn-block">Connexion</button><button class="btn btn-outline btn-block">Inscription</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="props"><code>open</code><code>onClose</code><code>title</code><code>actions</code><code>variant: 'default' | 'danger'</code></div>
+        <p class="specs">POST-07, ACC-09, ADM-04, VIS-03</p>
+      </article>
+
+      <article class="card" id="cmp-15">
+        <div class="card-head"><span class="num">15</span><h3>Dropdown</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+        <p class="desc">Menu contextuel ouvert par le bouton « … ». Carte à bord gris, éléments pleine largeur, action destructrice en rouge après un séparateur.</p>
+        <div class="demo">
+          <div class="dropdown-demo">
+            <button class="icon-btn is-hover" aria-label="Options" aria-expanded="true"><svg class="i"><use href="#i-more"/></svg></button>
+            <div class="menu" role="menu">
+              <button role="menuitem"><svg class="i sm"><use href="#i-pencil"/></svg>Modifier</button>
+              <button role="menuitem" class="is-hover"><svg class="i sm"><use href="#i-link"/></svg>Copier le lien</button>
+              <button role="menuitem"><svg class="i sm"><use href="#i-flag"/></svg>Signaler</button>
+              <hr>
+              <button role="menuitem" class="danger"><svg class="i sm"><use href="#i-trash"/></svg>Supprimer</button>
+            </div>
+          </div>
+        </div>
+        <div class="props"><code>trigger</code><code>items[] : label, icon, danger, onSelect</code></div>
+        <p class="specs">Menu d'un post (POST-06/07, ADM-09), plugins, admin</p>
+      </article>
+
+      <article class="card" id="cmp-16">
+        <div class="card-head"><span class="num">16</span><h3>EmptyState</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+        <p class="desc">Liste vide : une icône cerclée, un titre, une explication et, si utile, une action.</p>
+        <div class="demo">
+          <div class="empty"><span class="ring"><svg class="i"><use href="#i-inbox"/></svg></span><h4>Aucune notification</h4><p>Les likes, réponses et nouveaux abonnés apparaîtront ici.</p></div>
+          <div class="empty" style="border-top:1px solid var(--line)"><span class="ring"><svg class="i"><use href="#i-compass"/></svg></span><h4>Votre fil est vide</h4><p>Suivez des personnes pour voir leurs posts ici.</p><button class="btn btn-primary btn-sm">Explorer</button></div>
+        </div>
+        <div class="props"><code>icon</code><code>title</code><code>description</code><code>action</code></div>
+        <p class="specs">UI-06 : fil vide, aucune notification, aucun résultat</p>
+      </article>
+
+      <article class="card" id="cmp-17">
+        <div class="card-head"><span class="num">17</span><h3>ScrollArea</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+        <p class="desc">Zone qui défile : barre native fine, sans fond, visible seulement pendant le défilement, fondu en bas.</p>
+        <div class="demo">
+          <div class="scroll-demo" data-autohide>
+            <div class="row-item"><div class="avatar xs">A</div><b>Élément 1</b></div><div class="row-item"><div class="avatar xs">B</div><b>Élément 2</b></div><div class="row-item"><div class="avatar xs">C</div><b>Élément 3</b></div><div class="row-item"><div class="avatar xs">D</div><b>Élément 4</b></div><div class="row-item"><div class="avatar xs">E</div><b>Élément 5</b></div><div class="row-item"><div class="avatar xs">F</div><b>Élément 6</b></div><div class="row-item"><div class="avatar xs">G</div><b>Élément 7</b></div><div class="row-item"><div class="avatar xs">H</div><b>Élément 8</b></div><div class="row-item"><div class="avatar xs">I</div><b>Élément 9</b></div><div class="row-item"><div class="avatar xs">J</div><b>Élément 10</b></div><div class="row-item"><div class="avatar xs">K</div><b>Élément 11</b></div><div class="row-item"><div class="avatar xs">L</div><b>Élément 12</b></div>
+          </div>
+          <span class="faint" style="font-size:13px">Faites défiler : la barre apparaît puis s'efface.</span>
+        </div>
+        <div class="props"><code>fade</code><code>autoHide</code></div>
+        <p class="specs">Fil, plugins, commentaires, messages, listes</p>
+      </article>
+    </div></div>
+
+    <h3 class="sub">Composants métier</h3>
+    <div class="grid">
+      <article class="card c-12" id="cmp-18">
+        <div class="card-head"><span class="num">18</span><h3>PostCard</h3><span class="lot-badge lot">Lot 1</span></div>
+        <p class="desc">Post façon Reddit, posé sur le fond (pas de carte) : en-tête (photo, nom, @username, temps), titre obligatoire, contenu optionnel tronqué à 4 lignes, médias, actions. Les posts sont séparés par une ligne qui s'arrête à 20 px des bords ; au survol, un fond arrondi remplace les lignes voisines. Les réponses n'ont pas de titre.</p>
+        <div class="grid" style="gap:16px">
+          <div class="c-6 stack" style="gap:16px">
+            <div class="variant"><span class="lbl">Normal · aimé · avec média</span>
+              <div class="demo flush feedlike">
+                <article class="post">
+                  <header class="post-head"><div class="avatar online">LN</div><div class="who"><b>Léa N.</b><span>@lea_n · 12 min</span></div><button class="icon-btn more" aria-label="Options du post"><svg class="i sm"><use href="#i-more"/></svg></button></header>
+                  <h3 class="post-title">Premier rendu du style « flat lines »</h3>
+                  <p class="post-text">Des aplats, des lignes grises et c'est tout. <a href="#">@nora</a> tu valides ?</p>
+                  <div class="post-media" style="height:180px"></div>
+                  <footer class="post-actions"><button class="action act-reply" aria-label="Commentaires"><span class="ico"><svg class="i sm"><use href="#i-reply"/></svg></span>12</button><button class="action act-repost"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>4</button><button class="action act-like liked"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>86</button></footer>
+                </article>
+              </div>
+            </div>
+            <div class="variant"><span class="lbl">Texte long · « Voir plus »</span>
+              <div class="demo flush feedlike">
+                <article class="post">
+                  <header class="post-head"><div class="avatar">MB</div><div class="who"><b>Mehdi B.</b><span>@mehdi · 34 min</span></div><button class="icon-btn more" aria-label="Options du post"><svg class="i sm"><use href="#i-more"/></svg></button></header>
+                  <h3 class="post-title">Retour sur la première semaine de sprint</h3>
+                  <p class="post-text clamp">Bilan rapide de S1 pour ceux qui n'étaient pas à la rétro. Côté back, le modèle <code>Post</code> est en place avec le titre obligatoire, et la pagination par curseur fonctionne sur le fil. <a href="#">@theok</a> a branché le WebSocket pour les notifications, il reste à gérer la reconnexion propre quand le token expire. Côté front, <a href="#">@lea_n</a> a fini les maquettes et on attaque le setup Vite + Tailwind lundi. Points de vigilance : on a sous-estimé la partie médias, il faudra sûrement la découper en deux tickets.</p>
+                  <button class="see-more" aria-expanded="false">Voir plus</button>
+                  <footer class="post-actions"><button class="action act-reply" aria-label="Commentaires"><span class="ico"><svg class="i sm"><use href="#i-reply"/></svg></span>9</button><button class="action act-repost"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>2</button><button class="action act-like"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>27</button></footer>
+                </article>
+              </div>
+            </div>
+            <div class="variant"><span class="lbl">Supprimé · supprimé par la modération</span>
+              <div class="demo flush feedlike">
+                <article class="post"><div class="post-deleted">Post supprimé</div></article>
+                <article class="post"><div class="post-deleted"><svg class="i sm"><use href="#i-shield"/></svg>Post supprimé par la modération</div></article>
+              </div>
+            </div>
+          </div>
+          <div class="c-6 stack" style="gap:16px">
+            <div class="variant"><span class="lbl">Republié par · (modifié) · survol · commentaires ouverts</span>
+              <div class="demo flush feedlike">
+                <article class="post is-hover">
+                  <div class="post-context"><svg class="i sm"><use href="#i-repeat"/></svg>Nora a republié</div>
+                  <header class="post-head"><div class="avatar">TK</div><div class="who"><b>Théo K.</b><span>@theok · 1 h · (modifié)</span></div><button class="icon-btn more" aria-label="Options du post"><svg class="i sm"><use href="#i-more"/></svg></button></header>
+                  <h3 class="post-title">WebSocket : uniquement pour pousser</h3>
+                  <p class="post-text">Toutes les actions passent par l'API REST. Une seule couche de permissions.</p>
+                  <footer class="post-actions"><button class="action act-reply" aria-label="Commentaires"><span class="ico"><svg class="i sm"><use href="#i-reply"/></svg></span>3</button><button class="action act-repost reposted"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>10</button><button class="action act-like"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>41</button></footer>
+                </article>
+                <article class="post is-open">
+                  <header class="post-head"><div class="avatar online">N</div><div class="who"><b>Nora</b><span>@nora · 3 h</span></div><button class="icon-btn more" aria-label="Options du post"><svg class="i sm"><use href="#i-more"/></svg></button></header>
+                  <h3 class="post-title">Bento ou liste classique pour l'accueil ?</h3>
+                  <p class="post-text">Commentaires ouverts : fond permanent et bouton actif.</p>
+                  <footer class="post-actions"><button class="action act-reply" aria-label="Commentaires"><span class="ico"><svg class="i sm"><use href="#i-reply"/></svg></span>27</button><button class="action act-repost"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>3</button><button class="action act-like liked"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>65</button></footer>
+                </article>
+              </div>
+            </div>
+            <div class="variant"><span class="lbl">Réponses (sans titre, en fil)</span>
+              <div class="demo flush feedlike">
+                <article class="post reply">
+                  <header class="post-head"><div class="avatar online">N</div><div class="who"><b>Nora</b><span>@nora · 8 min</span></div><button class="icon-btn more" aria-label="Options de la réponse"><svg class="i sm"><use href="#i-more"/></svg></button></header>
+                  <p class="replying-line">En réponse à <a href="#">@lea_n</a></p>
+                  <p class="post-text">Validé ! Les lignes raccourcies rendent le fil plus aéré.</p>
+                  <footer class="post-actions"><button class="action act-reply" aria-label="Répondre"><span class="ico"><svg class="i sm"><use href="#i-reply"/></svg></span>1</button><button class="action act-repost"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>0</button><button class="action act-like"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>5</button></footer>
+                </article>
+                <article class="post reply">
+                  <header class="post-head"><div class="avatar online">A</div><div class="who"><b>aboumall</b><span>@aboumall · 2 min</span></div><button class="icon-btn more" aria-label="Options de la réponse"><svg class="i sm"><use href="#i-more"/></svg></button></header>
+                  <p class="replying-line">En réponse à <a href="#">@nora</a></p>
+                  <p class="post-text">Merci, je pousse la branche ce soir.</p>
+                  <footer class="post-actions"><button class="action act-reply" aria-label="Répondre"><span class="ico"><svg class="i sm"><use href="#i-reply"/></svg></span>0</button><button class="action act-repost"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>0</button><button class="action act-like"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>2</button></footer>
+                </article>
+              </div>
+            </div>
+            <div class="variant"><span class="lbl">Compte privé (republication désactivée)</span>
+              <div class="demo flush feedlike">
+                <article class="post">
+                  <header class="post-head"><div class="avatar">SM</div><div class="who"><b>Sami M.</b><span>@sami · 2 h</span><span class="badge private" style="margin-left:4px"><svg class="i xs"><use href="#i-lock"/></svg>Privé</span></div><button class="icon-btn more" aria-label="Options du post"><svg class="i sm"><use href="#i-more"/></svg></button></header>
+                  <h3 class="post-title">Compte privé : republication impossible</h3>
+                  <p class="post-text">Ce post vient d'un compte privé : le bouton Republier est désactivé (REPOST-03).</p>
+                  <footer class="post-actions"><button class="action act-reply" aria-label="Commentaires"><span class="ico"><svg class="i sm"><use href="#i-reply"/></svg></span>1</button><button class="action act-repost" disabled title="Republication impossible : compte privé"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>0</button><button class="action act-like"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>7</button></footer>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="props"><code>post</code><code>variant: 'post' | 'reply'</code><code>context (republié par)</code><code>deleted: false | 'user' | 'moderation'</code><code>open (commentaires)</code><code>onAction</code></div>
+        <p class="specs">FEED-01/02, POST-01 à 08, ACC-02</p>
+      </article>
+
+      <div class="masonry c-12">
+        <article class="card" id="cmp-19">
+          <div class="card-head"><span class="num">19</span><h3>PostAction</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+          <p class="desc">Icône + compteur, sans pastille. Au survol, la couleur et un disque teinté apparaissent. J'aime en framboise, Republier en ambre.</p>
+          <div class="demo">
+            <div class="variant"><span class="lbl">Commentaires : repos · survol · ouverts</span><div class="flex" style="gap:var(--space-5)"><button class="action act-reply"><span class="ico"><svg class="i sm"><use href="#i-reply"/></svg></span>12</button><button class="action act-reply is-hover"><span class="ico"><svg class="i sm"><use href="#i-reply"/></svg></span>12</button><span class="post is-open" style="padding:0;background:none;cursor:default"><button class="action act-reply"><span class="ico"><svg class="i sm"><use href="#i-reply"/></svg></span>12</button></span></div></div>
+            <div class="variant"><span class="lbl">Republier : repos · survol · actif · désactivé</span><div class="flex" style="gap:var(--space-5)"><button class="action act-repost"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>4</button><button class="action act-repost is-hover"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>4</button><button class="action act-repost reposted"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>5</button><button class="action act-repost" disabled><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>0</button></div></div>
+            <div class="variant"><span class="lbl">J'aime : repos · survol · actif</span><div class="flex" style="gap:var(--space-5)"><button class="action act-like"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>85</button><button class="action act-like is-hover"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>85</button><button class="action act-like liked"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>86</button></div></div>
+          </div>
+          <div class="props"><code>kind: 'reply' | 'repost' | 'like'</code><code>count</code><code>active</code><code>disabled</code></div>
+          <p class="specs">LIKE-01, REPOST-01, REPOST-03, POST-03</p>
+        </article>
+
+        <article class="card" id="cmp-20">
+          <div class="card-head"><span class="num">20</span><h3>MediaGrid</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+          <p class="desc">Médias d'un post : 1 à 4 images (séparées par 2 px), un GIF ou une seule vidéo. Bord gris de 1 px. Clic : plein écran, avec navigation entre les images.</p>
+          <div class="demo">
+            <div class="grid" style="gap:16px">
+              <div class="c-6 variant"><span class="lbl">1 image</span><div class="mg n1"><div class="ph1"></div></div></div>
+              <div class="c-6 variant"><span class="lbl">2 images</span><div class="mg n2"><div class="ph1"></div><div class="ph3"></div></div></div>
+              <div class="c-6 variant"><span class="lbl">3 images</span><div class="mg n3"><div class="ph2"></div><div class="ph3"></div><div class="ph4"></div></div></div>
+              <div class="c-6 variant"><span class="lbl">4 images</span><div class="mg n4"><div class="ph1"></div><div class="ph2"></div><div class="ph3"></div><div class="ph4"></div></div></div>
+              <div class="c-6 variant"><span class="lbl">Vidéo (1 seule, ≤ 2 min)</span><div class="video ph2"><button class="play" aria-label="Lire"><svg class="i"><use href="#i-play"/></svg></button><span class="dur">1:42</span></div></div>
+              <div class="c-6 variant"><span class="lbl">GIF</span><div class="video ph4"><span class="gif">GIF</span></div></div>
+              <div class="c-12 variant"><span class="lbl">Plein écran</span><div class="lightbox"><div class="img ph3"></div>
+                <button class="icon-btn x" aria-label="Fermer"><svg class="i"><use href="#i-x"/></svg></button>
+                <button class="icon-btn nav-arrow l" aria-label="Précédente"><svg class="i"><use href="#i-arrow-l"/></svg></button><button class="icon-btn nav-arrow r" aria-label="Suivante"><svg class="i"><use href="#i-arrow"/></svg></button>
+                <span class="counter">2 / 4</span></div></div>
+            </div>
+          </div>
+          <div class="props"><code>media[] : type, src, alt</code><code>onOpen</code></div>
+          <p class="specs">MEDIA-02, MEDIA-08</p>
+        </article>
+
+        <article class="card" id="cmp-21">
+          <div class="card-head"><span class="num">21</span><h3>Composer</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+          <p class="desc">Rédaction en carte : champs sans bord, séparés de la barre d'outils par une ligne. Mode post : titre obligatoire, contenu optionnel, médias. Mode réponse : pas de titre.</p>
+          <div class="demo">
+            <div class="variant"><span class="lbl">Post avec médias en cours d'envoi</span>
+              <article class="tile composer-tile">
+                <label class="field composer-title"><input value="Retour sur la démo de vendredi"></label>
+                <label class="field composer-body"><textarea rows="2">Quelques captures du rendu final.</textarea></label>
+                <div class="attach">
+                  <div class="thumb ph1"><button class="rm" aria-label="Retirer"><svg class="i xs"><use href="#i-x"/></svg></button></div>
+                  <div class="thumb ph3"><button class="rm" aria-label="Retirer"><svg class="i xs"><use href="#i-x"/></svg></button><div class="progress up" style="--p:60%"><i></i></div></div>
+                </div>
+                <div class="tools"><button class="icon-btn" aria-label="Ajouter un média"><svg class="i sm"><use href="#i-image"/></svg></button><button class="icon-btn" aria-label="Emoji"><svg class="i sm"><use href="#i-smile"/></svg></button><span class="count">33 / 500</span><button class="btn btn-primary btn-sm" disabled>Publier</button></div>
+              </article>
+            </div>
+            <div class="variant"><span class="lbl">Erreur : titre manquant</span>
+              <article class="tile composer-tile has-error">
+                <label class="field composer-title"><input placeholder="Titre"></label>
+                <p class="help error">Le titre est obligatoire (3 à 120 caractères).</p>
+                <div class="tools"><button class="icon-btn" aria-label="Ajouter un média"><svg class="i sm"><use href="#i-image"/></svg></button><span class="count">0 / 500</span><button class="btn btn-primary btn-sm">Publier</button></div>
+              </article>
+            </div>
+            <div class="variant"><span class="lbl">Réponse (sans titre)</span>
+              <article class="tile composer-tile">
+                <p class="composer-replying">En réponse à <a href="#">@lea_n</a></p>
+                <label class="field composer-body" style="padding-top:8px"><textarea rows="2" placeholder="Votre réponse"></textarea></label>
+                <div class="tools"><button class="icon-btn" aria-label="Ajouter un média"><svg class="i sm"><use href="#i-image"/></svg></button><span class="count">0 / 500</span><button class="btn btn-primary btn-sm">Répondre</button></div>
+              </article>
+            </div>
+          </div>
+          <div class="props"><code>mode: 'post' | 'reply'</code><code>replyTo</code><code>onSubmit</code><code>maxMedia: 4</code></div>
+          <p class="specs">POST-01, POST-03, MEDIA-04/05</p>
+        </article>
+
+        <article class="card" id="cmp-23">
+          <div class="card-head"><span class="num">23</span><h3>UserListItem</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+          <p class="desc">Ligne d'utilisateur, séparée de la suivante par une ligne, avec l'action d'abonnement adaptée à la relation.</p>
+          <div class="demo flush">
+            <div class="user-row"><div class="avatar online">N</div><div class="txt"><b>Nora</b><span>@nora · vous suit</span></div><div class="end"><button class="btn btn-primary btn-sm">S'abonner</button></div></div>
+            <div class="user-row is-hover"><div class="avatar">SM</div><div class="txt"><b>Sami M. <span class="badge private"><svg class="i xs"><use href="#i-lock"/></svg>Privé</span></b><span>@sami</span></div><div class="end"><button class="btn btn-outline btn-sm">Demandé</button></div></div>
+            <div class="user-row"><div class="avatar online">LN</div><div class="txt"><b>Léa N.</b><span>@lea_n · ami</span></div><div class="end"><button class="btn btn-outline btn-sm">Abonné</button></div></div>
+            <div class="user-row"><div class="avatar">J</div><div class="txt"><b>Jade</b><span>@jade · demande à vous suivre</span></div><div class="end"><button class="btn btn-ghost btn-sm">Refuser</button><button class="btn btn-primary btn-sm">Accepter</button></div></div>
+            <div class="user-row"><div class="avatar">TK</div><div class="txt"><b>Théo K. <span class="badge neutral">Admin</span></b><span>@theok · inscrit le 02/11/2026</span></div><div class="end"><button class="btn btn-danger btn-sm">Bannir</button></div></div>
+          </div>
+          <div class="props"><code>user</code><code>relation: 'none' | 'requested' | 'following' | 'incoming'</code><code>action</code><code>admin</code></div>
+          <p class="specs">SOC-01 à 06, SEARCH-01, ADM-01</p>
+        </article>
+      </div>
+
+      <article class="card c-12" id="cmp-22">
+        <div class="card-head"><span class="num">22</span><h3>NavItem / Sidebar</h3><span class="lot-badge l2 lot">Lot 2</span></div>
+        <p class="desc">Navigation principale collée au bord gauche, séparée du contenu par une ligne verticale. Pas de panneau : texte 19 px, actif en gras, survol en pastille. Dépliée (> 1180 px), en icônes (≤ 1180 px), barre du bas (≤ 720 px).</p>
+        <div class="side-demo">
+          <div class="side-frame">
+            <aside class="sidebar" aria-label="Navigation (dépliée)">
+              <a class="brand" href="#"><span class="brand-mark">t</span><span class="brand-name">transcendance</span></a>
+              <nav class="nav">
+                <a href="#" class="active"><svg class="i lg"><use href="#i-home"/></svg><span class="label">Accueil</span></a>
+                <a href="#" class="is-hover"><svg class="i lg"><use href="#i-compass"/></svg><span class="label">Explorer</span></a>
+                <a href="#"><svg class="i lg"><use href="#i-bell"/></svg><span class="label">Notifications</span><span class="badge">4</span></a>
+                <a href="#"><svg class="i lg"><use href="#i-msg"/></svg><span class="label">Messages</span><span class="badge">2</span></a>
+                <a href="#"><svg class="i lg"><use href="#i-user"/></svg><span class="label">Profil</span></a>
+              </nav>
+              <div class="nav-sep"></div>
+              <nav class="nav">
+                <a href="#"><svg class="i lg"><use href="#i-settings"/></svg><span class="label">Paramètres</span></a>
+              </nav>
+              <div class="spacer"></div>
+              <button class="btn btn-primary btn-lg btn-block"><svg class="i sm"><use href="#i-plus"/></svg><span class="label">Publier</span></button>
+              <div class="me"><div class="avatar online">A</div><div class="who"><b>aboumall</b><span>@aboumall</span></div><button class="icon-btn" aria-label="Menu du compte"><svg class="i sm"><use href="#i-more"/></svg></button></div>
+            </aside>
+            <div class="fill"></div>
+          </div>
+          <div class="side-frame">
+            <aside class="sidebar collapsed" aria-label="Navigation (icônes)">
+              <a class="brand" href="#"><span class="brand-mark">t</span><span class="brand-name">transcendance</span></a>
+              <nav class="nav">
+                <a href="#" class="active" aria-label="Accueil"><svg class="i lg"><use href="#i-home"/></svg><span class="label">Accueil</span></a>
+                <a href="#" aria-label="Explorer"><svg class="i lg"><use href="#i-compass"/></svg><span class="label">Explorer</span></a>
+                <a href="#" aria-label="Notifications"><svg class="i lg"><use href="#i-bell"/></svg><span class="label">Notifications</span><span class="badge">4</span></a>
+                <a href="#" aria-label="Messages"><svg class="i lg"><use href="#i-msg"/></svg><span class="label">Messages</span><span class="badge">2</span></a>
+                <a href="#" aria-label="Profil"><svg class="i lg"><use href="#i-user"/></svg><span class="label">Profil</span></a>
+                <a href="#" aria-label="Paramètres"><svg class="i lg"><use href="#i-settings"/></svg><span class="label">Paramètres</span></a>
+              </nav>
+              <div class="spacer"></div>
+              <button class="btn btn-primary btn-lg" aria-label="Publier"><svg class="i sm"><use href="#i-plus"/></svg></button>
+              <div class="me"><div class="avatar online">A</div></div>
+            </aside>
+            <div class="fill"></div>
+          </div>
+          <div class="variant"><span class="lbl">Mobile</span>
+            <div class="phone">
+              <div class="screen"><span class="sk" style="width:60%;height:14px"></span><span class="sk" style="width:90%;height:10px"></span><span class="sk" style="width:75%;height:10px"></span></div>
+              <nav class="bottom-bar" aria-label="Navigation (mobile)">
+                <a href="#" class="active" aria-label="Accueil"><svg class="i lg"><use href="#i-home"/></svg></a><a href="#" aria-label="Explorer"><svg class="i lg"><use href="#i-compass"/></svg></a>
+                <a href="#" aria-label="Notifications"><svg class="i lg"><use href="#i-bell"/></svg><span class="badge">4</span></a><a href="#" aria-label="Messages"><svg class="i lg"><use href="#i-msg"/></svg><span class="badge">2</span></a>
+                <a href="#" aria-label="Profil"><svg class="i lg"><use href="#i-user"/></svg></a>
+              </nav>
+            </div>
+          </div>
+        </div>
+        <div class="props"><code>items[] : label, icon, href, badge</code><code>active</code><code>collapsed</code></div>
+        <p class="specs">FEED-04, toutes les pages</p>
+      </article>
+
+      <article class="card c-12" id="cmp-24">
+        <div class="card-head"><span class="num">24</span><h3>PluginTile</h3><span class="lot-badge l3 lot">Lot 3</span></div>
+        <p class="desc">Tuile de plugin en bento dans la colonne de droite : une carte à bord gris. Le contenu d'un plugin est une iframe isolée (sandbox).</p>
+        <div class="demo">
+          <div class="plugins demo-grid">
+            <article class="tile p-w2h2"><div class="tile-head"><span class="plugin-tag"><svg class="i sm"><use href="#i-cloud"/></svg>Météo</span><div class="end"><button class="icon-btn sm" aria-label="Options"><svg class="i sm"><use href="#i-more"/></svg></button></div></div>
+              <div class="weather"><div><div class="temp">9°</div><p class="faint" style="font-size:13px">Lyon · brumeux</p></div><div class="forecast"><div>jeu.<b>11°</b></div><div>ven.<b>8°</b></div></div></div></article>
+            <article class="tile p-w1h2"><span class="plugin-tag"><svg class="i sm"><use href="#i-clock"/></svg>Horloge</span><div><div class="big-num">18:42</div><p class="faint" style="font-size:12px;margin-top:4px">mardi 10 nov.</p></div></article>
+            <article class="tile p-w1h2"><span class="plugin-tag"><svg class="i sm"><use href="#i-timer"/></svg>Focus</span><div><div class="big-num">24:59</div><p class="faint" style="font-size:12px;margin-top:4px">session 2 / 4</p></div></article>
+            <article class="tile p-w2h3"><div class="tile-head"><span class="plugin-tag"><svg class="i sm"><use href="#i-game"/></svg>Snake</span><div class="end"><button class="btn btn-outline btn-sm">Jouer</button></div></div><div class="game-preview"><div class="snake"></div><div class="food"></div></div></article>
+            <article class="tile p-w2h2"><span class="plugin-tag"><svg class="i sm"><use href="#i-music"/></svg>Musique</span><div class="player"><div class="cover"></div><div style="flex:1;min-width:0"><b>Flat Waves</b><p class="faint" style="font-size:12px">Lofi · 2:14</p><div class="progress" style="--p:42%;margin-top:8px"><i></i></div></div><button class="icon-btn outline" aria-label="Lecture"><svg class="i sm"><use href="#i-play"/></svg></button></div></article>
+            <article class="tile t-add p-w2h1"><svg class="i sm"><use href="#i-plus"/></svg><b>Ajouter un plugin</b></article>
+          </div>
+        </div>
+        <div class="props"><code>plugin : nom, url, icône</code><code>size: '1x2' | '2x1' | '2x2' | '2x3'</code></div>
+        <p class="specs">Accueil (bento)</p>
+      </article>
+
+      <article class="card c-12" id="cmp-25">
+        <div class="card-head"><span class="num">25</span><h3>CommentsPanel / CommentItem</h3><span class="lot-badge new lot">Proposé · à ajouter au §5</span></div>
+        <p class="desc">Ajouté par les maquettes flat lines v6 à v10 : le panneau des commentaires (réponses au sens de POST-03) s'ouvre entre le fil et la colonne de droite (360 à 520 px), en tiroir sous 1180 px. Commentaires du plus ancien au plus récent (POST-04), fils de réponses repliables, texte tronqué à 3 lignes, « Répondre » remplit le bandeau au-dessus du champ.</p>
+        <div class="grid" style="gap:16px">
+          <div class="c-6">
+            <div class="cpanel">
+              <header class="cpanel-head">
+                <div class="titles"><h2>Commentaires<span class="n">12</span></h2><p class="cpanel-sub">Sur <a href="#">Premier rendu du style « flat lines »</a></p></div>
+                <button class="icon-btn" aria-label="Fermer les commentaires"><svg class="i sm"><use href="#i-x"/></svg></button>
+              </header>
+              <div class="clist" data-autohide>
+                <div class="thread open" data-n="2">
+                  <div class="comment"><div class="avatar sm online">N</div><div class="c-body"><div class="c-head"><b>Nora</b><span>@nora · 10 min</span></div><p class="c-text">Validé pour moi. Les lignes raccourcies rendent le fil beaucoup plus aéré.</p><div class="c-meta"><button class="c-reply">Répondre</button><button class="c-like liked" aria-label="J'aime"><svg class="i"><use href="#i-heart"/></svg><span>24</span></button></div></div></div>
+                  <button class="c-toggle">Masquer<svg class="i"><use href="#i-chevron"/></svg></button>
+                  <div class="c-replies">
+                    <div class="comment"><div class="avatar xs online">LN</div><div class="c-body"><div class="c-head"><b>Léa N.</b><span>@lea_n · 8 min</span></div><p class="c-text">Merci ! Je pousse la branche ce soir.</p><div class="c-meta"><button class="c-reply">Répondre</button><button class="c-like" aria-label="J'aime"><svg class="i"><use href="#i-heart"/></svg><span>5</span></button></div></div></div>
+                    <div class="comment"><div class="avatar xs">TK</div><div class="c-body"><div class="c-head"><b>Théo K.</b><span>@theok · 6 min</span></div><p class="c-text"><a href="#">@nora</a> d'accord, mais on garde le thème clair ?</p><div class="c-meta"><button class="c-reply">Répondre</button><button class="c-like" aria-label="J'aime"><svg class="i"><use href="#i-heart"/></svg><span>2</span></button></div></div></div>
+                  </div>
+                </div>
+                <div class="thread" data-n="2">
+                  <div class="comment"><div class="avatar sm">TK</div><div class="c-body"><div class="c-head"><b>Théo K.</b><span>@theok · 25 min</span></div><p class="c-text">Le survol arrondi est subtil, j'aime bien.</p><div class="c-meta"><button class="c-reply">Répondre</button><button class="c-like" aria-label="J'aime"><svg class="i"><use href="#i-heart"/></svg><span>12</span></button></div></div></div>
+                  <button class="c-toggle">Voir 2 réponses<svg class="i"><use href="#i-chevron"/></svg></button>
+                  <div class="c-replies">
+                    <div class="comment"><div class="avatar xs online">J</div><div class="c-body"><div class="c-head"><b>Jade</b><span>@jade · 20 min</span></div><p class="c-text">Pareil, en clair on le voit à peine.</p><div class="c-meta"><button class="c-reply">Répondre</button><button class="c-like" aria-label="J'aime"><svg class="i"><use href="#i-heart"/></svg><span>3</span></button></div></div></div>
+                    <div class="comment"><div class="avatar xs online">LN</div><div class="c-body"><div class="c-head"><b>Léa N.</b><span>@lea_n · 18 min</span></div><p class="c-text">Noté, je monte à 5 % en clair.</p><div class="c-meta"><button class="c-reply">Répondre</button><button class="c-like" aria-label="J'aime"><svg class="i"><use href="#i-heart"/></svg><span>4</span></button></div></div></div>
+                  </div>
+                </div>
+                <div class="comment"><div class="avatar sm">SM</div><div class="c-body"><div class="c-head"><b>Sami M.</b><span>@sami · 40 min</span></div><p class="c-text">Rendu sur mon écran 1080p, rien à redire :</p><div class="c-media"></div><div class="c-meta"><button class="c-reply">Répondre</button><button class="c-like" aria-label="J'aime"><svg class="i"><use href="#i-heart"/></svg><span>7</span></button></div></div></div>
+                <div class="comment"><div class="avatar sm online">J</div><div class="c-body"><div class="c-head"><b>Jade</b><span>@jade · 1 h</span></div><p class="c-text clamp">Pensez au contraste du texte discret pour l'accessibilité. Il faut au moins 4,5:1 sur le fond pour le texte courant, et 3:1 pour les gros titres et les icônes. Le texte discret passe sur le fond de page, mais il faut refaire le test sur les cartes, qui sont plus claires, et dans le thème clair.</p><button class="see-more" aria-expanded="false" style="font-size:13px">Voir plus</button><div class="c-meta"><button class="c-reply">Répondre</button><button class="c-like liked" aria-label="J'aime"><svg class="i"><use href="#i-heart"/></svg><span>31</span></button></div></div></div>
+              </div>
+              <footer class="cpanel-foot">
+                <div class="replying">En réponse à <b>@nora</b><button class="icon-btn" aria-label="Annuler la réponse"><svg class="i sm"><use href="#i-x"/></svg></button></div>
+                <div class="c-input">
+                  <div class="avatar sm online">A</div>
+                  <label class="field"><input placeholder="Ajouter un commentaire…" maxlength="500"><button class="icon-btn" aria-label="Mentionner"><svg class="i sm"><use href="#i-at"/></svg></button><button class="icon-btn" aria-label="Ajouter un média"><svg class="i sm"><use href="#i-image"/></svg></button></label>
+                  <button class="send" aria-label="Publier le commentaire" disabled><svg class="i"><use href="#i-arrow-up"/></svg></button>
+                </div>
+              </footer>
+            </div>
+          </div>
+          <div class="c-6 stack">
+            <div class="variant"><span class="lbl">Anatomie</span>
+              <ul class="muted" style="margin:0;padding-left:18px;font-size:14px;line-height:1.7">
+                <li><b>En-tête</b> : titre + nombre, lien bleu vers le post, bouton fermer (Échap ferme aussi).</li>
+                <li><b>CommentItem</b> : avatar sm (xs dans un fil), nom, @username, temps, texte 14 px, média éventuel, « Répondre » en gris, J'aime à droite.</li>
+                <li><b>Fil</b> : « Voir N réponses » / « Masquer » en bleu, précédé d'un trait ; réponses décalées de 46 px.</li>
+                <li><b>Pied</b> : bandeau « En réponse à @… » (annulable), champ en creux (<code>--well</code>), bouton d'envoi rond, inactif tant que le champ est vide.</li>
+                <li><b>Ouverture</b> : le post concerné garde un fond permanent et son bouton Commentaires est actif (voir 18 et 19).</li>
+              </ul>
+            </div>
+            <div class="variant"><span class="lbl">Responsive</span>
+              <ul class="muted" style="margin:0;padding-left:18px;font-size:14px;line-height:1.7">
+                <li>≥ 1500 px : nav · fil · commentaires (360 à 520 px, centrés) · colonne de droite.</li>
+                <li>1181 à 1499 px : les commentaires remplacent la colonne de droite.</li>
+                <li>≤ 1180 px : tiroir fixe à droite, 420 px max, pleine largeur sur mobile.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="props"><code>post</code><code>comments[] (du plus ancien au plus récent)</code><code>open</code><code>onClose</code><code>onReply(user)</code><code>onSubmit</code></div>
+        <p class="specs">POST-03, POST-04, LIKE-01</p>
+      </article>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var sw = document.getElementById('theme-toggle');
+    var name = document.getElementById('theme-name');
+    var params = new URLSearchParams(location.search);
+    function set(theme) { root.dataset.theme = theme; sw.setAttribute('aria-checked', String(theme === 'dark')); name.textContent = theme === 'dark' ? 'Sombre' : 'Clair'; }
+    if (params.get('theme') === 'light') set('light');
+    sw.addEventListener('click', function () { set(root.dataset.theme === 'dark' ? 'light' : 'dark'); });
+
+    // Barres de défilement visibles seulement pendant le défilement
+    document.querySelectorAll('[data-autohide]').forEach(function (el) {
+      var t;
+      if (params.has('scrolling')) el.classList.add('is-scrolling');
+      el.addEventListener('scroll', function () {
+        el.classList.add('is-scrolling'); clearTimeout(t);
+        t = setTimeout(function () { el.classList.remove('is-scrolling'); }, 900);
+      }, { passive: true });
+    });
+
+    // « Voir plus » / « Voir moins »
+    document.querySelectorAll('.see-more').forEach(function (btn) {
+      var txt = btn.previousElementSibling;
+      btn.addEventListener('click', function () {
+        var open = txt.classList.toggle('expanded');
+        btn.textContent = open ? 'Voir moins' : 'Voir plus';
+        btn.setAttribute('aria-expanded', String(open));
+      });
+    });
+
+    // Fils de réponses
+    document.querySelectorAll('.thread > .c-toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var th = btn.parentElement, n = +th.dataset.n;
+        th.classList.toggle('open');
+        btn.firstChild.textContent = th.classList.contains('open') ? 'Masquer' : 'Voir ' + n + ' réponse' + (n > 1 ? 's' : '');
+      });
+    });
+
+    // J'aime (posts et commentaires)
+    document.querySelectorAll('.c-like').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var n = btn.querySelector('span'), on = btn.classList.toggle('liked');
+        n.textContent = +n.textContent + (on ? 1 : -1);
+      });
+    });
+
+    // Onglets et interrupteurs de démonstration
+    document.querySelectorAll('.demo [role="tablist"]').forEach(function (list) {
+      list.addEventListener('click', function (e) {
+        var tab = e.target.closest('[role="tab"]'); if (!tab) return;
+        list.querySelectorAll('[role="tab"]').forEach(function (t) { t.setAttribute('aria-selected', String(t === tab)); });
+      });
+    });
+    document.querySelectorAll('.demo .switch:not([disabled])').forEach(function (s) {
+      s.addEventListener('click', function () { s.setAttribute('aria-checked', String(s.getAttribute('aria-checked') !== 'true')); });
+    });
+  })();
+</script>
+</body>
+</html>
