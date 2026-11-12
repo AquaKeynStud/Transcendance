@@ -1,0 +1,16 @@
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["*/migrations/*"]
+
+[tool.ruff.lint]
+# E/W: pycodestyle, F: pyflakes, I: sorted imports, B: bugbear, UP: modern syntax, DJ: Django
+select = ["E", "W", "F", "I", "B", "UP", "DJ"]
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "transcendance.settings"
+python_files = ["tests.py", "test_*.py"]
+addopts = "--strict-markers"

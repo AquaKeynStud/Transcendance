@@ -1,0 +1,8 @@
+-r requirements.txt
+
+# --- TESTS ---
+pytest>=8.0,<9.0
+pytest-django>=4.9,<5.0
+
+# --- LINT / FORMAT ---
+ruff>=0.8,<1.0

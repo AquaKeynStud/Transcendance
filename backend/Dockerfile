@@ -1,18 +1,19 @@
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
     gcc \
-    # Fichiers d'en-tête pour la bibliothèque PostgreSQL (libpq)
+    # Header files for the PostgreSQL client library (libpq)
     libpq-dev \
-    # Nettoie le cache apt pour garder une image Docker légère et propre
+    # Clear the apt cache to keep the Docker image small and clean
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Dev image: also installs the test and lint tools (pytest, ruff)
+COPY requirements.txt requirements-dev.txt ./
+RUN pip install --no-cache-dir -r requirements-dev.txt
 
 COPY . .
 
-# Lance le server web intégré de Django sur 0.0.0.0 pour écouter les autres containers
+# Start Django's built-in web server on 0.0.0.0 so other containers can reach it
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
