@@ -11,6 +11,8 @@ select = ["E", "W", "F", "I", "B", "UP", "DJ"]
 quote-style = "single"
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "transcendance.settings"
+DJANGO_SETTINGS_MODULE = "transcendance.settings_test"
+django_find_project = false
+pythonpath = ["."]
 python_files = ["tests.py", "test_*.py"]
 addopts = "--strict-markers"

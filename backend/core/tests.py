@@ -46,9 +46,7 @@ def test_validation_error_format():
 
 
 def test_non_field_errors_become_the_message():
-    response = call(
-        serializers.ValidationError({'non_field_errors': ['Passwords do not match.']})
-    )
+    response = call(serializers.ValidationError({'non_field_errors': ['Passwords do not match.']}))
     assert response.data['error']['message'] == 'Passwords do not match.'
     assert response.data['error']['fields'] == {}
 
