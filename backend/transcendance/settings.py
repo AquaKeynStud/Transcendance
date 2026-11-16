@@ -56,7 +56,15 @@ INSTALLED_APPS = [
     # Third-party
     'rest_framework',
     'drf_spectacular',
+    # Project apps
+    'accounts',
+    'social',
+    'posts',
+    'moderation',
 ]
+
+# Must be set before the very first migration: changing it later is painful.
+AUTH_USER_MODEL = 'accounts.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -177,6 +185,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Uploaded files (avatars, post media). Served by nginx after an access check (SPEC_TECH §6).
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
