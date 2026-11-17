@@ -32,6 +32,13 @@ up:
 	@$(COMPOSE) up -d
 	@echo "$(GREEN)-> Application is up and running! 🐉$(RESET)"
 
+backend:
+	@echo "$(GREEN)🎍 • Starting $(NAME) (backend only)...$(RESET)"
+	@docker compose up -d --build database backend redis
+	@docker compose exec backend python manage.py migrate
+	@docker compose exec backend python manage.py seed
+	@echo "$(GREEN)-> Application is up and running! 🐉$(RESET)"
+
 down:
 	@echo "$(YELLOW)🚧 • Stopping $(NAME)...$(RESET)"
 	@$(COMPOSE) down
@@ -67,4 +74,4 @@ env:
 		exit 1; \
 	fi
 
-.PHONY: all build up down logs status re clean fclean env
+.PHONY: all build up backend down logs status re clean fclean env

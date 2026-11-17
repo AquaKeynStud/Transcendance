@@ -8,3 +8,7 @@ Pillow>=11.0,<12.0                  # Image handling (ImageField for avatars)
 
 # --- DATABASE ---
 psycopg2-binary>=2.9,<3.0           # PostgreSQL driver
+
+# --- WEBSOCKETS ---
+channels[daphne]>=4.2,<5.0          # Django Channels + Daphne server
+channels_redis>=4.2,<5.0            # Redis channel layer for real-time broadcasting

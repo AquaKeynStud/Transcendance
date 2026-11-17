@@ -15,5 +15,5 @@ RUN pip install --no-cache-dir -r requirements-dev.txt
 
 COPY . .
 
-# Start Django's built-in web server on 0.0.0.0 so other containers can reach it
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Start Django's ASGI server (Daphne) on 0.0.0.0 to support both HTTP and WebSockets for other containers
+CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "transcendance.asgi:application"]
