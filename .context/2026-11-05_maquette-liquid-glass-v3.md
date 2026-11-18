@@ -20,7 +20,7 @@ Appliquer les retours d'aboumall sur la v2. Les v1 et v2 sont conservées.
 
 ## Fichier
 
-`docs/mockups/liquid-glass-v3.html` : `#ds` pour la planche de style, `?theme=light` pour le thème clair.
+`docs/mockups/liquid-glass/v3.html` : `#ds` pour la planche de style, `?theme=light` pour le thème clair.
 
 Vérifié avec des captures de Chrome headless à 1440 px (sombre et clair, accueil et planche de style), 1024 px et 400 px.
 

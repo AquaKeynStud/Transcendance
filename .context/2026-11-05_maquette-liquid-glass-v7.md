@@ -26,7 +26,7 @@ Correction au passage : dans la planche de style, les libellés de la typographi
 
 ## Fichier
 
-`docs/mockups/liquid-glass-v7.html` : `#ds` pour la planche de style, `?theme=light` pour le thème clair, `?scrolling` pour afficher les barres en permanence.
+`docs/mockups/liquid-glass/v7.html` : `#ds` pour la planche de style, `?theme=light` pour le thème clair, `?scrolling` pour afficher les barres en permanence.
 
 Vérifié avec des captures de Chrome headless (accueil sombre et clair, planche de style).
 

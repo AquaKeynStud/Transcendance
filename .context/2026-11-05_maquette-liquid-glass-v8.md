@@ -14,7 +14,7 @@ Le reste est identique à la v7 (couleurs `#EC3F86` et `#FFA834`, survol coloré
 
 ## Fichier
 
-`docs/mockups/liquid-glass-v8.html` : `#ds` pour la planche de style, `?theme=light` pour le thème clair, `?scrolling` pour afficher les barres en permanence.
+`docs/mockups/liquid-glass/v8.html` : `#ds` pour la planche de style, `?theme=light` pour le thème clair, `?scrolling` pour afficher les barres en permanence.
 
 Vérifié avec une capture de Chrome headless (planche de style).
 

@@ -7,7 +7,7 @@ Tester la direction artistique demandée par aboumall : composants en verre liqu
 ## Fait
 
 - Moodboard d'aboumall rangé dans `.context/inspirations/2026-11-05_moodboard-liquid-glass.jpg` (compressé de 5,5 Mo à 330 Ko).
-- Maquette HTML/CSS autonome : `docs/mockups/liquid-glass-v1.html` (branche `front/chore/mockups`).
+- Maquette HTML/CSS autonome : `docs/mockups/liquid-glass/v1.html` (branche `front/chore/mockups`).
   - Ouvrir le fichier dans Chrome. `#ds` affiche la planche de style, `?theme=light` force le thème clair.
   - **Accueil (bento)** : rédaction, carte profil, fil (onglets Abonnements / Explorer, post avec média, republication, « (modifié) », « Post supprimé »), plugin Météo, notifications, messages, amis en ligne, plugin Snake, tuile « Ajouter un plugin ».
   - **Nav gauche** : profil, menu avec badges, section Plus (Plugins, Design system, Administration, Paramètres), bouton Publier, bascule de thème, déconnexion.

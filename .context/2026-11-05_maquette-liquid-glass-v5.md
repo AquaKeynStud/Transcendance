@@ -28,7 +28,7 @@ Le changement est commité sur `front/chore/mockups`, et reporté sur `master` p
 
 ## Fichier
 
-`docs/mockups/liquid-glass-v5.html` : `#ds` pour la planche de style, `?theme=light` pour le thème clair, `?scrolling` pour afficher les barres en permanence (utile pour les captures).
+`docs/mockups/liquid-glass/v5.html` : `#ds` pour la planche de style, `?theme=light` pour le thème clair, `?scrolling` pour afficher les barres en permanence (utile pour les captures).
 
 Vérifié avec des captures de Chrome headless : barres invisibles au repos, et visibles avec `?scrolling`.
 

@@ -2,7 +2,7 @@
 
 ## Décision d'aboumall
 
-- Le style **liquid glass** (maquettes v1 à v8, `docs/mockups/design-system.html`) est un **test**.
+- Le style **liquid glass** (maquettes v1 à v8, `docs/mockups/liquid-glass/design-system.html`) est un **test**.
 - aboumall est **satisfait de la v8**, mais ce style n'est peut-être **pas adapté à un réseau social**.
 - **D'autres maquettes avec d'autres thèmes** seront faites plus tard, pour comparer.
 - **Pas de maquettes de pages pour l'instant** (page d'un post, profil, messages, paramètres, admin, connexion…). On s'en tient aux composants.

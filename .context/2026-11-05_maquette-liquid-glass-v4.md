@@ -29,7 +29,7 @@ Le titre des posts n'existe pas dans `SPEC_FONC.md` (POST-01 : texte ≤ 500 car
 
 ## Fichier
 
-`docs/mockups/liquid-glass-v4.html` : `#ds` pour la planche de style, `?theme=light` pour le thème clair.
+`docs/mockups/liquid-glass/v4.html` : `#ds` pour la planche de style, `?theme=light` pour le thème clair.
 
 Vérifié avec des captures de Chrome headless à 1440 px (sombre, avec un post en état survolé, et clair) et à 400 px. Sur mobile, les posts ont une marge intérieure réduite.
 
