@@ -46,7 +46,7 @@ aboumall a choisi la direction artistique **flat lines**. Il faut :
    - le nombre de lignes avant « Voir plus » (4 pour les posts, 3 pour les commentaires) ;
    - l'écart de teinte entre carte et fond ;
    - le libellé « Commentaires » alors que la spec parle de « réponses ».
-2. Fusionner `front/chore/design-system` dans `frontend`.
+2. ~~Fusionner `front/chore/design-system` dans `frontend`.~~ Fait le 2026-11-18 (`4ecad68`).
 
 ## Prochaines étapes
 
