@@ -5,7 +5,7 @@ Ils servent à reprendre le travail d'une session à l'autre et à montrer à l'
 
 ## État de la direction artistique
 
-✅ **Direction retenue : « flat lines »** (2026-11-11). Référence : `docs/mockups/flat-lines/v11.html` et `docs/mockups/flat-lines/design-system.html`, documentée dans `docs/DESIGN_SYSTEM.md` (v0.3, 25 composants).
+✅ **Direction retenue : « flat lines »** (2026-11-11). Référence : `docs/mockups/flat-lines/v11.html` et `docs/mockups/flat-lines/design-system.html`, documentée dans `docs/DESIGN_SYSTEM.md` (v0.4, 25 composants).
 Le **« liquid glass »** (`docs/mockups/liquid-glass/`) était un test : il est gardé pour l'historique.
 
 ## Convention
@@ -47,3 +47,4 @@ Le **« liquid glass »** (`docs/mockups/liquid-glass/`) était un test : il est
 | 2026-11-10 | [2026-11-10_maquette-flat-lines-v10.md](2026-11-10_maquette-flat-lines-v10.md) | Flat lines v10 : liens en bleu (mentions, Voir plus, Voir N réponses), post long tronqué avec « Voir plus » |
 | 2026-11-11 | [2026-11-11_design-system-flat-lines.md](2026-11-11_design-system-flat-lines.md) | Design system flat lines : palette des deux thèmes (contrastes corrigés), 24 composants + panneau des commentaires proposé |
 | 2026-11-11 | [2026-11-11_flat-lines-v11-retenue.md](2026-11-11_flat-lines-v11-retenue.md) | Flat lines retenue : maquette v11 (contrastes corrigés), `DESIGN_SYSTEM.md` v0.3, composant 25 `CommentsPanel` au lot 2 |
+| 2026-11-18 | [2026-11-18_decisions-liens-troncature-commentaires.md](2026-11-18_decisions-liens-troncature-commentaires.md) | Fusion dans `frontend` ; décisions : liens, `@username`, troncature par budget de hauteur, libellé « Commentaires » ; nettoyage des branches |

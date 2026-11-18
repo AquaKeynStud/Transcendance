@@ -1,7 +1,7 @@
 # Design system : « Flat lines »
 
-> **Version :** 0.3 (direction artistique retenue par aboumall)
-> **Date :** 2026-11-11
+> **Version :** 0.4 (direction artistique retenue par aboumall ; règles des liens et de la troncature)
+> **Date :** 2026-11-18
 > **Référence visuelle :** [mockups/flat-lines/v11.html](mockups/flat-lines/v11.html) (`?comments` ouvre les commentaires, `#ds` la planche de style, `?theme=light` le thème clair).
 > **Palette et composants maquettés :** [mockups/flat-lines/design-system.html](mockups/flat-lines/design-system.html).
 > **Module visé :** `web.design_system` (mineur, 1 pt) : *« Custom-made design system with reusable components, including a proper color palette, typography, and icons (minimum: 10 reusable components). »*
@@ -60,7 +60,7 @@ L'accent est la couleur du texte : le bouton principal est **blanc sur fond somb
 | `--accent-ink` | `#16181C` | `#FFFFFF` | Texte posé sur l'accent (bouton principal, toast) |
 | `--text-2` | `#9AA0A6` | `#4B5862` | Texte secondaire, « Répondre » |
 | `--text-3` ⚠️ | `#8A9096` *(v10 : #80868C)* | `#5F6B74` *(v10 : #6B7780)* | @username, dates, compteurs |
-| `--link` ⚠️ | `#4EA1FF` | `#1765C4` *(v10 : #1A6FD6)* | Mentions `@pseudo`, « Voir plus », « Voir N réponses », lien vers un post |
+| `--link` ⚠️ | `#4EA1FF` | `#1765C4` *(v10 : #1A6FD6)* | Mentions `@pseudo` dans le texte des posts et des commentaires, « Voir plus », « Voir N réponses », lien vers un post. **Pas** le `@username` des en-têtes |
 
 ### 2.3 Couleurs fonctionnelles
 
@@ -122,7 +122,7 @@ Une seule police : **Inter**, de 400 à 800. Gratuite (licence OFL), à **auto-h
 | Commentaire | 400 | 14 px, interligne 1,45 | Texte des commentaires |
 | Gras | 700 | — | Noms, boutons |
 | Lien | 600, couleur `--link` | 13 à 15 px | Mentions, « Voir plus » |
-| Légende | 400 | 13 px | @username, dates, compteurs |
+| Légende | 400 | 13 px | @username des en-têtes (gris `--text-3`, même s'il mène au profil), dates, compteurs |
 | Sur-titre | 600 | 12 à 13 px, majuscules | Libellés « MÉTÉO », « COULEURS » |
 | Code | `ui-monospace` | 0,88 em | Code inline dans les posts |
 
@@ -167,6 +167,23 @@ Largeurs : nav 275 px · fil 620 px · colonne de droite 360 px · commentaires 
 
 Seuls le fil, les plugins et la liste des commentaires défilent (page fixe au-dessus de 1180 px).
 
+### 4.7 Troncature « Voir plus »
+
+Le texte n'est pas coupé à un nombre de lignes fixe. Chaque post a un **budget de hauteur** proportionnel à la hauteur visible du fil, et les médias en consomment une partie : un post avec image affiche donc moins de lignes de texte qu'un post sans image.
+
+| Paramètre | Post (fil) | Commentaire (panneau) |
+|---|---|---|
+| Budget (texte + médias, sans en-tête, titre ni actions) | **45 %** de la hauteur visible du fil | **30 %** de la hauteur visible de la liste des commentaires |
+| Lignes de texte affichées | `floor((budget − hauteur des médias) / interligne)` | idem |
+| Minimum de lignes, même avec un grand média | 3 | 2 |
+| Interligne de référence | 22,5 px (15 px × 1,5) | 20,3 px (14 px × 1,45) |
+
+- Exemple sur un écran de 1080 px (fil visible ≈ 1000 px, budget 450 px) : environ 20 lignes sans média, environ 6 lignes sous une image de 320 px.
+- La hauteur des médias est connue avant leur chargement (dimensions renvoyées par l'API, `aspect-ratio`), pour éviter que le texte change de taille quand l'image arrive.
+- Le nombre de lignes est recalculé au redimensionnement (`ResizeObserver` sur la zone du fil), puis appliqué avec `line-clamp`.
+- « Voir plus » n'apparaît que si le texte dépasse vraiment (`scrollHeight > clientHeight`).
+- Les pourcentages sont un point de départ, à ajuster lors des premiers tests sur le vrai front.
+
 ---
 
 ## 5. Composants
@@ -204,14 +221,14 @@ Seuls le fil, les plugins et la liste des commentaires défilent (page fixe au-d
 
 | # | Composant | Rôle | Variantes / états | Props principales | Utilisé par (spec) | Lot | Statut |
 |---|---|---|---|---|---|:-:|:-:|
-| 18 | `PostCard` | Post façon Reddit, posé sur le fond : en-tête, titre, contenu tronqué à 4 lignes (« Voir plus »), médias, actions | normal, survol (fond arrondi), `(modifié)`, « republié par », **supprimé** / supprimé par la modération, réponse (sans titre), commentaires ouverts | `post`, `variant`, `context`, `deleted`, `open`, `onAction` | FEED-01/02, POST-01 à 08, ACC-02 | 1 | ✅ |
+| 18 | `PostCard` | Post façon Reddit, posé sur le fond : en-tête, titre, contenu tronqué selon un budget de hauteur (§4.7, « Voir plus »), médias, actions | normal, survol (fond arrondi), `(modifié)`, « republié par », **supprimé** / supprimé par la modération, réponse (sans titre), commentaires ouverts | `post`, `variant`, `context`, `deleted`, `open`, `onAction` | FEED-01/02, POST-01 à 08, ACC-02 | 1 | ✅ |
 | 19 | `PostAction` | Icône + compteur, sans pastille | `reply`, `repost` (ambre), `like` (framboise) ; actif, survol (disque teinté), désactivé (post supprimé, compte privé : REPOST-03) | `kind`, `count`, `active`, `disabled` | LIKE-01, REPOST-01/03, POST-03 | 2 | ✅ |
 | 20 | `MediaGrid` | Médias d'un post, bord 1 px | 1 à 4 images, GIF, 1 vidéo ; plein écran au clic | `media[]`, `onOpen` | MEDIA-02, MEDIA-08 | 2 | ✅ |
 | 21 | `Composer` | Rédaction en carte | titre (obligatoire) + contenu (optionnel) + médias + compteurs ; mode réponse (sans titre) | `mode`, `replyTo`, `onSubmit`, `maxMedia` | POST-01, POST-03, MEDIA-04/05 | 2 | ✅ |
 | 22 | `NavItem` / `Sidebar` | Navigation principale collée à gauche, ligne verticale, pas de panneau | actif (gras), badge, survol en pastille ; repliée (icônes) ; barre du bas sur mobile | `items`, `active`, `collapsed` | FEED-04, toutes les pages | 2 | ✅ |
 | 23 | `UserListItem` | Ligne d'utilisateur | S'abonner / Demandé / Abonné / Accepter-Refuser ; statut en ligne ; action admin | `user`, `relation`, `action`, `admin` | SOC-01 à 06, SEARCH-01, ADM-01 | 2 | ✅ |
 | 24 | `PluginTile` | Tuile de plugin en bento (iframe isolée) | tailles 1×2, 2×1, 2×2, 2×3 ; en-tête avec étiquette et menu ; « Ajouter un plugin » | `plugin`, `size` | Accueil (bento) | 3 | ✅ |
-| 25 | `CommentsPanel` / `CommentItem` | Panneau des commentaires (réponses au sens de POST-03) d'un post, ouvert par sa bulle | en-tête (nombre, lien vers le post, fermer) ; commentaire (texte tronqué à 3 lignes, média, J'aime) ; fils repliables « Voir N réponses » / « Masquer » ; bandeau « En réponse à @… » ; champ en creux, envoi inactif si vide ; inséré entre fil et colonne de droite (≥ 1500 px), à la place de la colonne de droite (1181-1499 px), tiroir (≤ 1180 px) | `post`, `comments[]`, `open`, `onClose`, `onReply`, `onSubmit` | POST-03, POST-04, LIKE-01 | 2 | ✅ |
+| 25 | `CommentsPanel` / `CommentItem` | Panneau des commentaires (réponses au sens de POST-03) d'un post, ouvert par sa bulle | en-tête (nombre, lien vers le post, fermer) ; commentaire (texte tronqué selon un budget de hauteur, §4.7 ; média, J'aime) ; fils repliables « Voir N réponses » / « Masquer » ; bandeau « En réponse à @… » ; champ en creux, envoi inactif si vide ; inséré entre fil et colonne de droite (≥ 1500 px), à la place de la colonne de droite (1181-1499 px), tiroir (≤ 1180 px) | `post`, `comments[]`, `open`, `onClose`, `onReply`, `onSubmit` | POST-03, POST-04, LIKE-01 | 2 | ✅ |
 
 **Bilan :** 25 composants. Le **lot 1 en compte 13** : `Panel`, `Button`, `IconButton`, `Input`, `Textarea`, `Avatar`, `Badge`, `Tabs`, `Switch`, `Icon`, `Toast`, `Modal`, plus `PostCard`. Le minimum de 10 du module est donc couvert dès le lot 1. Lot 2 : 11 composants, lot 3 : 1.
 
@@ -289,3 +306,10 @@ Les tokens deviennent des variables CSS, et le thème Tailwind pointe vers elles
 2. Les corrections de contraste marquées ⚠️ (§2.5) et le token `--danger-fill`, appliqués dans la maquette v11.
 3. Les bords des champs gardent les valeurs de la v10 (sous 3:1), §2.5.
 4. Le panneau des commentaires devient le composant **25** (`CommentsPanel` / `CommentItem`), au lot 2.
+
+**2026-11-18 :**
+1. La teinte du bleu des liens (`--link`) est validée.
+2. Le `@username` est en bleu seulement quand c'est une mention dans le texte d'un post ou d'un commentaire. Celui des en-têtes reste gris.
+3. La troncature « Voir plus » dépend d'un budget de hauteur, médias compris (§4.7), au lieu de 4 et 3 lignes fixes.
+4. Les contrastes actuels (§2.5) sont validés : il faut seulement qu'ils restent cohérents entre composants et entre thèmes.
+5. Le front garde le libellé **« Commentaires »** et un panneau dédié plutôt que des réponses à dérouler dans le fil. Dans les données, ce sont toujours des posts en réponse (POST-03) : la spec ne change pas.

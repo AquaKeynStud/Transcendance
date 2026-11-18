@@ -40,7 +40,7 @@ aboumall a choisi la direction artistique **flat lines**. Il faut :
 
 ## En attente / à valider par aboumall
 
-1. Les questions encore ouvertes dans les rapports flat lines v2 à v10. Elles ne bloquent pas :
+1. ~~Les questions encore ouvertes dans les rapports flat lines v2 à v10.~~ Tranchées le 2026-11-18, voir [2026-11-18_decisions-liens-troncature-commentaires.md](2026-11-18_decisions-liens-troncature-commentaires.md) :
    - la teinte du bleu des liens ;
    - le `@username` des en-têtes en bleu ou non ;
    - le nombre de lignes avant « Voir plus » (4 pour les posts, 3 pour les commentaires) ;
