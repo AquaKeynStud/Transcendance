@@ -1,6 +1,7 @@
 # --- CORE FRAMEWORK ---
-django>=4.2                 # Le framework web principal (gestion des vues, URLs, administration)
-djangorestframework         # Pour créer l'API REST que le frontend React va interroger
+Django>=5.2,<6.0                    # Web framework (views, URLs, ORM, admin)
+djangorestframework>=3.15,<4.0      # REST API consumed by the React frontend
+drf-spectacular>=0.28,<1.0          # OpenAPI schema (contract with the front, SPEC_TECH §3)
 
-# --- BASE DE DONNÉES & SÉCURITÉ ---
-psycopg2-binary             # Le connecteur pour permettre à Django de parler à PostgreSQL
+# --- DATABASE ---
+psycopg2-binary>=2.9,<3.0           # PostgreSQL driver

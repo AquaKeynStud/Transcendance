@@ -8,17 +8,24 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgresqldata:/var/lib/postgresql/data
-  
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
   backend:
     build: ./backend
     container_name: transcendance_backend
+    env_file: .env
     volumes:
       - ./backend:/app
     ports:
       - "8000:8000"
     depends_on:
-      - database
-  
+      database:
+        condition: service_healthy
+
   frontend:
     build: ./frontend
     container_name: transcendance_frontend

@@ -13,20 +13,35 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 
+from django.core.exceptions import ImproperlyConfigured
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+def env_bool(name, default=False):
+    value = os.environ.get(name)
+    if value is None or value == '':
+        return default
+    return value.strip().lower() in ('1', 'true', 'yes', 'on')
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-yepol1th2@q@d50+^la^c9c*3+#s*$#v3j0ri&riyxj5tic^a3'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+def env_list(name, default=''):
+    value = os.environ.get(name) or default
+    return [item.strip() for item in value.split(',') if item.strip()]
 
-ALLOWED_HOSTS = []
+
+# Secrets and environment-specific settings come from .env (TR3), never from the code.
+DEBUG = env_bool('DJANGO_DEBUG', default=False)
+
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+if not SECRET_KEY:
+    if not DEBUG:
+        raise ImproperlyConfigured('DJANGO_SECRET_KEY must be set when DJANGO_DEBUG is false.')
+    # Fallback key, for local development only.
+    SECRET_KEY = 'django-insecure-dev-only-do-not-use-in-production'
+
+ALLOWED_HOSTS = env_list('DJANGO_ALLOWED_HOSTS', default='localhost,127.0.0.1' if DEBUG else '')
 
 
 # Application definition
@@ -38,6 +53,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Third-party
+    'rest_framework',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -76,8 +94,8 @@ WSGI_APPLICATION = 'transcendance.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'HOST': 'database',
-        'PORT': os.environ.get('DB_PORT', '5432'),
+        'HOST': os.environ.get('DB_HOST', 'database'),
+        'PORT': os.environ.get('DB_PORT') or '5432',
         'USER': os.environ.get('POSTGRES_USER', 'postgres_user'),
         'NAME': os.environ.get('POSTGRES_DB', 'transcendance_database'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'postgres_password'),
@@ -102,6 +120,45 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Session cookies (SPEC_TECH §2). `Secure` outside dev: in production everything goes
+# through HTTPS (TR7).
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SECURE = not DEBUG
+CSRF_TRUSTED_ORIGINS = env_list('DJANGO_CSRF_TRUSTED_ORIGINS')
+
+
+# REST API (SPEC_TECH §3)
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'core.authentication.SessionAuthentication',
+    ],
+    # Visitors can read; any write requires being logged in (VIS-06).
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        *(['rest_framework.renderers.BrowsableAPIRenderer'] if DEBUG else []),
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'core.pagination.CursorPagination',
+    'EXCEPTION_HANDLER': 'core.exceptions.api_exception_handler',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'ft_transcendence API',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # Separate request/response components: cleaner types for openapi-typescript on the front.
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SCHEMA_PATH_PREFIX': r'/api/v[0-9]+',
+}
 
 
 # Internationalization

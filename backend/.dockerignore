@@ -1,0 +1,8 @@
+# Keep local-only files out of the image build context
+venv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.env
