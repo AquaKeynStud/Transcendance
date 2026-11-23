@@ -1,6 +1,14 @@
 import { createBrowserRouter, Navigate } from 'react-router';
 import { AuthLayout } from '@/app/layouts/AuthLayout';
-import { RootLayout } from '@/app/layouts/RootLayout';
+import { RootLayout, type RouteHandle } from '@/app/layouts/RootLayout';
+import { FeedPage } from '@/features/feed/FeedPage';
+import { ProfilePage } from '@/features/profile/ProfilePage';
+import { AccountSettings } from '@/features/settings/AccountSettings';
+import { PrivacySettings, SecuritySettings } from '@/features/settings/PrivacySecuritySettings';
+import { ProfileSettings } from '@/features/settings/ProfileSettings';
+import { SettingsLayout } from '@/features/settings/SettingsLayout';
+import { ListsPage } from '@/features/social/ListsPage';
+import { RequestsPage } from '@/features/social/RequestsPage';
 import { DesignSystem } from '@/pages/DesignSystem';
 import { NotFound } from '@/pages/NotFound';
 import { Placeholder } from '@/pages/Placeholder';
@@ -29,8 +37,16 @@ export const router = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
-      { index: true, element: <Placeholder title="Fil Abonnements" spec="FEED-01" sprint="S4" /> },
-      { path: 'explore', element: <Placeholder title="Fil Explorer" spec="FEED-02" sprint="S4" /> },
+      {
+        index: true,
+        element: <FeedPage kind="following" />,
+        handle: { rail: 'composer' } satisfies RouteHandle,
+      },
+      {
+        path: 'explore',
+        element: <FeedPage kind="explore" />,
+        handle: { rail: 'composer' } satisfies RouteHandle,
+      },
       {
         path: 'posts/:postId',
         element: <Placeholder title="Fil de discussion" spec="POST-03, POST-04" sprint="S5" />,
@@ -38,22 +54,17 @@ export const router = createBrowserRouter([
       {
         path: 'u/:username',
         children: [
-          {
-            index: true,
-            element: <Placeholder title="Profil" spec="ACC-01, ACC-02" sprint="S3" />,
-          },
-          { path: 'followers', element: <Placeholder title="Abonnés" spec="SOC-06" sprint="S3" /> },
-          {
-            path: 'following',
-            element: <Placeholder title="Abonnements" spec="SOC-06" sprint="S3" />,
-          },
-          { path: 'friends', element: <Placeholder title="Amis" spec="SOC-06" sprint="S3" /> },
+          { index: true, element: <ProfilePage key="posts" /> },
+          { path: 'replies', element: <ProfilePage key="replies" tab="replies" /> },
+          { path: 'media', element: <ProfilePage key="media" tab="media" /> },
+          { path: 'likes', element: <ProfilePage key="likes" tab="likes" /> },
+          { path: 'reposts', element: <ProfilePage key="reposts" tab="reposts" /> },
+          { path: 'followers', element: <ListsPage kind="followers" /> },
+          { path: 'following', element: <ListsPage kind="following" /> },
+          { path: 'friends', element: <ListsPage kind="friends" /> },
         ],
       },
-      {
-        path: 'requests',
-        element: <Placeholder title="Demandes d’abonnement" spec="SOC-03 à 05" sprint="S3" />,
-      },
+      { path: 'requests', element: <RequestsPage /> },
       {
         path: 'messages/:conversationId?',
         element: <Placeholder title="Messages" spec="DM-01 à 05" sprint="S5" />,
@@ -68,24 +79,14 @@ export const router = createBrowserRouter([
       },
       {
         path: 'settings',
+        element: <SettingsLayout />,
+        handle: { wide: true } satisfies RouteHandle,
         children: [
           { index: true, element: <Navigate to="profile" replace /> },
-          {
-            path: 'profile',
-            element: <Placeholder title="Paramètres · Profil" spec="ACC-03" sprint="S3" />,
-          },
-          {
-            path: 'account',
-            element: <Placeholder title="Paramètres · Compte" spec="ACC-04" sprint="S3" />,
-          },
-          {
-            path: 'privacy',
-            element: <Placeholder title="Paramètres · Confidentialité" spec="ACC-05" sprint="S3" />,
-          },
-          {
-            path: 'security',
-            element: <Placeholder title="Paramètres · Sécurité" spec="ACC-06" sprint="S3" />,
-          },
+          { path: 'profile', element: <ProfileSettings /> },
+          { path: 'account', element: <AccountSettings /> },
+          { path: 'privacy', element: <PrivacySettings /> },
+          { path: 'security', element: <SecuritySettings /> },
           { path: 'data', element: <Placeholder title="Mes données" spec="ACC-08" sprint="S8" /> },
           {
             path: 'delete',

@@ -6,6 +6,7 @@ import {
   LogIn,
   Mail,
   Moon,
+  Plus,
   Search,
   Settings,
   Shield,
@@ -14,9 +15,22 @@ import {
 } from 'lucide-react';
 import { Link, NavLink } from 'react-router';
 import { Brand } from '@/app/layouts/Brand';
+import { Avatar, Badge } from '@/design-system/Avatar';
+import { buttonClass } from '@/design-system/Button';
 import { useTheme } from '@/design-system/theme';
+import { cx } from '@/lib/cx';
+import { useMe } from '@/lib/session';
+import { profileUrl } from '@/lib/urls';
+import { useComposer } from '@/features/posts/composer-context';
 
-type Item = { to: string; label: string; icon: LucideIcon; end?: boolean; className?: string };
+type Item = {
+  to: string;
+  label: string;
+  icon: LucideIcon;
+  end?: boolean;
+  className?: string;
+  badge?: number;
+};
 
 const primary: Item[] = [
   { to: '/', label: 'Accueil', icon: House, end: true },
@@ -25,7 +39,6 @@ const primary: Item[] = [
   { to: '/search', label: 'Recherche', icon: Search, className: 'md:hidden' },
   { to: '/notifications', label: 'Notifications', icon: Bell },
   { to: '/messages', label: 'Messages', icon: Mail },
-  { to: '/u/aboumall', label: 'Profil', icon: User },
 ];
 
 const secondary: Item[] = [
@@ -34,7 +47,7 @@ const secondary: Item[] = [
   { to: '/settings', label: 'Paramètres', icon: Settings },
 ];
 
-function NavItem({ to, label, icon: Icon, end, className = '' }: Item) {
+function NavItem({ to, label, icon: Icon, end, className = '', badge }: Item) {
   return (
     <NavLink
       to={to}
@@ -50,6 +63,12 @@ function NavItem({ to, label, icon: Icon, end, className = '' }: Item) {
         <>
           <Icon aria-hidden size={26} strokeWidth={isActive ? 2.4 : 1.8} />
           <span className="hidden lg:inline">{label}</span>
+          {!!badge && (
+            <Badge className="absolute top-1 left-[26px]">
+              {badge}
+              <span className="sr-only"> en attente</span>
+            </Badge>
+          )}
         </>
       )}
     </NavLink>
@@ -87,6 +106,11 @@ function ThemeSwitch() {
 
 /** Nav gauche (composant 22) : colonne à gauche dès 721 px, barre en bas de l'écran en dessous. */
 export function Sidebar() {
+  const { data: me } = useMe();
+  const composer = useComposer();
+  const items = me
+    ? [...primary, { to: profileUrl(me.username), label: 'Profil', icon: User, end: false }]
+    : primary.filter((i) => i.to === '/explore' || i.to === '/search');
   return (
     <aside
       aria-label="Navigation principale"
@@ -95,27 +119,52 @@ export function Sidebar() {
       <Brand className="mb-2 hidden rounded-full p-3 sm:flex" nameClassName="hidden lg:inline" />
 
       <nav className="flex w-full justify-around sm:w-auto sm:flex-col sm:gap-0.5">
-        {primary.map((item) => (
-          <NavItem key={item.to} {...item} />
+        {items.map((item) => (
+          <NavItem key={item.label} {...item} />
         ))}
       </nav>
       <div className="m-3 hidden h-px bg-line lg:block" />
       <nav aria-label="Navigation secondaire" className="hidden flex-col gap-0.5 sm:flex">
-        {secondary.map((item) => (
+        {(me ? secondary : secondary.slice(0, 1)).map((item) => (
           <NavItem key={item.to} {...item} />
         ))}
       </nav>
 
       <div className="mt-auto hidden flex-col gap-2 sm:flex">
+        {me && (
+          <button
+            type="button"
+            aria-label="Publier"
+            onClick={() => composer.open()}
+            className={cx(buttonClass({ size: 'lg', block: true }), 'max-lg:w-13 max-lg:px-0')}
+          >
+            <Plus aria-hidden size={22} strokeWidth={1.8} />
+            <span className="hidden lg:inline">Publier</span>
+          </button>
+        )}
         <ThemeSwitch />
-        <Link
-          to="/login"
-          aria-label="Se connecter"
-          className="inline-flex h-13 items-center justify-center gap-2 rounded-full bg-accent text-[17px] font-bold text-accent-ink transition-opacity duration-150 hover:opacity-90 max-lg:w-13 lg:px-4"
-        >
-          <LogIn aria-hidden size={20} strokeWidth={1.8} />
-          <span className="hidden lg:inline">Se connecter</span>
-        </Link>
+        {me ? (
+          <Link
+            to={profileUrl(me.username)}
+            aria-label={`Mon profil : @${me.username}`}
+            className="flex items-center gap-3 rounded-full p-3 transition-colors hover:bg-hover max-lg:justify-center"
+          >
+            <Avatar name={me.display_name} src={me.avatar} online />
+            <span className="hidden min-w-0 flex-1 leading-tight lg:block">
+              <b className="block truncate">{me.display_name}</b>
+              <span className="text-sm text-text-3">@{me.username}</span>
+            </span>
+          </Link>
+        ) : (
+          <Link
+            to="/login"
+            aria-label="Se connecter"
+            className="inline-flex h-13 items-center justify-center gap-2 rounded-full bg-accent text-[17px] font-bold text-accent-ink transition-opacity duration-150 hover:opacity-90 max-lg:w-13 lg:px-4"
+          >
+            <LogIn aria-hidden size={20} strokeWidth={1.8} />
+            <span className="hidden lg:inline">Se connecter</span>
+          </Link>
+        )}
       </div>
     </aside>
   );

@@ -1,4 +1,4 @@
-import { PageHead } from '@/app/layouts/PageHead';
+import { PageHead } from '@/design-system/PageHead';
 import { useTheme } from '@/design-system/theme';
 
 // Page /design-system : pour l'instant, les tokens seulement (front/feat/design-tokens).

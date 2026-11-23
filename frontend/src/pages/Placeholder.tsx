@@ -1,5 +1,5 @@
 import { useParams } from 'react-router';
-import { PageHead } from '@/app/layouts/PageHead';
+import { PageHead } from '@/design-system/PageHead';
 
 type Props = {
   title: string;
