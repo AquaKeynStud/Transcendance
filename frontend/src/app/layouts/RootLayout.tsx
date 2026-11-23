@@ -15,14 +15,14 @@ function Rail() {
           aria-hidden
           size={18}
           strokeWidth={1.8}
-          className="text-text-3 pointer-events-none absolute top-1/2 left-4 -translate-y-1/2"
+          className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-text-3"
         />
         <input
           type="search"
           name="q"
           aria-label="Rechercher"
           placeholder="Rechercher"
-          className="border-card-line bg-card text-post placeholder:text-text-3 focus:border-accent h-11 w-full rounded-full border pr-4 pl-11 focus:outline-none"
+          className="h-11 w-full rounded-full border border-card-line bg-card pr-4 pl-11 text-post placeholder:text-text-3 focus:border-accent focus:outline-none"
         />
       </Form>
       <LegalLinks />
@@ -39,7 +39,7 @@ export function RootLayout() {
   return (
     <div className="min-h-dvh pb-14 sm:grid sm:grid-cols-[var(--nav-w)_minmax(0,1fr)_minmax(0,var(--main-w))_minmax(0,1fr)] sm:pb-0 md:grid-cols-[var(--nav-w)_minmax(0,1fr)_minmax(0,var(--main-w))_var(--rail-w)_minmax(0,1fr)]">
       <Sidebar />
-      <main className="sm:border-line col-start-3 row-start-1 flex min-h-dvh min-w-0 flex-col sm:border-r">
+      <main className="col-start-3 row-start-1 flex min-h-dvh min-w-0 flex-col sm:border-r sm:border-line">
         <div className="flex-1">
           <Outlet />
         </div>

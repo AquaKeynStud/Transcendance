@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-bg text-text font-sans text-[15px] leading-[1.4] antialiased;
+    @apply bg-bg font-sans text-[15px] leading-[1.4] text-text antialiased;
   }
   h1,
   h2,
@@ -13,10 +13,10 @@
     @apply font-extrabold tracking-[-0.01em];
   }
   :focus-visible {
-    @apply outline-accent outline-2 outline-offset-2;
+    @apply outline-2 outline-offset-2 outline-accent;
   }
   code {
-    @apply border-line bg-surface rounded-[4px] border px-[5px] py-px font-mono text-[0.88em];
+    @apply rounded-[4px] border border-line bg-surface px-[5px] py-px font-mono text-[0.88em];
   }
   ::selection {
     background: color-mix(in srgb, var(--link) 35%, transparent);

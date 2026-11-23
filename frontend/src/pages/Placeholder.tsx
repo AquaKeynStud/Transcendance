@@ -23,7 +23,7 @@ export function Placeholder({ title, spec, sprint }: Props) {
             : undefined
         }
       />
-      <p className="text-post text-text-2 px-5 py-6">
+      <p className="px-5 py-6 text-post text-text-2">
         Page à venir{sprint ? ` (${sprint})` : ''}.{spec ? ` Spec : ${spec}.` : ''}
       </p>
     </>

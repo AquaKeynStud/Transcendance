@@ -10,7 +10,7 @@ export function Brand({
 }) {
   return (
     <Link to="/" aria-label="transcendance, accueil" className={`items-center gap-3 ${className}`}>
-      <span className="bg-text text-bg grid size-[30px] place-items-center rounded-sm text-[17px] font-extrabold tracking-[-0.04em]">
+      <span className="grid size-[30px] place-items-center rounded-sm bg-text text-[17px] font-extrabold tracking-[-0.04em] text-bg">
         t
       </span>
       <span className={`text-lg font-extrabold tracking-[-0.02em] ${nameClassName}`}>
