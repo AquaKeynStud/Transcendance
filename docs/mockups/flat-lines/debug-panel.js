@@ -148,7 +148,7 @@
     '.fld .note{font-size:11px;color:var(--text-3)}' +
     '.fld .x{width:26px;height:26px;border:0;border-radius:50%;background:transparent;color:var(--text-2);cursor:pointer;font-size:16px;line-height:1} .fld .x:hover{background:var(--hover)}' +
     'body.is-guest .fld-toggle{bottom:92px} body.is-guest .fld{bottom:132px;max-height:calc(100vh - 156px)}' +
-    '@media (max-width:720px){.fld-toggle,body.is-guest .fld-toggle{top:72px;right:0;bottom:auto;border-radius:8px 0 0 8px;border-right:0}.fld,body.is-guest .fld{top:112px;left:8px;right:8px;bottom:auto;width:auto;max-height:calc(100vh - 184px)}}';
+    '@media (max-width:720px){.fld-toggle,body.is-guest .fld-toggle{top:45%;right:0;bottom:auto;border-radius:8px 0 0 8px;border-right:0}.fld,body.is-guest .fld{top:72px;left:8px;right:8px;bottom:auto;width:auto;max-height:calc(100vh - 184px)}}';
   var style = document.createElement('style');
   style.textContent = css;
   document.head.appendChild(style);

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette · Paramètres · Flat lines · ft_transcendence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shell.css">
+<style>
+/* =====================================================================
+   Flat lines · paramètres (S3) : ACC-03 à ACC-06, §3.1, §3.2
+   Vues (ancre de l'URL) :
+     #profile        Profil : avatar, nom affiché (50), bio (160)
+     #crop           Recadrage carré de l'avatar (photo de démonstration)
+     #avatar-error   Fichier d'avatar refusé (plus de 2 Mo)
+     #account        Compte : email (avec mot de passe), nom d'utilisateur
+     #privacy        Confidentialité : compte privé, visibilité des J'aime et des republications
+     #security       Sécurité : changer de mot de passe
+   « Mes données » et « Supprimer le compte » (ACC-08, ACC-09) sont prévus au S8.
+   Mot de passe de test : transcendance.
+   ===================================================================== */
+.settings { display: grid; grid-template-columns: 300px minmax(0, 1fr); min-height: 100vh; }
+.s-nav { border-right: 1px solid var(--line); padding-bottom: var(--space-6); }
+.s-nav h1 { font-size: 20px; padding: 0 var(--space-5); min-height: 56px; display: flex; align-items: center; }
+.s-nav a { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-5); text-decoration: none; color: var(--text); transition: background .15s; }
+.s-nav a:hover { background: var(--hover); }
+.s-nav a[aria-current="page"] { background: var(--hover); box-shadow: inset -3px 0 0 var(--accent); }
+.s-nav a .t { flex: 1; min-width: 0; }
+.s-nav a b { display: block; font-weight: 600; }
+.s-nav a small { display: block; font-size: 13px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.s-nav a svg:last-child { color: var(--text-3); }
+.s-nav a.soon { opacity: .55; }
+.s-nav a.soon .tag { margin-left: auto; }
+.s-panel { min-width: 0; }
+.s-body { max-width: 600px; padding: var(--space-5) var(--space-6) var(--space-8); display: flex; flex-direction: column; gap: var(--space-6); }
+.s-section { display: flex; flex-direction: column; gap: var(--space-4); }
+.s-section + .s-section { padding-top: var(--space-6); border-top: 1px solid var(--line); }
+.s-section h2 { font-size: 17px; }
+.s-section .desc { font-size: 14px; color: var(--text-3); line-height: 1.5; margin-top: -8px; }
+.s-actions { display: flex; justify-content: flex-end; gap: var(--space-2); }
+.avatar-row { display: flex; align-items: center; gap: var(--space-5); }
+.avatar-row .btns { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.avatar-row .help { margin-top: var(--space-2); }
+.kv { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); border: 1px solid var(--card-line); border-radius: var(--r-sm); background: var(--card); }
+.kv .t { flex: 1; min-width: 0; }
+.kv .t small { display: block; font-size: 13px; color: var(--text-3); }
+.kv .t b { font-weight: 600; overflow-wrap: anywhere; }
+.switch-row { display: flex; align-items: flex-start; gap: var(--space-4); }
+.switch-row .t { flex: 1; }
+.switch-row b { display: block; font-weight: 600; margin-bottom: 2px; }
+.switch-row p { font-size: 14px; color: var(--text-3); line-height: 1.5; }
+.switch-row .switch { margin-top: 2px; }
+.crop-area { position: relative; width: 100%; aspect-ratio: 1; max-width: 352px; margin: 0 auto; overflow: hidden; border-radius: var(--r-sm); background: #000; touch-action: none; cursor: grab; user-select: none; }
+.crop-area:active { cursor: grabbing; }
+.crop-area img { position: absolute; left: 0; top: 0; transform-origin: 0 0; pointer-events: none; max-width: none; }
+.crop-area .mask { position: absolute; inset: 0; border-radius: 50%; box-shadow: 0 0 0 999px rgba(0, 0, 0, .55); outline: 1px solid rgba(255, 255, 255, .6); pointer-events: none; }
+.crop-area .frame { position: absolute; inset: 0; border: 1px dashed rgba(255, 255, 255, .45); pointer-events: none; }
+.zoom-row { display: flex; align-items: center; gap: var(--space-3); color: var(--text-3); }
+.zoom-row input { flex: 1; accent-color: var(--text); }
+.crop-preview { display: flex; align-items: center; justify-content: center; gap: var(--space-4); font-size: 13px; color: var(--text-3); }
+@media (max-width: 1020px) {
+  .settings { grid-template-columns: minmax(0, 1fr); align-content: start; }
+  .s-nav { border-right: 0; border-bottom: 1px solid var(--line); padding: 0; display: flex; align-items: center; overflow-x: auto; scrollbar-width: none; position: sticky; top: 0; z-index: 6; background: var(--bg); }
+  .s-nav h1 { display: none; }
+  .s-nav a { flex: none; padding: var(--space-3) var(--space-4); }
+  .s-nav a small, .s-nav a svg:last-child, .s-nav a.soon { display: none; }
+  .s-nav a[aria-current="page"] { box-shadow: inset 0 -3px 0 var(--accent); }
+  .s-panel .page-head { display: none; }
+}
+@media (max-width: 720px) { .s-body { padding: var(--space-4); } .rules { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" data-active="settings"></aside>
+
+  <main class="main wide">
+    <div class="settings">
+      <nav class="s-nav" aria-label="Sections des paramètres">
+        <h1>Paramètres</h1>
+        <a href="#profile" data-s="profile"><svg class="i"><use href="#i-user"/></svg><span class="t"><b>Profil</b><small>Photo, nom affiché, bio</small></span><svg class="i sm"><use href="#i-chevron-right"/></svg></a>
+        <a href="#account" data-s="account"><svg class="i"><use href="#i-mail"/></svg><span class="t"><b>Compte</b><small>Email, nom d'utilisateur</small></span><svg class="i sm"><use href="#i-chevron-right"/></svg></a>
+        <a href="#privacy" data-s="privacy"><svg class="i"><use href="#i-lock"/></svg><span class="t"><b>Confidentialité</b><small>Compte privé, J'aime, republications</small></span><svg class="i sm"><use href="#i-chevron-right"/></svg></a>
+        <a href="#security" data-s="security"><svg class="i"><use href="#i-key"/></svg><span class="t"><b>Sécurité</b><small>Mot de passe</small></span><svg class="i sm"><use href="#i-chevron-right"/></svg></a>
+        <a href="#" class="soon" data-soon="Mes données (ACC-08)"><svg class="i"><use href="#i-download"/></svg><span class="t"><b>Mes données</b><small>Exporter en JSON</small></span><span class="tag">S8</span></a>
+        <a href="#" class="soon" data-soon="Supprimer le compte (ACC-09)"><svg class="i"><use href="#i-trash"/></svg><span class="t"><b>Supprimer le compte</b><small>Définitif</small></span><span class="tag">S8</span></a>
+      </nav>
+
+      <div class="s-panel">
+        <!-- ================= PROFIL (ACC-03, ACC-04) ================= -->
+        <section class="view" id="v-profile" aria-labelledby="h-profile">
+          <div class="page-head"><div class="titles"><h1 id="h-profile">Profil</h1><div class="sub">Visible par tout le monde, visiteurs compris</div></div></div>
+          <div class="s-body">
+            <div class="s-section">
+              <h2>Photo de profil</h2>
+              <div class="avatar-row">
+                <span class="avatar xxl" data-me-avatar id="av-big">A</span>
+                <div>
+                  <div class="btns">
+                    <input type="file" id="av-file" accept="image/jpeg,image/png,image/webp" hidden>
+                    <button class="btn btn-outline btn-sm" id="av-pick"><svg class="i sm"><use href="#i-camera"/></svg>Changer la photo</button>
+                    <button class="btn btn-ghost btn-sm" id="av-del" hidden>Retirer</button>
+                  </div>
+                  <p class="help">JPG, PNG ou WEBP, 2 Mo maximum. Vous la recadrez en carré ensuite.</p>
+                </div>
+              </div>
+              <div class="alert danger" id="av-err" hidden><svg class="i sm"><use href="#i-alert"/></svg><div><b id="av-err-t">Photo refusée</b><span id="av-err-s"></span></div></div>
+            </div>
+
+            <form class="s-section form" id="f-profile" novalidate>
+              <h2>Informations</h2>
+              <div class="form-row">
+                <div class="label-row"><label class="lbl" for="p-name">Nom affiché</label><span class="counter" id="p-name-c">8 / 50</span></div>
+                <div class="field"><input id="p-name" maxlength="50" value="aboumall" autocomplete="nickname"></div>
+                <p class="help">Si vous le laissez vide, votre nom d'utilisateur est affiché.</p>
+              </div>
+              <div class="form-row">
+                <div class="label-row"><label class="lbl" for="p-bio">Bio</label><span class="counter" id="p-bio-c"></span></div>
+                <div class="field"><textarea id="p-bio" rows="3">Front de transcendance. Je maquette, je code, je recommence. Lyon.</textarea></div>
+                <p class="help error" id="p-bio-err"></p>
+              </div>
+              <div class="s-actions"><button type="button" class="btn btn-ghost" id="p-reset" disabled>Annuler</button><button class="btn btn-primary" id="p-save" disabled>Enregistrer</button></div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ================= COMPTE (ACC-05) ================= -->
+        <section class="view" id="v-account" aria-labelledby="h-account">
+          <div class="page-head"><div class="titles"><h1 id="h-account">Compte</h1><div class="sub">Seul vous voyez votre adresse email</div></div></div>
+          <div class="s-body">
+            <div class="s-section">
+              <h2>Adresse email</h2>
+              <div class="kv"><svg class="i"><use href="#i-mail"/></svg><div class="t"><small>Adresse actuelle</small><b id="email-cur">aboumall@exemple.fr</b></div><button class="btn btn-outline btn-sm" id="email-edit">Modifier</button></div>
+              <div class="alert success" id="email-ok" hidden><svg class="i sm"><use href="#i-check-circle"/></svg><div><b>Confirmez votre nouvelle adresse</b><span>Nous avons envoyé un lien à <b style="display:inline" id="email-new-out"></b>. L'adresse change quand vous cliquez dessus. D'ici là, l'ancienne reste active.</span></div></div>
+              <form class="form" id="f-email" hidden novalidate>
+                <div class="form-row"><label class="lbl" for="e-new">Nouvelle adresse</label><div class="field"><input id="e-new" type="email" autocomplete="email" placeholder="vous@exemple.fr"></div><p class="help error" id="e-new-err"></p></div>
+                <div class="form-row"><label class="lbl" for="e-pw">Mot de passe actuel</label><div class="field"><input id="e-pw" type="password" autocomplete="current-password" placeholder="Pour confirmer que c'est bien vous"></div><p class="help error" id="e-pw-err"></p></div>
+                <div class="s-actions"><button type="button" class="btn btn-ghost" id="email-cancel">Annuler</button><button class="btn btn-primary">Envoyer le lien de confirmation</button></div>
+              </form>
+            </div>
+
+            <form class="s-section form" id="f-user" novalidate>
+              <h2>Nom d'utilisateur</h2>
+              <p class="desc">C'est votre @ : il apparaît sur vos posts et dans l'adresse de votre profil.</p>
+              <div class="form-row">
+                <label class="lbl" for="u-name">Nom d'utilisateur</label>
+                <div class="field" id="u-field"><span class="prefix">@</span><input id="u-name" value="aboumall" maxlength="20" autocomplete="username" spellcheck="false"><span class="spin sm" id="u-spin" hidden></span><svg class="i sm state-ok"><use href="#i-check"/></svg></div>
+                <p class="help" id="u-help">3 à 20 caractères : lettres, chiffres et _</p>
+              </div>
+              <div class="s-actions"><button class="btn btn-primary" id="u-save" disabled>Enregistrer</button></div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ================= CONFIDENTIALITÉ (ACC-06, §3.1, §3.2) ================= -->
+        <section class="view" id="v-privacy" aria-labelledby="h-privacy">
+          <div class="page-head"><div class="titles"><h1 id="h-privacy">Confidentialité</h1><div class="sub">Enregistré automatiquement</div></div></div>
+          <div class="s-body">
+            <div class="s-section">
+              <div class="switch-row">
+                <div class="t"><b id="priv-l">Compte privé</b><p id="priv-d"></p></div>
+                <button class="switch" role="switch" aria-checked="true" aria-labelledby="priv-l" aria-describedby="priv-d" id="priv"></button>
+              </div>
+            </div>
+            <fieldset class="s-section" style="border:0;margin:0;padding-left:0;padding-right:0;padding-bottom:0">
+              <h2><legend style="padding:0">Qui voit vos J'aime</legend></h2>
+              <p class="desc">Le nombre de J'aime d'un post reste visible par tous, sans les noms. Ce réglage s'applique aussi à vos anciens J'aime.</p>
+              <div class="choices" data-pref="likes"></div>
+            </fieldset>
+            <fieldset class="s-section" style="border:0;margin:0;padding-left:0;padding-right:0;padding-bottom:0">
+              <h2><legend style="padding:0">Qui voit vos republications</legend></h2>
+              <p class="desc">Une republication n'est jamais montrée à quelqu'un qui ne peut pas voir le post d'origine.</p>
+              <div class="choices" data-pref="reposts"></div>
+            </fieldset>
+          </div>
+        </section>
+
+        <!-- ================= SÉCURITÉ (ACC-05 : mot de passe) ================= -->
+        <section class="view" id="v-security" aria-labelledby="h-security">
+          <div class="page-head"><div class="titles"><h1 id="h-security">Sécurité</h1><div class="sub">Mot de passe</div></div></div>
+          <div class="s-body">
+            <form class="s-section form" id="f-pw" novalidate>
+              <h2>Changer de mot de passe</h2>
+              <div class="alert success" id="pw-ok" hidden><svg class="i sm"><use href="#i-check-circle"/></svg><div><b>Mot de passe modifié</b><span>Utilisez-le à votre prochaine connexion.</span></div></div>
+              <div class="form-row">
+                <div class="label-row"><label class="lbl" for="pw-old">Mot de passe actuel</label><a class="link" style="font-size:13px" href="auth.html#forgot">Mot de passe oublié ?</a></div>
+                <div class="field"><input id="pw-old" type="password" autocomplete="current-password"><button type="button" class="icon-btn pw-toggle" aria-label="Afficher le mot de passe"><svg class="i sm"><use href="#i-eye"/></svg></button></div>
+                <p class="help error" id="pw-old-err"></p>
+              </div>
+              <div class="form-row">
+                <label class="lbl" for="pw-new">Nouveau mot de passe</label>
+                <div class="field"><input id="pw-new" type="password" autocomplete="new-password" placeholder="8 caractères minimum"><button type="button" class="icon-btn pw-toggle" aria-label="Afficher le mot de passe"><svg class="i sm"><use href="#i-eye"/></svg></button></div>
+                <ul class="rules" id="pw-rules" aria-label="Règles du mot de passe">
+                  <li data-r="len">8 caractères min.</li><li data-r="num">Pas que des chiffres</li>
+                  <li data-r="common">Pas trop courant</li><li data-r="diff">Différent de l'actuel</li>
+                </ul>
+              </div>
+              <div class="form-row">
+                <label class="lbl" for="pw-2">Confirmer le nouveau mot de passe</label>
+                <div class="field"><input id="pw-2" type="password" autocomplete="new-password"><svg class="i sm state-ok"><use href="#i-check"/></svg></div>
+                <p class="help error" id="pw-2-err"></p>
+              </div>
+              <div class="s-actions"><button class="btn btn-primary" id="pw-save" disabled>Changer le mot de passe</button></div>
+            </form>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Recadrage de l'avatar (ACC-04) -->
+<div class="backdrop" id="crop" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="crop-title" style="max-width:440px">
+    <div class="modal-head"><h2 id="crop-title">Recadrer la photo</h2><button class="icon-btn" data-close-modal aria-label="Fermer"><svg class="i"><use href="#i-x"/></svg></button></div>
+    <div class="crop-area" id="crop-area" tabindex="0" aria-label="Zone de recadrage : glissez pour déplacer, flèches du clavier pour ajuster"><img id="crop-img" alt=""><span class="frame"></span><span class="mask"></span></div>
+    <div class="zoom-row"><svg class="i sm"><use href="#i-image"/></svg><input type="range" id="crop-zoom" min="1" max="3" step="0.01" value="1" aria-label="Zoom"><svg class="i"><use href="#i-image"/></svg></div>
+    <div class="crop-preview"><span class="avatar xl" id="crop-p1"></span><span class="avatar" id="crop-p2"></span><span>Aperçu dans le profil et sur les posts</span></div>
+    <div class="actions row"><button class="btn btn-outline" data-close-modal>Annuler</button><button class="btn btn-primary" id="crop-ok">Appliquer</button></div>
+  </div>
+</div>
+
+<script src="shell.js"></script>
+<script>
+(function () {
+  var M = window.Mock, $ = M.$, $$ = M.$$, icon = M.icon;
+  var root = document.documentElement;
+
+  // L'avatar recadré est gardé dans ce navigateur pour toutes les maquettes S3-S4
+  function setAvatar(url) {
+    if (url) { root.style.setProperty('--me-img', 'url(' + url + ')'); root.dataset.meImg = '1'; }
+    else { root.style.removeProperty('--me-img'); delete root.dataset.meImg; }
+    try { url ? localStorage.setItem('fl-avatar', url) : localStorage.removeItem('fl-avatar'); } catch (e) {}
+    $('#av-del').hidden = !url;
+  }
+  $('#av-del').hidden = !root.dataset.meImg;
+
+  // ---- Profil ----------------------------------------------------------------
+  var orig = { name: $('#p-name').value, bio: $('#p-bio').value };
+  function profUpdate() {
+    var n = $('#p-name').value, b = $('#p-bio').value;
+    $('#p-name-c').textContent = n.length + ' / 50';
+    $('#p-name-c').className = 'counter' + (n.length >= 45 ? ' warn' : '');
+    var bc = $('#p-bio-c');
+    bc.textContent = b.length + ' / 160';
+    bc.className = 'counter' + (b.length > 160 ? ' over' : b.length >= 140 ? ' warn' : '');
+    $('#p-bio-err').textContent = b.length > 160 ? 'La bio fait ' + b.length + ' caractères : 160 maximum.' : '';
+    $('#p-bio').closest('.field').classList.toggle('error', b.length > 160);
+    var dirty = n !== orig.name || b !== orig.bio;
+    $('#p-save').disabled = !dirty || b.length > 160;
+    $('#p-reset').disabled = !dirty;
+  }
+  $('#p-name').addEventListener('input', profUpdate);
+  $('#p-bio').addEventListener('input', profUpdate);
+  $('#p-reset').onclick = function () { $('#p-name').value = orig.name; $('#p-bio').value = orig.bio; profUpdate(); };
+  $('#f-profile').onsubmit = function (e) {
+    e.preventDefault();
+    if ($('#p-save').disabled) return;
+    orig = { name: $('#p-name').value, bio: $('#p-bio').value };
+    profUpdate();
+    M.toast('Profil enregistré');
+  };
+  profUpdate();
+
+  // ---- Avatar : choix du fichier, validation, recadrage --------------------------
+  function avErr(t, s) { $('#av-err-t').textContent = t; $('#av-err-s').textContent = s; $('#av-err').hidden = false; }
+  $('#av-pick').onclick = function () { $('#av-file').click(); };
+  $('#av-file').onchange = function () {
+    var f = this.files[0];
+    this.value = '';
+    if (!f) return;
+    $('#av-err').hidden = true;
+    if (['image/jpeg', 'image/png', 'image/webp'].indexOf(f.type) < 0) return avErr('Format non accepté : « ' + f.name + ' »', 'Choisissez une image JPG, PNG ou WEBP.');
+    if (f.size > 2 * 1048576) return avErr('Photo trop lourde : « ' + f.name + ' »', (f.size / 1048576).toFixed(1).replace('.', ',') + ' Mo, la limite est de 2 Mo.');
+    openCrop(URL.createObjectURL(f));
+  };
+  $('#av-del').onclick = function () {
+    var prev = localStorage.getItem('fl-avatar');
+    setAvatar(null);
+    M.toast('Photo retirée : l\'avatar par défaut est affiché', 'success', function () { setAvatar(prev); });
+  };
+
+  function demoImage() {
+    var c = document.createElement('canvas'); c.width = 900; c.height = 600;
+    var g = c.getContext('2d'), gr = g.createLinearGradient(0, 0, 900, 600);
+    gr.addColorStop(0, '#2b5876'); gr.addColorStop(1, '#4e4376');
+    g.fillStyle = gr; g.fillRect(0, 0, 900, 600);
+    g.fillStyle = '#f5c16c'; g.beginPath(); g.arc(470, 250, 130, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#1b1d22'; g.beginPath(); g.ellipse(470, 600, 230, 170, 0, Math.PI, 0); g.fill();
+    g.fillStyle = 'rgba(255,255,255,.85)'; g.font = '700 28px Inter, sans-serif'; g.fillText('photo de démonstration · 900 × 600', 24, 44);
+    return c.toDataURL('image/jpeg', .9);
+  }
+  var crop = { x: 0, y: 0, z: 1, base: 1, w: 0, h: 0, size: 0 };
+  var img = $('#crop-img'), area = $('#crop-area');
+  function layout() {
+    crop.size = area.clientWidth;
+    var s = crop.base * crop.z, W = crop.w * s, H = crop.h * s;
+    crop.x = Math.min(0, Math.max(crop.size - W, crop.x));
+    crop.y = Math.min(0, Math.max(crop.size - H, crop.y));
+    img.style.transform = 'translate(' + crop.x + 'px,' + crop.y + 'px) scale(' + s + ')';
+    preview();
+  }
+  var pv;
+  function preview() {
+    clearTimeout(pv);
+    pv = setTimeout(function () { var u = render(160); ['#crop-p1', '#crop-p2'].forEach(function (id) { $(id).style.backgroundImage = 'url(' + u + ')'; }); }, 40);
+  }
+  function render(out) {
+    var c = document.createElement('canvas'); c.width = c.height = out;
+    var s = crop.base * crop.z, k = out / crop.size;
+    c.getContext('2d').drawImage(img, -crop.x / s, -crop.y / s, crop.size / s, crop.size / s, 0, 0, out, out);
+    void k;
+    return c.toDataURL('image/jpeg', .9);
+  }
+  function openCrop(src) {
+    img.onload = function () {
+      M.openModal('crop', $('#av-pick'));
+      requestAnimationFrame(function () {
+        crop.size = area.clientWidth; crop.w = img.naturalWidth; crop.h = img.naturalHeight;
+        crop.base = crop.size / Math.min(crop.w, crop.h); crop.z = 1; $('#crop-zoom').value = 1;
+        crop.x = (crop.size - crop.w * crop.base) / 2; crop.y = (crop.size - crop.h * crop.base) / 2;
+        layout();
+        area.focus();
+      });
+    };
+    img.src = src;
+  }
+  $('#crop-zoom').oninput = function () {
+    var c = crop.size / 2, s0 = crop.base * crop.z;
+    crop.z = +this.value;
+    var s1 = crop.base * crop.z;
+    crop.x = c - (c - crop.x) * s1 / s0; crop.y = c - (c - crop.y) * s1 / s0;
+    layout();
+  };
+  var drag = null;
+  area.addEventListener('pointerdown', function (e) { drag = { x: e.clientX - crop.x, y: e.clientY - crop.y }; area.setPointerCapture(e.pointerId); });
+  area.addEventListener('pointermove', function (e) { if (!drag) return; crop.x = e.clientX - drag.x; crop.y = e.clientY - drag.y; layout(); });
+  area.addEventListener('pointerup', function () { drag = null; });
+  area.addEventListener('keydown', function (e) {
+    var d = { ArrowLeft: [8, 0], ArrowRight: [-8, 0], ArrowUp: [0, 8], ArrowDown: [0, -8] }[e.key];
+    if (!d) return;
+    e.preventDefault(); crop.x += d[0]; crop.y += d[1]; layout();
+  });
+  area.addEventListener('wheel', function (e) { e.preventDefault(); var z = $('#crop-zoom'); z.value = Math.min(3, Math.max(1, +z.value - e.deltaY / 500)); z.oninput(); }, { passive: false });
+  $('#crop-ok').onclick = function () {
+    setAvatar(render(400));
+    M.closeModal($('#crop'));
+    M.toast('Photo de profil mise à jour');
+  };
+
+  // ---- Compte : email ----------------------------------------------------------
+  var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  function setErr(input, el, msg) { input.closest('.field').classList.toggle('error', !!msg); input.setAttribute('aria-invalid', String(!!msg)); el.textContent = msg || ''; }
+  $('#email-edit').onclick = function () { $('#f-email').hidden = false; $('#email-ok').hidden = true; this.hidden = true; $('#e-new').focus(); };
+  $('#email-cancel').onclick = function () { $('#f-email').hidden = true; $('#email-edit').hidden = false; $('#f-email').reset(); setErr($('#e-new'), $('#e-new-err')); setErr($('#e-pw'), $('#e-pw-err')); $('#email-edit').focus(); };
+  $('#f-email').onsubmit = function (e) {
+    e.preventDefault();
+    var n = $('#e-new').value.trim(), pw = $('#e-pw').value;
+    setErr($('#e-new'), $('#e-new-err'), !n ? 'Indiquez la nouvelle adresse.' : !emailRe.test(n) ? 'Cette adresse n\'est pas valide.' : n === $('#email-cur').textContent ? 'C\'est déjà votre adresse.' : n === 'lea@exemple.fr' ? 'Cette adresse est déjà utilisée par un autre compte.' : '');
+    setErr($('#e-pw'), $('#e-pw-err'), !pw ? 'Indiquez votre mot de passe.' : pw !== 'transcendance' ? 'Mot de passe incorrect.' : '');
+    if ($('#e-new-err').textContent || $('#e-pw-err').textContent) { ($('#e-new-err').textContent ? $('#e-new') : $('#e-pw')).focus(); return; }
+    $('#email-new-out').textContent = n;
+    $('#email-ok').hidden = false; $('#f-email').hidden = true; $('#email-edit').hidden = false; $('#f-email').reset();
+    M.toast('Lien de confirmation envoyé');
+  };
+
+  // ---- Compte : nom d'utilisateur ------------------------------------------------
+  var taken = ['lea_n', 'mehdi', 'nora', 'theok', 'sami', 'jade', 'admin'], cur = 'aboumall', ut;
+  $('#u-name').addEventListener('input', function () {
+    var v = this.value, f = $('#u-field'), h = $('#u-help');
+    clearTimeout(ut); f.classList.remove('ok', 'error'); $('#u-save').disabled = true; $('#u-spin').hidden = true;
+    h.className = 'help'; h.textContent = '3 à 20 caractères : lettres, chiffres et _';
+    if (v === cur) return;
+    if (!/^[a-zA-Z0-9_]*$/.test(v)) { f.classList.add('error'); h.className = 'help error'; h.textContent = 'Seulement des lettres, des chiffres et _'; return; }
+    if (v.length < 3) { if (v.length) { h.textContent = 'Encore ' + (3 - v.length) + ' caractère' + (v.length === 2 ? '' : 's'); } return; }
+    $('#u-spin').hidden = false; h.textContent = 'Vérification…';
+    ut = setTimeout(function () {
+      $('#u-spin').hidden = true;
+      if (taken.indexOf(v.toLowerCase()) >= 0) { f.classList.add('error'); h.className = 'help error'; h.textContent = '@' + v + ' est déjà pris.'; return; }
+      f.classList.add('ok'); h.textContent = '@' + v + ' est disponible.'; $('#u-save').disabled = false;
+    }, 500);
+  });
+  $('#f-user').onsubmit = function (e) {
+    e.preventDefault();
+    var v = $('#u-name').value;
+    if ($('#u-save').disabled) return;
+    M.confirm({
+      title: 'Devenir @' + v + ' ?', ok: 'Changer', opener: $('#u-save'),
+      text: 'Les liens vers @' + cur + ' ne mèneront plus à votre profil, et quelqu\'un d\'autre pourra prendre ce nom. Vos posts, abonnés et messages ne changent pas.',
+      run: function () { cur = v; $('#u-field').classList.remove('ok'); $('#u-save').disabled = true; $('#u-help').textContent = '3 à 20 caractères : lettres, chiffres et _'; M.toast('Vous êtes maintenant @' + v); }
+    });
+  };
+
+  // ---- Confidentialité --------------------------------------------------------
+  var pending = 3;
+  function privDesc() {
+    var on = $('#priv').getAttribute('aria-checked') === 'true';
+    $('#priv-d').innerHTML = on ?
+      'Seuls vos abonnés acceptés voient vos posts, réponses, médias et listes. Votre profil (photo, nom, bio, compteurs) reste visible par tous. <a class="link" href="profile.html#requests">' + pending + ' demande' + (pending > 1 ? 's' : '') + ' en attente</a>' :
+      'Tout le monde voit vos posts, visiteurs compris, et peut vous suivre sans demande.';
+  }
+  $('#priv').onclick = function () {
+    var sw = this, on = sw.getAttribute('aria-checked') === 'true';
+    if (on) {
+      M.confirm({
+        title: 'Passer en compte public ?', ok: 'Passer en public', opener: sw,
+        text: 'Tout le monde, visiteurs compris, verra vos posts, vos réponses et vos médias.' + (pending ? ' Les <b>' + pending + ' demandes en attente</b> seront acceptées automatiquement.' : ''),
+        run: function () { sw.setAttribute('aria-checked', 'false'); pending = 0; privDesc(); M.toast('Votre compte est public'); }
+      });
+    } else {
+      sw.setAttribute('aria-checked', 'true'); privDesc();
+      M.toast('Votre compte est privé. Vos abonnés actuels sont conservés.');
+    }
+  };
+  privDesc();
+  var CH = [['public', 'Tout le monde', 'Toute personne qui peut voir le post, visiteurs compris'], ['followers', 'Vos abonnés', 'Seulement vos abonnés acceptés'], ['private', 'Vous seulement', 'Personne d\'autre ne voit la liste']];
+  $$('[data-pref]').forEach(function (box) {
+    var k = box.dataset.pref, cur = k === 'likes' ? 'public' : 'followers';
+    box.innerHTML = CH.map(function (c) {
+      return '<label class="radio"><input type="radio" name="' + k + '" value="' + c[0] + '"' + (c[0] === cur ? ' checked' : '') + '><span class="dot"></span><span><b>' + c[1] + '</b>' + c[2] + '</span></label>';
+    }).join('');
+    box.addEventListener('change', function (e) {
+      M.toast((k === 'likes' ? 'J\'aime' : 'Republications') + ' visibles par : ' + CH.filter(function (c) { return c[0] === e.target.value; })[0][1].toLowerCase());
+    });
+  });
+
+  // ---- Sécurité : mot de passe -------------------------------------------------
+  $$('.pw-toggle').forEach(function (b) {
+    b.onclick = function () {
+      var i = b.parentElement.querySelector('input'), vis = i.type === 'text';
+      i.type = vis ? 'password' : 'text';
+      b.querySelector('use').setAttribute('href', vis ? '#i-eye' : '#i-eye-off');
+      b.setAttribute('aria-label', vis ? 'Afficher le mot de passe' : 'Masquer le mot de passe');
+    };
+  });
+  var common = ['password', 'motdepasse', '12345678', 'azertyui', 'qwertyui', 'transcendance1'];
+  function pwUpdate() {
+    var o = $('#pw-old').value, n = $('#pw-new').value, c = $('#pw-2').value;
+    var r = { len: n.length >= 8, num: n && !/^\d+$/.test(n), common: n && common.indexOf(n.toLowerCase()) < 0, diff: n && n !== o };
+    Object.keys(r).forEach(function (k) { $('#pw-rules [data-r="' + k + '"]').classList.toggle('ok', !!r[k]); });
+    var allOk = r.len && r.num && r.common && r.diff;
+    var match = c && c === n;
+    $('#pw-2').closest('.field').classList.toggle('ok', !!(match && allOk));
+    $('#pw-save').disabled = !(o && allOk && match);
+  }
+  ['#pw-old', '#pw-new', '#pw-2'].forEach(function (s) { $(s).addEventListener('input', function () { $('#pw-ok').hidden = true; pwUpdate(); }); });
+  $('#pw-2').addEventListener('blur', function () { var c = this.value; setErr(this, $('#pw-2-err'), c && c !== $('#pw-new').value ? 'Les deux mots de passe ne correspondent pas.' : ''); });
+  $('#f-pw').onsubmit = function (e) {
+    e.preventDefault();
+    if ($('#pw-save').disabled) return;
+    if ($('#pw-old').value !== 'transcendance') { setErr($('#pw-old'), $('#pw-old-err'), 'Mot de passe actuel incorrect.'); $('#pw-old').focus(); return; }
+    setErr($('#pw-old'), $('#pw-old-err'));
+    this.reset(); pwUpdate();
+    $('#pw-2').closest('.field').classList.remove('ok');
+    $('#pw-ok').hidden = false;
+    M.toast('Mot de passe modifié');
+  };
+
+  // ---- Vues ---------------------------------------------------------------------
+  function sec(name, run) { return { view: name, run: function () { $$('.s-nav [data-s]').forEach(function (a) { a.toggleAttribute('aria-current', a.dataset.s === name); if (a.dataset.s === name) a.setAttribute('aria-current', 'page'); }); if (run) run(); } }; }
+  M.views({
+    profile: sec('profile'),
+    crop: sec('profile', function () { setTimeout(function () { openCrop(demoImage()); }, 50); }),
+    'avatar-error': sec('profile', function () { avErr('Photo trop lourde : « vacances.png »', '4,2 Mo, la limite est de 2 Mo.'); }),
+    account: sec('account'), privacy: sec('privacy'), security: sec('security')
+  }, 'profile');
+  M.bar([['profile', 'Profil'], ['crop', 'Recadrage'], ['avatar-error', 'Photo refusée'], ['account', 'Compte'], ['privacy', 'Confidentialité'], ['security', 'Sécurité']],
+    'Mot de passe de test : <b style="text-transform:none;letter-spacing:0;margin:0">transcendance</b> · noms déjà pris : lea_n, mehdi, nora · email déjà utilisé : lea@exemple.fr');
+})();
+</script>
+<script src="debug-panel.js"></script>
+</body>
+</html>

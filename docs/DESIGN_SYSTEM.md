@@ -171,34 +171,32 @@ Seuls le fil, les plugins et la liste des commentaires défilent (page fixe au-d
 
 Le texte n'est pas coupé à un nombre de lignes fixe. Il est coupé pour que le **post entier tienne dans un budget de hauteur** proportionnel à la hauteur visible du fil.
 
-**Post (fil) : règle du 2026-11-23.**
+**Post (fil) : règle du 2026-11-23, validée.**
 - Un post ne dépasse pas **45 % de la hauteur visible du fil**. Le budget compte **tout le post** : marges, en-tête, titre, médias, texte et actions.
-- Les **médias ont toujours la même hauteur**, quel que soit leur nombre (1 à 4 images, GIF ou vidéo) : 260 px dans la v11. Leur hauteur est donc connue avant le chargement, et le texte ne bouge pas quand l'image arrive.
-- **Exception : les médias horizontaux** (largeur > hauteur ; un média carré compte comme vertical).
-  - **Tous les médias sont horizontaux** : l'aperçu prend un **format horizontal**, et non la hauteur fixe. Proposition : **16:9**, soit une hauteur égale à 9/16 de la largeur du fil (326 px pour un fil de 580 px de contenu).
-  - **Au moins un média est vertical** : l'aperçu garde la **hauteur fixe**. Les médias horizontaux se calent sur cette hauteur et sont recadrés (`object-fit: cover`). L'image entière reste visible en plein écran.
-  - Dans les deux cas, la hauteur se calcule avant le chargement, à partir des dimensions renvoyées par l'API.
+- Les **médias ont une hauteur fixe**, quel que soit leur nombre (1 à 4 images, GIF ou vidéo) : 260 px. Leur hauteur est connue avant le chargement, et le texte ne bouge pas quand l'image arrive.
 - Le texte prend la place qui reste :
 
-  `lignes = floor((45 % × hauteur du fil − marges − en-tête − titre − médias − actions) / 22,5 px)`
+  `lignes = floor((budget − marges − en-tête − titre − médias − actions) / 22,5 px)`
 
-  avec 22,5 px l'interligne du texte de post (15 px × 1,5). Le titre est compté sur sa hauteur réelle (il peut faire plusieurs lignes).
-- **Minimum : 3 lignes**, même si le budget est dépassé (à valider, voir ci-dessous).
+  avec 22,5 px l'interligne du texte de post (15 px × 1,5). Le titre est compté sur sa hauteur réelle.
+- **Minimum : 3 lignes**, même si le budget est alors un peu dépassé (option a, validée).
 
-Exemple sur un écran de 1080 px (fil visible ≈ 1000 px, budget 450 px). Les parties fixes d'un post de la v11 font environ 160 px : marges 32, en-tête 40, titre d'une ligne 35, actions 46, écart avant le texte 8.
+**Exception : tous les médias sont horizontaux** (largeur > hauteur ; un carré compte comme vertical).
+- Le budget passe à **65 %** de la hauteur visible du fil.
+- L'aperçu est **en grand, sur toute la largeur du fil** : au format du média s'il est seul (16:9, 3:2, 4:3…), en **4:3** s'il y en a plusieurs.
+- Sa hauteur est plafonnée pour que le post tienne dans les 65 %, en gardant la place du texte (sa hauteur réelle, 3 lignes au plus). Elle ne descend jamais sous 200 px.
+- Le texte est coupé en conséquence, avec toujours 3 lignes minimum.
+- **Au moins un média vertical** : pas d'exception. L'aperçu garde la hauteur fixe, et les médias horizontaux se calent dessus (recadrés, `object-fit: cover`). L'image entière reste visible en plein écran.
 
-| Post | Place pour le texte | Lignes affichées | Hauteur du post |
-|---|---|---|---|
-| Sans média | 450 − 160 = 290 px | 12 | ≤ 450 px (45 %) |
-| Avec au moins un média vertical (260 px + 12 px d'écart) | 450 − 160 − 272 = 18 px | 0 → **3 (minimum)** | ≈ 500 px (50 %) |
-| Avec seulement des médias horizontaux (16:9 : 326 px + 12 px) | 450 − 160 − 338 = −48 px | 0 → **3 (minimum)** | ≈ 565 px (57 %) |
+Mesures dans `mockups/flat-lines/feed.html`. Fil de 580 px de large ; parties fixes d'un post ≈ 160 px (marges 32, en-tête 40, titre d'une ligne 35, actions 46, écart 8).
 
-⚠️ Avec des médias de 260 px, un écran de 1080 px ne laisse presque pas de place au texte : le minimum de 3 lignes fait dépasser les 45 %. Il faut choisir entre :
-- **a.** garder 3 lignes minimum et accepter le dépassement (environ 50 %) ;
-- **b.** n'afficher aucune ligne si les médias prennent tout le budget (titre + médias + « Voir plus ») ;
-- **c.** une hauteur de médias plus petite, toujours fixe (200 px, comme sur la page du design system, laisse 3 lignes à 1080 px).
-
-L'option **c** ne règle que les médias verticaux : un aperçu horizontal en 16:9 fait déjà 326 px. Pour qu'il laisse 3 lignes à 1080 px, il faudrait un format plus large (2:1, soit 290 px, laisse 0 ligne ; 21:9, soit 249 px, en laisse 1).
+| Post | Fenêtre 1440 × 1080 (fil visible 1 024 px) | Fenêtre 1440 × 900 (fil visible 844 px) |
+|---|---|---|
+| Sans média | ≤ 45 % | ≤ 45 % |
+| Au moins un média vertical (260 px) | ≈ 49 %, texte entier | ≈ 59 % : 3 lignes minimum |
+| Une image horizontale 16:9 | aperçu 325 px (sa taille pleine largeur), 53 % | aperçu 325 px, 64 % |
+| Deux images horizontales (4:3), texte long | aperçu 405 px, **65 %**, texte coupé à 3 lignes | aperçu 288 px (plafonné), **65 %**, 3 lignes |
+| Quatre images horizontales (4:3) | aperçu 433 px, 61 % | aperçu 357 px, 65 % |
 
 **Commentaire (panneau) : inchangé.** Budget de **30 %** de la hauteur visible de la liste des commentaires, pour le texte et les médias seulement (sans en-tête ni actions). Minimum 2 lignes, interligne 20,3 px (14 px × 1,45).
 
@@ -246,7 +244,7 @@ L'option **c** ne règle que les médias verticaux : un aperçu horizontal en 16
 |---|---|---|---|---|---|:-:|:-:|
 | 18 | `PostCard` | Post façon Reddit, posé sur le fond : en-tête, titre, contenu tronqué selon un budget de hauteur (§4.7, « Voir plus »), médias, actions | normal, survol (fond arrondi), `(modifié)`, « republié par », **supprimé** / supprimé par la modération, réponse (sans titre), commentaires ouverts | `post`, `variant`, `context`, `deleted`, `open`, `onAction` | FEED-01/02, POST-01 à 08, ACC-02 | 1 | ✅ |
 | 19 | `PostAction` | Icône + compteur, sans pastille | `reply`, `repost` (ambre), `like` (framboise) ; actif, survol (disque teinté), désactivé (post supprimé, compte privé : REPOST-03) | `kind`, `count`, `active`, `disabled` | LIKE-01, REPOST-01/03, POST-03 | 2 | ✅ |
-| 20 | `MediaGrid` | Médias d'un post, bord 1 px. **Hauteur fixe** quel que soit le nombre de médias ; **format horizontal (16:9)** si tous les médias sont horizontaux ; s'il y a un média vertical, les horizontaux se calent sur la hauteur fixe (§4.7) | 1 à 4 images, GIF, 1 vidéo ; plein écran au clic | `media[]`, `onOpen` | MEDIA-02, MEDIA-08 | 2 | ✅ |
+| 20 | `MediaGrid` | Médias d'un post, bord 1 px. **Hauteur fixe** (260 px) quel que soit le nombre de médias. Si **tous sont horizontaux** : aperçu en grand, pleine largeur, au format du média (seul) ou en 4:3 (plusieurs), le post pouvant aller jusqu'à 65 % du fil. S'il y a un média vertical, les horizontaux se calent sur la hauteur fixe (§4.7) | 1 à 4 images, GIF, 1 vidéo ; plein écran au clic | `media[]`, `onOpen` | MEDIA-02, MEDIA-08 | 2 | ✅ |
 | 21 | `Composer` | Rédaction en carte | titre (obligatoire) + contenu (optionnel) + médias + compteurs ; mode réponse (sans titre) | `mode`, `replyTo`, `onSubmit`, `maxMedia` | POST-01, POST-03, MEDIA-04/05 | 2 | ✅ |
 | 22 | `NavItem` / `Sidebar` | Navigation principale collée à gauche, ligne verticale, pas de panneau | actif (gras), badge, survol en pastille ; repliée (icônes) ; barre du bas sur mobile | `items`, `active`, `collapsed` | FEED-04, toutes les pages | 2 | ✅ |
 | 23 | `UserListItem` | Ligne d'utilisateur | S'abonner / Demandé / Abonné / Accepter-Refuser ; statut en ligne ; action admin | `user`, `relation`, `action`, `admin` | SOC-01 à 06, SEARCH-01, ADM-01 | 2 | ✅ |
@@ -339,5 +337,6 @@ Les tokens deviennent des variables CSS, et le thème Tailwind pointe vers elles
 
 **2026-11-23 :**
 1. Troncature d'un post (§4.7) : le **post entier** (en-tête, titre, médias, texte, actions) ne dépasse pas 45 % de la hauteur visible du fil. Les médias ont une **hauteur fixe**, quel que soit leur nombre, et le texte prend la place qui reste.
-2. Exception : si **tous les médias sont horizontaux**, l'aperçu prend un format horizontal (16:9 proposé). S'il y a **au moins un média vertical**, l'aperçu garde la hauteur fixe et les médias horizontaux se calent dessus (recadrés).
+2. Exception : si **tous les médias sont horizontaux**, l'aperçu est en grand (pleine largeur, format du média, ou 4:3 s'il y en a plusieurs) et le post peut aller jusqu'à **65 %** du fil ; le texte est coupé en conséquence. S'il y a **au moins un média vertical**, l'aperçu garde la hauteur fixe et les médias horizontaux se calent dessus (recadrés).
+4. Minimum de 3 lignes de texte validé (option a), même si le budget est alors un peu dépassé.
 3. Nouveaux fonds : **`#0D0F11`** en sombre et **`#FFFFFF`** en clair. Les cartes gardent le même écart avec le fond (≈ 1,1:1) : `#1A1C21` en sombre, `#F3F5F7` en clair (les cartes deviennent gris clair sur fond blanc). `--well` suit le fond, et `--surface` prend la valeur de la carte. Les autres couleurs ne changent pas ; elles passent toutes 4,5:1 sur le fond et sur les cartes.
