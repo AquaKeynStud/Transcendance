@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette · Connexion et inscription · Flat lines · ft_transcendence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   Flat lines · écrans d'authentification (AUTH-01 à 05, AUTH-07, VIS-03/04)
+   Mêmes tokens et composants que la maquette v11.
+   Vues (ancre de l'URL) :
+     #login        Connexion (erreur après un mauvais mot de passe, blocage après 5 échecs)
+     #signup       Inscription (validation en direct)
+     #verify       Email de vérification envoyé       #verified  Email vérifié
+     #forgot       Mot de passe oublié                #forgot-sent  Lien envoyé
+     #reset        Nouveau mot de passe               #reset-expired  Lien expiré
+     #guest        Fil Explorer en visiteur : bandeau VIS-04, fenêtre VIS-03 au clic sur une action
+   Paramètres : ?theme=light, ?modal (ouvre la fenêtre visiteur sur #guest).
+   Bouton « Réglages » (debug-panel.js) : contraste, luminosité des tokens, rayons, daltonisme ; ?debug l'ouvre.
+   ===================================================================== */
+
+/* 1. TOKENS (identiques à la v11) ====================================== */
+:root {
+  --font: "Inter", system-ui, sans-serif;
+  --r-sm: 8px; --r-md: 16px; --r-pill: 999px;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px; --space-6: 24px; --space-8: 32px;
+  --danger-fill: #c81e28;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+}
+[data-theme="dark"] {
+  --bg: #0d0f11; --surface: #1a1c21; --hover: rgba(231, 233, 234, .07);
+  --line: #33373d; --card: #1a1c21; --card-line: #3a3f47; --well: #0d0f11;
+  --avatar: #3a3f46; --line-strong: #5b636d;
+  --text: #e7e9ea; --text-2: #9aa0a6; --text-3: #8a9096;
+  --accent: #e7e9ea; --accent-ink: #16181c;
+  --like: #f0508f; --repost: #ffa834; --link: #4ea1ff;
+  --success: #00ba7c; --danger: #ff5a64; --warning: #ffd400;
+  --backdrop: rgba(0, 0, 0, .6);
+  --placeholder: linear-gradient(135deg, #202328, #383c42 55%, #202328);
+}
+[data-theme="light"] {
+  --bg: #ffffff; --surface: #f3f5f7; --hover: rgba(15, 20, 25, .05);
+  --line: #e4e9ec; --card: #f3f5f7; --card-line: #dbe2e7; --well: #ffffff;
+  --avatar: #dfe5e9; --line-strong: #cfd9de;
+  --text: #0f1419; --text-2: #4b5862; --text-3: #5f6b74;
+  --accent: #0f1419; --accent-ink: #ffffff;
+  --like: #c0185e; --repost: #b45309; --link: #1765c4;
+  --success: #007a52; --danger: #c81e28; --warning: #8a5a00;
+  --backdrop: rgba(15, 20, 25, .4);
+  --placeholder: linear-gradient(135deg, #e6ecf0, #f7f9f9 55%, #dfe5e9);
+}
+
+/* 2. BASE ============================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body { font-family: var(--font); font-size: 15px; line-height: 1.4; color: var(--text); background: var(--bg); -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { font-weight: 800; margin: 0; letter-spacing: -.01em; }
+p { margin: 0; }
+a { color: inherit; }
+button { font: inherit; color: inherit; cursor: pointer; }
+svg.i { width: 22px; height: 22px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+svg.i.sm { width: 18px; height: 18px; } svg.i.lg { width: 26px; height: 26px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.muted { color: var(--text-2); } .faint { color: var(--text-3); }
+.link { color: var(--link); font-weight: 600; text-decoration: none; border: 0; padding: 0; background: none; font-size: inherit; }
+.link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* 3. COMPOSANTS (repris de la v11) ===================================== */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); height: 36px; padding: 0 16px; border-radius: var(--r-pill); border: 1px solid transparent; font-weight: 700; font-size: 15px; white-space: nowrap; text-decoration: none; transition: background .15s, opacity .15s; }
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover { opacity: .9; }
+.btn-primary:disabled { opacity: .4; cursor: default; }
+.btn-outline { background: transparent; border-color: var(--line-strong); color: var(--text); }
+.btn-outline:hover { background: var(--hover); }
+.btn-outline:disabled { opacity: .5; cursor: default; }
+.btn-outline:disabled:hover { background: transparent; }
+.btn-ghost { background: transparent; color: var(--text); }
+.btn-ghost:hover { background: var(--hover); }
+.btn-lg { height: 48px; font-size: 16px; }
+.btn-block { width: 100%; }
+.icon-btn { width: 36px; height: 36px; border-radius: 50%; border: 0; display: inline-grid; place-items: center; background: transparent; color: var(--text-2); transition: background .15s, color .15s; }
+.icon-btn:hover { background: var(--hover); color: var(--text); }
+
+.brand { display: inline-flex; align-items: center; gap: var(--space-3); text-decoration: none; }
+.brand-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--text); color: var(--bg); display: grid; place-items: center; font-weight: 800; font-size: 17px; letter-spacing: -.04em; }
+.brand-name { font-size: 18px; font-weight: 800; letter-spacing: -.02em; }
+
+.switch { position: relative; width: 44px; height: 24px; border-radius: var(--r-pill); border: 0; padding: 0; background: var(--line-strong); transition: background .2s; flex: none; }
+.switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform .2s var(--ease), background .2s; }
+.switch[aria-checked="true"] { background: var(--accent); }
+.switch[aria-checked="true"]::after { transform: translateX(20px); background: var(--accent-ink); }
+
+/* Input (04) : libellé au-dessus, bord gris, bord couleur du texte au focus, rouge en erreur */
+.form-row { display: flex; flex-direction: column; gap: 6px; }
+.label-row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); }
+label.lbl { font-size: 14px; font-weight: 600; color: var(--text-2); }
+.label-row .link { font-size: 13px; }
+.field { display: flex; align-items: center; gap: var(--space-2); height: 44px; padding: 0 var(--space-2) 0 var(--space-4); border-radius: var(--r-sm); border: 1px solid var(--line-strong); background: transparent; color: var(--text-3); transition: border-color .15s; }
+.field input { flex: 1; min-width: 0; height: 100%; background: none; border: 0; outline: 0; color: var(--text); font: inherit; }
+.field input::placeholder { color: var(--text-3); }
+.field .prefix { color: var(--text-3); margin-right: -6px; }
+.field .icon-btn { width: 32px; height: 32px; }
+.field:focus-within { border-color: var(--text); }
+.field.error, .field.error:focus-within { border-color: var(--danger); }
+.field.ok .state-ok { display: block; }
+.state-ok { display: none; color: var(--success); margin-right: 6px; }
+.help { font-size: 13px; color: var(--text-3); }
+.help.error { color: var(--danger); }
+.help:empty { display: none; }
+
+/* Case à cocher (nouvelle : à ajouter au design system si retenue) */
+.check { display: flex; align-items: flex-start; gap: var(--space-3); font-size: 14px; color: var(--text-2); line-height: 1.45; cursor: pointer; }
+.check input { position: absolute; opacity: 0; pointer-events: none; }
+.check .box { flex: none; width: 20px; height: 20px; margin-top: 1px; border-radius: 6px; border: 1px solid var(--line-strong); display: grid; place-items: center; transition: background .15s, border-color .15s; }
+.check .box svg { width: 14px; height: 14px; stroke-width: 3; opacity: 0; color: var(--accent-ink); }
+.check input:checked + .box { background: var(--accent); border-color: var(--accent); }
+.check input:checked + .box svg { opacity: 1; }
+.check input:focus-visible + .box { outline: 2px solid var(--accent); outline-offset: 2px; }
+.check:hover .box { border-color: var(--text-2); }
+
+/* Règles du mot de passe : liste qui se coche au fil de la saisie */
+.rules { list-style: none; margin: 2px 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4px var(--space-3); font-size: 13px; color: var(--text-3); }
+.rules li { display: flex; align-items: center; gap: 6px; }
+.rules li::before { content: ""; width: 6px; height: 6px; margin: 0 4px; border-radius: 50%; background: var(--line-strong); flex: none; transition: background .15s; }
+.rules li.ok { color: var(--text-2); }
+.rules li.ok::before { width: 14px; height: 14px; margin: 0; background: var(--success); -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat; }
+
+/* Alerte en ligne (nouvelle) : bord et fond teintés, icône, texte */
+.alert { display: none; gap: var(--space-3); align-items: flex-start; padding: var(--space-3) var(--space-4); border-radius: var(--r-sm); font-size: 14px; line-height: 1.45; border: 1px solid; }
+.alert.show { display: flex; }
+.alert svg { margin-top: 1px; }
+.alert b { display: block; color: var(--text); }
+.alert span { color: var(--text-2); }
+.alert.danger { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 45%, transparent); background: color-mix(in srgb, var(--danger) 8%, transparent); }
+.alert.success { color: var(--success); border-color: color-mix(in srgb, var(--success) 45%, transparent); background: color-mix(in srgb, var(--success) 8%, transparent); }
+
+.sep { display: flex; align-items: center; gap: var(--space-3); color: var(--text-3); font-size: 13px; }
+.sep::before, .sep::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+.mark-42 { width: 22px; height: 22px; border-radius: 5px; background: var(--text); color: var(--bg); display: grid; place-items: center; font-size: 11px; font-weight: 800; letter-spacing: -.04em; }
+
+/* Toast (13) : bloc inversé, en bas au centre */
+.toast { position: fixed; left: 50%; bottom: 28px; z-index: 60; translate: -50% 20px; opacity: 0; pointer-events: none; display: inline-flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-radius: var(--r-sm); background: var(--accent); color: var(--accent-ink); font-weight: 600; transition: opacity .2s, translate .2s var(--ease); }
+.toast.show { opacity: 1; translate: -50% 0; }
+.toast .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
+
+/* 4. PAGE D'AUTHENTIFICATION =========================================== */
+.view { display: none; }
+.auth { min-height: 100vh; flex-direction: column; }
+.auth.on { display: flex; }
+.auth-top { display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4) var(--space-6); }
+.auth-top .end { margin-left: auto; display: flex; align-items: center; gap: var(--space-4); }
+.auth-top .end .btn { color: var(--text-2); font-weight: 600; }
+.auth-top .end .btn:hover { color: var(--text); }
+.auth-main { flex: 1; display: grid; place-items: center; padding: var(--space-6) var(--space-4) var(--space-8); }
+
+/* Panel (01) roomy : la carte du formulaire */
+.auth-card { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: var(--space-5); padding: var(--space-8); border-radius: var(--r-md); border: 1px solid var(--card-line); background: var(--card); }
+.auth-card form { display: flex; flex-direction: column; gap: var(--space-4); }
+.auth-head { display: flex; flex-direction: column; gap: 6px; }
+.auth-head h1 { font-size: 26px; letter-spacing: -.02em; }
+.auth-head p { color: var(--text-2); font-size: 15px; }
+.auth-head .back { align-self: flex-start; margin: -8px 0 var(--space-2) -10px; }
+.auth-foot { text-align: center; font-size: 14px; color: var(--text-2); }
+.auth-card .btn-lg { margin-top: var(--space-1); }
+
+/* Écrans de confirmation : pastille d'icône au-dessus du titre */
+.disc { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--line-strong); color: var(--text); margin-bottom: var(--space-2); }
+.disc.ok { color: var(--success); border-color: color-mix(in srgb, var(--success) 45%, transparent); background: color-mix(in srgb, var(--success) 8%, transparent); }
+.disc.ko { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 45%, transparent); background: color-mix(in srgb, var(--danger) 8%, transparent); }
+.stack { display: flex; flex-direction: column; gap: var(--space-3); }
+.note { font-size: 13px; color: var(--text-3); line-height: 1.5; }
+.email-out { color: var(--text); font-weight: 600; overflow-wrap: anywhere; }
+
+.legal { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px var(--space-4); padding: var(--space-4); font-size: 13px; color: var(--text-3); }
+.legal a { text-decoration: none; }
+.legal a:hover { color: var(--text); text-decoration: underline; }
+
+/* 5. FIL EXPLORER EN VISITEUR (#guest) ================================= */
+.guest.on { display: grid; }
+.guest { --nav-w: 275px; --feed-w: 620px; --rail-w: 360px;
+  grid-template-columns: var(--nav-w) minmax(0, 1fr) minmax(0, var(--feed-w)) var(--rail-w) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto; height: 100vh; }
+.sidebar { grid-column: 1; grid-row: 1 / span 2; border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-3) var(--space-4) var(--space-3) var(--space-3); }
+.sidebar .brand { padding: var(--space-3); margin-bottom: var(--space-2); }
+.nav { display: flex; flex-direction: column; gap: 2px; }
+.nav a { display: flex; align-items: center; gap: var(--space-4); width: fit-content; padding: 10px var(--space-5) 10px var(--space-3); border-radius: var(--r-pill); text-decoration: none; font-size: 19px; transition: background .15s; }
+.nav a:hover { background: var(--hover); }
+.nav a.active { font-weight: 700; }
+.nav a.active svg { stroke-width: 2.4; }
+.sidebar .spacer { flex: 1; }
+.sidebar-foot .row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding: var(--space-2) var(--space-3); }
+.theme-label { display: inline-flex; gap: var(--space-2); align-items: center; font-size: 14px; color: var(--text-3); }
+
+.center { grid-column: 3; grid-row: 1; min-height: 0; display: flex; flex-direction: column; --rule-inset: var(--space-5); }
+.feed-head { position: relative; }
+.feed-head::after { content: ""; position: absolute; left: var(--rule-inset); right: var(--rule-inset); bottom: 0; height: 1px; background: var(--line); }
+.feed-head h2 { font-size: 20px; padding: var(--space-4) var(--space-5) var(--space-1); }
+.feed-head p { font-size: 14px; color: var(--text-3); padding: 0 var(--space-5) var(--space-4); }
+.scroll { flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: transparent transparent; }
+.scroll:hover { scrollbar-color: var(--line-strong) transparent; }
+
+.avatar { --size: 40px; flex: none; width: var(--size); height: var(--size); border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: calc(var(--size) * .4); letter-spacing: -.03em; color: var(--text); background: var(--avatar); }
+.post { position: relative; padding: var(--space-4) var(--space-5); border-radius: var(--r-md); transition: background .15s; }
+.post::after { content: ""; position: absolute; left: var(--rule-inset); right: var(--rule-inset); bottom: 0; height: 1px; background: var(--line); transition: opacity .15s; }
+.post:hover { background: rgba(231, 233, 234, .03); }
+[data-theme="light"] .post:hover { background: rgba(15, 20, 25, .03); }
+.post:hover::after, .post:has(+ .post:hover)::after { opacity: 0; }
+.post-head { display: flex; align-items: center; gap: var(--space-3); }
+.post-head .who { display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap; min-width: 0; }
+.post-head .who b { font-weight: 700; }
+.post-head .who span { color: var(--text-3); }
+.post-head .end { margin-left: auto; }
+.post-title { margin-top: var(--space-3); font-size: 18px; font-weight: 800; line-height: 1.3; }
+.post-text { margin-top: var(--space-1); font-size: 15px; line-height: 1.5; }
+.post-text a { color: var(--link); font-weight: 600; text-decoration: none; }
+.post-media { margin-top: var(--space-3); height: 240px; border-radius: var(--r-md); border: 1px solid var(--line); background: var(--placeholder); }
+.post-actions { display: flex; gap: var(--space-6); margin-top: var(--space-3); margin-left: -8px; }
+.action { display: inline-flex; align-items: center; gap: 2px; border: 0; padding: 0; background: none; font-size: 13px; color: var(--text-3); transition: color .15s; }
+.action .ico { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; transition: background .15s; }
+.action:hover { color: var(--text); }
+.action:hover .ico { background: var(--hover); }
+.act-like:hover { color: var(--like); }
+.act-like:hover .ico { background: color-mix(in srgb, var(--like) 12%, transparent); }
+.act-repost:hover { color: var(--repost); }
+.act-repost:hover .ico { background: color-mix(in srgb, var(--repost) 12%, transparent); }
+
+.rail { grid-column: 4; grid-row: 1; display: flex; flex-direction: column; gap: var(--space-4); min-height: 0; padding: var(--space-2) 0 0 var(--space-6); }
+.tile { border: 1px solid var(--card-line); border-radius: var(--r-md); padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); background: var(--card); }
+.tile h2 { font-size: 20px; }
+.tile p { color: var(--text-2); font-size: 14px; line-height: 1.5; }
+.search-bar { display: flex; align-items: center; gap: var(--space-2); height: 44px; padding: 0 var(--space-4); border-radius: var(--r-pill); border: 1px solid var(--card-line); background: var(--card); color: var(--text-3); }
+.search-bar input { flex: 1; min-width: 0; background: none; border: 0; outline: 0; color: var(--text); font: inherit; }
+.search-bar input::placeholder { color: var(--text-3); }
+.search-bar:focus-within { border-color: var(--text); }
+.rail .legal { justify-content: flex-start; padding: 0 var(--space-1); }
+
+/* Bandeau visiteur (VIS-04) : toujours visible, en bas, sur la largeur du contenu */
+.guest-bar { grid-column: 2 / -1; grid-row: 2; border-top: 1px solid var(--line); background: var(--bg); }
+.guest-bar .inner { max-width: calc(620px + 360px); margin: 0 auto; display: flex; align-items: center; gap: var(--space-4); padding: var(--space-3) var(--space-5); }
+.guest-bar .txt { flex: 1; min-width: 0; }
+.guest-bar b { display: block; font-size: 17px; font-weight: 800; }
+.guest-bar span { font-size: 14px; color: var(--text-2); }
+.guest-bar .btns { display: flex; gap: var(--space-2); }
+
+/* Modal (14) : carte centrée, boutons empilés pleine largeur, Échap ou clic dehors pour fermer */
+.backdrop { position: fixed; inset: 0; z-index: 50; display: none; place-items: center; padding: var(--space-4); background: var(--backdrop); }
+.backdrop.show { display: grid; animation: fade .15s; }
+.modal { position: relative; width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-8) var(--space-6) var(--space-6); border-radius: var(--r-md); border: 1px solid var(--card-line); background: var(--card); animation: pop .2s var(--ease); }
+.modal .close { position: absolute; top: 10px; right: 10px; }
+.modal .disc { margin: 0 auto; border: 0; }
+.modal h2 { font-size: 22px; text-align: center; }
+.modal p { text-align: center; color: var(--text-2); line-height: 1.5; }
+.modal .btns { display: flex; flex-direction: column; gap: var(--space-2); margin-top: var(--space-2); }
+@keyframes fade { from { opacity: 0; } }
+@keyframes pop { from { opacity: 0; transform: translateY(8px) scale(.98); } }
+@media (prefers-reduced-motion: reduce) { .backdrop.show, .modal { animation: none; } .toast { transition: none; } }
+
+/* 6. BARRE DE LA MAQUETTE (pas un composant : sert seulement à naviguer entre les écrans) */
+.mock-bar { position: fixed; left: 16px; bottom: 16px; z-index: 40; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; max-width: min(720px, calc(100vw - 32px)); padding: 6px 8px; border-radius: var(--r-sm); border: 1px dashed var(--line-strong); background: var(--bg); font-size: 12px; color: var(--text-3); }
+.mock-bar b { font-weight: 700; margin: 0 4px; text-transform: uppercase; letter-spacing: .06em; font-size: 11px; }
+.mock-bar a { padding: 3px 7px; border-radius: 6px; text-decoration: none; color: var(--text-2); }
+.mock-bar a:hover { background: var(--hover); color: var(--text); }
+.mock-bar a.cur { background: var(--hover); color: var(--text); font-weight: 600; }
+.mock-bar .hide { border: 0; background: none; color: var(--text-3); padding: 3px 6px; }
+.mock-bar.min a, .mock-bar.min .tip { display: none; }
+.mock-bar .tip { width: 100%; padding: 2px 4px 0; }
+body.is-guest .mock-bar { bottom: 92px; }
+
+/* 7. RESPONSIVE ======================================================== */
+@media (max-width: 1280px) { .guest { --nav-w: 240px; --feed-w: 600px; --rail-w: 340px; } }
+@media (max-width: 1180px) {
+  .guest { grid-template-columns: 80px minmax(0, 1fr); height: auto; min-height: 100vh; grid-template-rows: auto minmax(0, 1fr) auto; }
+  .sidebar { position: sticky; top: 0; height: 100vh; align-items: center; padding: var(--space-3) var(--space-2); grid-row: 1 / span 3; }
+  .brand-name.in-nav, .nav a .label, .sidebar-foot .theme-label { display: none; }
+  .nav a { padding: 12px; }
+  .rail { grid-column: 2; grid-row: 1; padding: var(--space-3) var(--space-4); }
+  .rail .tile, .rail .legal { display: none; }
+  .center { grid-column: 2; grid-row: 2; }
+  .rail, .center { width: 100%; max-width: 640px; justify-self: center; }
+  .scroll { overflow: visible; }
+  .guest-bar { grid-column: 2; grid-row: 3; position: sticky; bottom: 0; }
+}
+@media (max-width: 720px) {
+  .auth-top { padding: var(--space-3) var(--space-4); }
+  .auth-top .brand-name { display: none; }
+  .auth-main { place-items: start center; padding: var(--space-2) 0 var(--space-6); }
+  .auth-card { border: 0; background: none; padding: var(--space-4) var(--space-5); }
+  .rules { grid-template-columns: 1fr; }
+  .guest { grid-template-columns: minmax(0, 1fr); padding-bottom: 56px; }
+  .sidebar { position: fixed; top: auto; bottom: 0; left: 0; right: 0; height: 56px; z-index: 10; flex-direction: row; justify-content: space-around; padding: 0; background: var(--bg); border-top: 1px solid var(--line); border-right: 0; }
+  .sidebar .brand, .sidebar .spacer, .sidebar-foot { display: none; }
+  .nav { flex-direction: row; width: 100%; justify-content: space-around; }
+  .rail, .center, .guest-bar { grid-column: 1; }
+  .guest-bar { bottom: 56px; }
+  .guest-bar .inner { flex-direction: column; align-items: stretch; gap: var(--space-2); padding: var(--space-3) var(--space-4); }
+  .guest-bar .btns .btn { flex: 1; }
+  .post { padding: var(--space-3) var(--space-4); }
+  .center { --rule-inset: var(--space-4); }
+  .post-actions { gap: var(--space-3); justify-content: space-between; }
+  .mock-bar { left: 8px; right: 8px; bottom: 8px; }
+  body.is-guest .mock-bar { display: none; }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></symbol>
+  <symbol id="i-reply" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></symbol>
+  <symbol id="i-user-plus" viewBox="0 0 24 24"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0"/><path d="M19 8v6M16 11h6"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.53 13.53 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><path d="m2 2 20 20"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="4.5"/><path d="m10.7 12.3 9.3-9.3M17 6l3 3M14 9l2 2"/></symbol>
+</svg>
+
+<!-- Modèle réutilisé par toutes les pages d'authentification : en-tête + carte + liens légaux -->
+
+<!-- ================= CONNEXION (AUTH-02, AUTH-07) ================= -->
+<div class="view auth" id="v-login">
+  <header class="auth-top">
+    <a class="brand" href="#guest"><span class="brand-mark">t</span><span class="brand-name">transcendance</span></a>
+    <div class="end">
+      <a class="btn btn-ghost" href="#guest">Explorer sans compte</a>
+      <button class="switch theme-toggle" role="switch" aria-checked="true" aria-label="Thème sombre"></button>
+    </div>
+  </header>
+  <main class="auth-main">
+    <section class="auth-card" aria-labelledby="login-title">
+      <div class="auth-head">
+        <h1 id="login-title">Se connecter</h1>
+        <p>Content de vous revoir.</p>
+      </div>
+
+      <div class="alert success" id="login-reset-ok" role="status">
+        <svg class="i sm"><use href="#i-check-circle"/></svg>
+        <div><b>Mot de passe modifié</b><span>Connectez-vous avec votre nouveau mot de passe.</span></div>
+      </div>
+      <div class="alert danger" id="login-error" role="alert">
+        <svg class="i sm"><use href="#i-alert"/></svg>
+        <div><b>Identifiants incorrects</b><span id="login-error-txt">Vérifiez votre email ou nom d'utilisateur et votre mot de passe.</span></div>
+      </div>
+      <div class="alert danger" id="login-locked" role="alert">
+        <svg class="i sm"><use href="#i-clock"/></svg>
+        <div><b>Trop de tentatives</b><span>La connexion est bloquée pendant <strong id="lock-timer">15:00</strong>. Vous pouvez aussi <a class="link" href="#forgot">réinitialiser votre mot de passe</a>.</span></div>
+      </div>
+
+      <form id="login-form" novalidate>
+        <div class="form-row">
+          <label class="lbl" for="login-id">Email ou nom d'utilisateur</label>
+          <div class="field"><input id="login-id" type="text" autocomplete="username" placeholder="vous@exemple.fr"></div>
+          <p class="help error" id="login-id-err"></p>
+        </div>
+        <div class="form-row">
+          <div class="label-row">
+            <label class="lbl" for="login-pw">Mot de passe</label>
+            <a class="link" href="#forgot">Mot de passe oublié ?</a>
+          </div>
+          <div class="field">
+            <input id="login-pw" type="password" autocomplete="current-password" placeholder="Votre mot de passe">
+            <button type="button" class="icon-btn pw-toggle" aria-label="Afficher le mot de passe"><svg class="i sm"><use href="#i-eye"/></svg></button>
+          </div>
+          <p class="help error" id="login-pw-err"></p>
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" id="login-submit" type="submit">Se connecter</button>
+      </form>
+
+      <div class="sep">ou</div>
+      <button class="btn btn-outline btn-lg btn-block" type="button" data-toast="Redirection vers l'intranet 42…"><span class="mark-42">42</span>Continuer avec 42</button>
+
+      <p class="auth-foot">Pas encore de compte ? <a class="link" href="#signup">S'inscrire</a></p>
+    </section>
+  </main>
+  <footer class="legal"><a href="#">Conditions d'utilisation</a><a href="#">Politique de confidentialité</a><a href="#">Mentions légales</a><span>© 2026 transcendance</span></footer>
+</div>
+
+<!-- ================= INSCRIPTION (AUTH-01) ================= -->
+<div class="view auth" id="v-signup">
+  <header class="auth-top">
+    <a class="brand" href="#guest"><span class="brand-mark">t</span><span class="brand-name">transcendance</span></a>
+    <div class="end">
+      <a class="btn btn-ghost" href="#guest">Explorer sans compte</a>
+      <button class="switch theme-toggle" role="switch" aria-checked="true" aria-label="Thème sombre"></button>
+    </div>
+  </header>
+  <main class="auth-main">
+    <section class="auth-card" aria-labelledby="signup-title">
+      <div class="auth-head">
+        <h1 id="signup-title">Créer un compte</h1>
+        <p>Rejoignez la conversation en une minute.</p>
+      </div>
+
+      <button class="btn btn-outline btn-lg btn-block" type="button" data-toast="Redirection vers l'intranet 42…"><span class="mark-42">42</span>S'inscrire avec 42</button>
+      <div class="sep">ou avec un email</div>
+
+      <form id="signup-form" novalidate>
+        <div class="form-row">
+          <label class="lbl" for="su-email">Email</label>
+          <div class="field"><input id="su-email" type="email" autocomplete="email" placeholder="vous@exemple.fr"><svg class="i sm state-ok"><use href="#i-check"/></svg></div>
+          <p class="help error" id="su-email-err"></p>
+        </div>
+        <div class="form-row">
+          <label class="lbl" for="su-user">Nom d'utilisateur</label>
+          <div class="field"><span class="prefix">@</span><input id="su-user" type="text" autocomplete="username" placeholder="pseudo" maxlength="20" spellcheck="false"><svg class="i sm state-ok"><use href="#i-check"/></svg></div>
+          <p class="help" id="su-user-help">3 à 20 caractères : lettres, chiffres et _</p>
+        </div>
+        <div class="form-row">
+          <label class="lbl" for="su-pw">Mot de passe</label>
+          <div class="field">
+            <input id="su-pw" type="password" autocomplete="new-password" placeholder="8 caractères minimum">
+            <button type="button" class="icon-btn pw-toggle" aria-label="Afficher le mot de passe"><svg class="i sm"><use href="#i-eye"/></svg></button>
+          </div>
+          <ul class="rules" id="su-rules" aria-live="polite">
+            <li data-rule="len">8 caractères min.</li>
+            <li data-rule="num">Pas que des chiffres</li>
+            <li data-rule="common">Pas trop courant</li>
+            <li data-rule="similar">Différent du pseudo</li>
+          </ul>
+        </div>
+        <div class="form-row">
+          <label class="lbl" for="su-pw2">Confirmer le mot de passe</label>
+          <div class="field">
+            <input id="su-pw2" type="password" autocomplete="new-password" placeholder="Le même mot de passe">
+            <svg class="i sm state-ok"><use href="#i-check"/></svg>
+          </div>
+          <p class="help error" id="su-pw2-err"></p>
+        </div>
+        <label class="check">
+          <input type="checkbox" id="su-cgu"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>
+          <span>J'accepte les <a class="link" href="#">conditions d'utilisation</a> et la <a class="link" href="#">politique de confidentialité</a>.</span>
+        </label>
+        <button class="btn btn-primary btn-lg btn-block" id="su-submit" type="submit" disabled>Créer mon compte</button>
+      </form>
+
+      <p class="auth-foot">Déjà un compte ? <a class="link" href="#login">Se connecter</a></p>
+    </section>
+  </main>
+  <footer class="legal"><a href="#">Conditions d'utilisation</a><a href="#">Politique de confidentialité</a><a href="#">Mentions légales</a><span>© 2026 transcendance</span></footer>
+</div>
+
+<!-- ================= VÉRIFICATION DE L'EMAIL (AUTH-04) ================= -->
+<div class="view auth" id="v-verify">
+  <header class="auth-top">
+    <a class="brand" href="#guest"><span class="brand-mark">t</span><span class="brand-name">transcendance</span></a>
+    <div class="end"><button class="switch theme-toggle" role="switch" aria-checked="true" aria-label="Thème sombre"></button></div>
+  </header>
+  <main class="auth-main">
+    <section class="auth-card" aria-labelledby="verify-title">
+      <div class="auth-head">
+        <div class="disc"><svg class="i"><use href="#i-mail"/></svg></div>
+        <h1 id="verify-title">Vérifiez votre email</h1>
+        <p>Nous avons envoyé un lien de confirmation à <span class="email-out" data-email>lea@exemple.fr</span>. Cliquez dessus pour activer votre compte.</p>
+      </div>
+      <div class="stack">
+        <button class="btn btn-outline btn-lg btn-block" id="resend-verify" type="button">Renvoyer l'email</button>
+        <a class="btn btn-ghost btn-block" href="#signup">Modifier l'adresse email</a>
+      </div>
+      <p class="note">Rien reçu ? Regardez dans vos courriers indésirables. Vous pourrez utiliser le site une fois votre adresse confirmée.</p>
+    </section>
+  </main>
+  <footer class="legal"><a href="#">Conditions d'utilisation</a><a href="#">Politique de confidentialité</a><a href="#">Mentions légales</a><span>© 2026 transcendance</span></footer>
+</div>
+
+<!-- ================= EMAIL VÉRIFIÉ ================= -->
+<div class="view auth" id="v-verified">
+  <header class="auth-top">
+    <a class="brand" href="#guest"><span class="brand-mark">t</span><span class="brand-name">transcendance</span></a>
+    <div class="end"><button class="switch theme-toggle" role="switch" aria-checked="true" aria-label="Thème sombre"></button></div>
+  </header>
+  <main class="auth-main">
+    <section class="auth-card" aria-labelledby="verified-title">
+      <div class="auth-head">
+        <div class="disc ok"><svg class="i"><use href="#i-check"/></svg></div>
+        <h1 id="verified-title">Email vérifié</h1>
+        <p>Votre compte est actif. Bienvenue sur transcendance !</p>
+      </div>
+      <a class="btn btn-primary btn-lg btn-block" href="v11.html">Aller au fil</a>
+    </section>
+  </main>
+  <footer class="legal"><a href="#">Conditions d'utilisation</a><a href="#">Politique de confidentialité</a><a href="#">Mentions légales</a><span>© 2026 transcendance</span></footer>
+</div>
+
+<!-- ================= MOT DE PASSE OUBLIÉ (AUTH-05) ================= -->
+<div class="view auth" id="v-forgot">
+  <header class="auth-top">
+    <a class="brand" href="#guest"><span class="brand-mark">t</span><span class="brand-name">transcendance</span></a>
+    <div class="end"><button class="switch theme-toggle" role="switch" aria-checked="true" aria-label="Thème sombre"></button></div>
+  </header>
+  <main class="auth-main">
+    <section class="auth-card" aria-labelledby="forgot-title">
+      <div class="auth-head">
+        <a class="icon-btn back" href="#login" aria-label="Retour à la connexion"><svg class="i"><use href="#i-arrow-left"/></svg></a>
+        <h1 id="forgot-title">Mot de passe oublié</h1>
+        <p>Indiquez l'email de votre compte. Nous vous enverrons un lien pour choisir un nouveau mot de passe.</p>
+      </div>
+      <form id="forgot-form" novalidate>
+        <div class="form-row">
+          <label class="lbl" for="fg-email">Email</label>
+          <div class="field"><input id="fg-email" type="email" autocomplete="email" placeholder="vous@exemple.fr"></div>
+          <p class="help error" id="fg-email-err"></p>
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Envoyer le lien</button>
+      </form>
+      <p class="auth-foot"><a class="link" href="#login">Retour à la connexion</a></p>
+    </section>
+  </main>
+  <footer class="legal"><a href="#">Conditions d'utilisation</a><a href="#">Politique de confidentialité</a><a href="#">Mentions légales</a><span>© 2026 transcendance</span></footer>
+</div>
+
+<!-- ================= LIEN ENVOYÉ ================= -->
+<div class="view auth" id="v-forgot-sent">
+  <header class="auth-top">
+    <a class="brand" href="#guest"><span class="brand-mark">t</span><span class="brand-name">transcendance</span></a>
+    <div class="end"><button class="switch theme-toggle" role="switch" aria-checked="true" aria-label="Thème sombre"></button></div>
+  </header>
+  <main class="auth-main">
+    <section class="auth-card" aria-labelledby="sent-title">
+      <div class="auth-head">
+        <div class="disc"><svg class="i"><use href="#i-mail"/></svg></div>
+        <h1 id="sent-title">Regardez vos emails</h1>
+        <p>Si un compte existe pour <span class="email-out" data-email>lea@exemple.fr</span>, vous allez recevoir un lien de réinitialisation. Il est valable <b>1 heure</b>.</p>
+      </div>
+      <div class="stack">
+        <a class="btn btn-primary btn-lg btn-block" href="#login">Retour à la connexion</a>
+        <button class="btn btn-ghost btn-block" id="resend-reset" type="button">Renvoyer le lien</button>
+      </div>
+    </section>
+  </main>
+  <footer class="legal"><a href="#">Conditions d'utilisation</a><a href="#">Politique de confidentialité</a><a href="#">Mentions légales</a><span>© 2026 transcendance</span></footer>
+</div>
+
+<!-- ================= NOUVEAU MOT DE PASSE ================= -->
+<div class="view auth" id="v-reset">
+  <header class="auth-top">
+    <a class="brand" href="#guest"><span class="brand-mark">t</span><span class="brand-name">transcendance</span></a>
+    <div class="end"><button class="switch theme-toggle" role="switch" aria-checked="true" aria-label="Thème sombre"></button></div>
+  </header>
+  <main class="auth-main">
+    <section class="auth-card" aria-labelledby="reset-title">
+      <div class="auth-head">
+        <div class="disc"><svg class="i"><use href="#i-key"/></svg></div>
+        <h1 id="reset-title">Nouveau mot de passe</h1>
+        <p>Pour le compte <b>@lea_n</b>. Vous serez déconnecté de vos autres appareils.</p>
+      </div>
+      <form id="reset-form" novalidate>
+        <div class="form-row">
+          <label class="lbl" for="rs-pw">Nouveau mot de passe</label>
+          <div class="field">
+            <input id="rs-pw" type="password" autocomplete="new-password" placeholder="8 caractères minimum">
+            <button type="button" class="icon-btn pw-toggle" aria-label="Afficher le mot de passe"><svg class="i sm"><use href="#i-eye"/></svg></button>
+          </div>
+          <ul class="rules" id="rs-rules" aria-live="polite">
+            <li data-rule="len">8 caractères min.</li>
+            <li data-rule="num">Pas que des chiffres</li>
+            <li data-rule="common">Pas trop courant</li>
+            <li data-rule="similar">Différent du pseudo</li>
+          </ul>
+        </div>
+        <div class="form-row">
+          <label class="lbl" for="rs-pw2">Confirmer le mot de passe</label>
+          <div class="field"><input id="rs-pw2" type="password" autocomplete="new-password" placeholder="Le même mot de passe"><svg class="i sm state-ok"><use href="#i-check"/></svg></div>
+          <p class="help error" id="rs-pw2-err"></p>
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" id="rs-submit" type="submit" disabled>Enregistrer</button>
+      </form>
+    </section>
+  </main>
+  <footer class="legal"><a href="#">Conditions d'utilisation</a><a href="#">Politique de confidentialité</a><a href="#">Mentions légales</a><span>© 2026 transcendance</span></footer>
+</div>
+
+<!-- ================= LIEN EXPIRÉ ================= -->
+<div class="view auth" id="v-reset-expired">
+  <header class="auth-top">
+    <a class="brand" href="#guest"><span class="brand-mark">t</span><span class="brand-name">transcendance</span></a>
+    <div class="end"><button class="switch theme-toggle" role="switch" aria-checked="true" aria-label="Thème sombre"></button></div>
+  </header>
+  <main class="auth-main">
+    <section class="auth-card" aria-labelledby="expired-title">
+      <div class="auth-head">
+        <div class="disc ko"><svg class="i"><use href="#i-clock"/></svg></div>
+        <h1 id="expired-title">Ce lien a expiré</h1>
+        <p>Les liens de réinitialisation sont valables 1 heure et ne servent qu'une fois. Demandez-en un nouveau.</p>
+      </div>
+      <div class="stack">
+        <a class="btn btn-primary btn-lg btn-block" href="#forgot">Demander un nouveau lien</a>
+        <a class="btn btn-ghost btn-block" href="#login">Retour à la connexion</a>
+      </div>
+    </section>
+  </main>
+  <footer class="legal"><a href="#">Conditions d'utilisation</a><a href="#">Politique de confidentialité</a><a href="#">Mentions légales</a><span>© 2026 transcendance</span></footer>
+</div>
+
+<!-- ================= FIL EXPLORER EN VISITEUR (VIS-01, VIS-03, VIS-04) ================= -->
+<div class="view guest" id="v-guest">
+  <aside class="sidebar" aria-label="Navigation principale">
+    <a class="brand" href="#guest"><span class="brand-mark">t</span><span class="brand-name in-nav">transcendance</span></a>
+    <nav class="nav">
+      <a href="#guest" class="active"><svg class="i lg"><use href="#i-compass"/></svg><span class="label">Explorer</span></a>
+      <a href="#guest"><svg class="i lg"><use href="#i-search"/></svg><span class="label">Recherche</span></a>
+    </nav>
+    <div class="spacer"></div>
+    <div class="sidebar-foot">
+      <div class="row">
+        <span class="theme-label"><svg class="i sm"><use href="#i-moon"/></svg>Thème sombre</span>
+        <button class="switch theme-toggle" role="switch" aria-checked="true" aria-label="Thème sombre"></button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="center">
+    <div class="feed-head">
+      <h2>Explorer</h2>
+      <p>Les posts récents des comptes publics.</p>
+    </div>
+    <div class="scroll">
+      <article class="post">
+        <header class="post-head">
+          <div class="avatar">LN</div>
+          <div class="who"><b>Léa N.</b><span>@lea_n · 12 min</span></div>
+          <button class="btn btn-outline end" style="height:32px;font-size:14px" data-need="follow" data-user="Léa N.">S'abonner</button>
+        </header>
+        <h3 class="post-title">Premier rendu du style « flat lines »</h3>
+        <p class="post-text">Plus de verre : des aplats, des lignes grises et c'est tout. Beaucoup plus léger à rendre. <a href="#">@nora</a> tu valides avant que je pousse la branche ?</p>
+        <div class="post-media"></div>
+        <footer class="post-actions">
+          <button class="action" data-need="reply"><span class="ico"><svg class="i sm"><use href="#i-reply"/></svg></span>12</button>
+          <button class="action act-repost" data-need="repost"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>4</button>
+          <button class="action act-like" data-need="like"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>86</button>
+        </footer>
+      </article>
+      <article class="post">
+        <header class="post-head">
+          <div class="avatar">MB</div>
+          <div class="who"><b>Mehdi B.</b><span>@mehdi · 34 min</span></div>
+          <button class="btn btn-outline end" style="height:32px;font-size:14px" data-need="follow" data-user="Mehdi B.">S'abonner</button>
+        </header>
+        <h3 class="post-title">Qui vient au hackathon de samedi ?</h3>
+        <p class="post-text">On cherche encore deux personnes pour l'équipe front. Thème surprise, pizzas offertes, et on a la salle jusqu'à minuit.</p>
+        <footer class="post-actions">
+          <button class="action" data-need="reply"><span class="ico"><svg class="i sm"><use href="#i-reply"/></svg></span>7</button>
+          <button class="action act-repost" data-need="repost"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>2</button>
+          <button class="action act-like" data-need="like"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>31</button>
+        </footer>
+      </article>
+      <article class="post">
+        <header class="post-head">
+          <div class="avatar">NO</div>
+          <div class="who"><b>Nora</b><span>@nora · 1 h</span></div>
+          <button class="btn btn-outline end" style="height:32px;font-size:14px" data-need="follow" data-user="Nora">S'abonner</button>
+        </header>
+        <h3 class="post-title">Astuce : tester le thème clair sans rien casser</h3>
+        <p class="post-text">Ajoutez <b>?theme=light</b> à l'URL des maquettes. Pratique pour vérifier les contrastes en deux secondes.</p>
+        <div class="post-media" style="height:180px"></div>
+        <footer class="post-actions">
+          <button class="action" data-need="reply"><span class="ico"><svg class="i sm"><use href="#i-reply"/></svg></span>3</button>
+          <button class="action act-repost" data-need="repost"><span class="ico"><svg class="i sm"><use href="#i-repeat"/></svg></span>9</button>
+          <button class="action act-like" data-need="like"><span class="ico"><svg class="i sm"><use href="#i-heart"/></svg></span>54</button>
+        </footer>
+      </article>
+    </div>
+  </main>
+
+  <aside class="rail" aria-label="Colonne de droite">
+    <label class="search-bar"><svg class="i sm"><use href="#i-search"/></svg><input type="search" placeholder="Rechercher des posts ou des gens"></label>
+    <section class="tile">
+      <h2>Nouveau ici ?</h2>
+      <p>Inscrivez-vous pour publier, aimer, commenter et suivre les personnes qui vous intéressent.</p>
+      <a class="btn btn-primary btn-lg btn-block" href="#signup">Créer un compte</a>
+      <a class="btn btn-outline btn-lg btn-block" href="#login">Se connecter</a>
+    </section>
+    <footer class="legal"><a href="#">Conditions d'utilisation</a><a href="#">Politique de confidentialité</a><a href="#">Mentions légales</a><span>© 2026 transcendance</span></footer>
+  </aside>
+
+  <div class="guest-bar" role="region" aria-label="Invitation à se connecter">
+    <div class="inner">
+      <div class="txt"><b>Connectez-vous pour participer</b><span>Vous lisez transcendance en visiteur.</span></div>
+      <div class="btns">
+        <a class="btn btn-outline btn-lg" href="#login">Se connecter</a>
+        <a class="btn btn-primary btn-lg" href="#signup">S'inscrire</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Fenêtre visiteur (VIS-03) : le texte change selon l'action -->
+<div class="backdrop" id="guest-modal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="gm-title" aria-describedby="gm-text">
+    <button class="icon-btn close" id="gm-close" aria-label="Fermer"><svg class="i"><use href="#i-x"/></svg></button>
+    <div class="disc" id="gm-disc"><svg class="i lg"><use id="gm-icon" href="#i-heart"/></svg></div>
+    <h2 id="gm-title">Aimez ce post</h2>
+    <p id="gm-text">Connectez-vous pour montrer à Léa N. que vous aimez son post.</p>
+    <div class="btns">
+      <a class="btn btn-primary btn-lg btn-block" href="#login" id="gm-login">Se connecter</a>
+      <a class="btn btn-outline btn-lg btn-block" href="#signup" id="gm-signup">Créer un compte</a>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"><span class="dot"></span><span id="toast-txt"></span></div>
+
+<nav class="mock-bar" id="mock-bar" aria-label="Écrans de la maquette">
+  <b>Maquette</b>
+  <a href="#login">Connexion</a>
+  <a href="#signup">Inscription</a>
+  <a href="#verify">Vérif. email</a>
+  <a href="#verified">Email vérifié</a>
+  <a href="#forgot">Mdp oublié</a>
+  <a href="#forgot-sent">Lien envoyé</a>
+  <a href="#reset">Nouveau mdp</a>
+  <a href="#reset-expired">Lien expiré</a>
+  <a href="#guest">Visiteur</a>
+  <button class="hide" id="mock-hide" aria-label="Réduire la barre">–</button>
+  <span class="tip">Mot de passe de test : <b style="text-transform:none;letter-spacing:0;margin:0">transcendance</b> · 5 échecs bloquent la connexion · pseudos déjà pris : aboumall, lea_n</span>
+</nav>
+
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  var root = document.documentElement;
+  var $ = function (id) { return document.getElementById(id); };
+
+  // ---- Thème : tous les interrupteurs restent synchronisés ----
+  function setTheme(t) {
+    root.dataset.theme = t;
+    document.querySelectorAll('.theme-toggle').forEach(function (s) { s.setAttribute('aria-checked', String(t === 'dark')); });
+  }
+  if (params.get('theme') === 'light') setTheme('light');
+  document.querySelectorAll('.theme-toggle').forEach(function (s) {
+    s.addEventListener('click', function () { setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'); });
+  });
+
+  // ---- Vues : l'ancre choisit l'écran ----
+  var views = ['login', 'signup', 'verify', 'verified', 'forgot', 'forgot-sent', 'reset', 'reset-expired', 'guest'];
+  function show() {
+    var name = location.hash.slice(1);
+    if (views.indexOf(name) < 0) name = 'login';
+    document.querySelectorAll('.view').forEach(function (v) { v.classList.toggle('on', v.id === 'v-' + name); });
+    document.body.classList.toggle('is-guest', name === 'guest');
+    document.querySelectorAll('.mock-bar a').forEach(function (a) { a.classList.toggle('cur', a.getAttribute('href') === '#' + name); });
+    closeModal();
+    var first = document.querySelector('#v-' + name + ' .auth-card input');
+    if (first && window.innerWidth > 720) first.focus({ preventScroll: true });
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', show);
+
+  // ---- Toast ----
+  var toastTimer;
+  function toast(msg) {
+    $('toast-txt').textContent = msg;
+    $('toast').classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { $('toast').classList.remove('show'); }, 2600);
+  }
+  document.querySelectorAll('[data-toast]').forEach(function (b) { b.addEventListener('click', function () { toast(b.dataset.toast); }); });
+
+  // ---- Afficher / masquer le mot de passe ----
+  document.querySelectorAll('.pw-toggle').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var input = b.parentElement.querySelector('input');
+      var visible = input.type === 'text';
+      input.type = visible ? 'password' : 'text';
+      b.querySelector('use').setAttribute('href', visible ? '#i-eye' : '#i-eye-off');
+      b.setAttribute('aria-label', visible ? 'Afficher le mot de passe' : 'Masquer le mot de passe');
+    });
+  });
+
+  function setErr(input, msgEl, msg) {
+    input.closest('.field').classList.toggle('error', !!msg);
+    input.setAttribute('aria-invalid', String(!!msg));
+    if (msgEl) msgEl.textContent = msg || '';
+  }
+  var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // ---- Connexion : erreur, puis blocage après 5 échecs (15 min) ----
+  var fails = 0, lockTimer;
+  $('login-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var id = $('login-id'), pw = $('login-pw');
+    setErr(id, $('login-id-err'), id.value.trim() ? '' : 'Indiquez votre email ou votre nom d\'utilisateur.');
+    setErr(pw, $('login-pw-err'), pw.value ? '' : 'Indiquez votre mot de passe.');
+    $('login-reset-ok').classList.remove('show');
+    if (!id.value.trim() || !pw.value) return;
+    if (pw.value === 'transcendance') { fails = 0; toast('Connecté. Redirection vers le fil…'); setTimeout(function () { location.href = 'v11.html'; }, 900); return; }
+    fails++;
+    pw.value = '';
+    if (fails >= 5) { lock(); return; }
+    var left = 5 - fails;
+    $('login-error-txt').textContent = 'Vérifiez votre email ou nom d\'utilisateur et votre mot de passe.' + (left <= 2 ? ' Encore ' + left + ' essai' + (left > 1 ? 's' : '') + ' avant un blocage de 15 minutes.' : '');
+    $('login-error').classList.add('show');
+    pw.closest('.field').classList.add('error');
+    pw.focus();
+  });
+  function lock() {
+    $('login-error').classList.remove('show');
+    $('login-locked').classList.add('show');
+    $('login-submit').disabled = true;
+    var end = Date.now() + 15 * 60 * 1000;
+    clearInterval(lockTimer);
+    lockTimer = setInterval(function () {
+      var s = Math.max(0, Math.round((end - Date.now()) / 1000));
+      $('lock-timer').textContent = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+      if (!s) { clearInterval(lockTimer); fails = 0; $('login-locked').classList.remove('show'); $('login-submit').disabled = false; }
+    }, 1000);
+  }
+  ['login-id', 'login-pw'].forEach(function (id) {
+    $(id).addEventListener('input', function () { setErr($(id), $(id + '-err'), ''); });
+  });
+
+  // ---- Règles du mot de passe (reprennent les validateurs Django) ----
+  var common = ['password', 'motdepasse', '12345678', 'azertyuiop', 'qwertyuiop', 'iloveyou', 'password1', 'azerty123'];
+  function checkRules(pw, others, list) {
+    var low = pw.toLowerCase();
+    var r = {
+      len: pw.length >= 8,
+      num: pw.length > 0 && !/^\d+$/.test(pw),
+      common: pw.length > 0 && common.indexOf(low) < 0,
+      similar: pw.length > 0 && others.every(function (o) { return !o || o.length < 3 || low.indexOf(o.toLowerCase()) < 0; })
+    };
+    list.querySelectorAll('li').forEach(function (li) { li.classList.toggle('ok', r[li.dataset.rule]); });
+    return r.len && r.num && r.common && r.similar;
+  }
+
+  // ---- Inscription : validation en direct, bouton actif seulement si tout est bon ----
+  var taken = ['aboumall', 'lea_n'];
+  var su = { email: $('su-email'), user: $('su-user'), pw: $('su-pw'), pw2: $('su-pw2'), cgu: $('su-cgu') };
+  var touched = {};
+  function validateSignup() {
+    var email = su.email.value.trim(), user = su.user.value.trim();
+    var okEmail = emailRe.test(email);
+    if (touched.email) setErr(su.email, $('su-email-err'), okEmail ? '' : 'Cette adresse email n\'est pas valide.');
+    su.email.closest('.field').classList.toggle('ok', okEmail);
+
+    var userMsg = '', okUser = false;
+    if (!/^[a-zA-Z0-9_]*$/.test(user)) userMsg = 'Seulement des lettres, des chiffres et _.';
+    else if (user.length < 3) userMsg = touched.user ? 'Au moins 3 caractères.' : '';
+    else if (taken.indexOf(user.toLowerCase()) >= 0) userMsg = '@' + user + ' est déjà pris.';
+    else okUser = true;
+    su.user.closest('.field').classList.toggle('error', !!userMsg);
+    su.user.closest('.field').classList.toggle('ok', okUser);
+    var help = $('su-user-help');
+    help.classList.toggle('error', !!userMsg);
+    help.textContent = userMsg || (okUser ? '@' + user + ' est disponible.' : '3 à 20 caractères : lettres, chiffres et _');
+
+    var okPw = checkRules(su.pw.value, [user, email.split('@')[0]], $('su-rules'));
+    var okPw2 = su.pw2.value.length > 0 && su.pw2.value === su.pw.value;
+    if (touched.pw2) setErr(su.pw2, $('su-pw2-err'), okPw2 ? '' : 'Les deux mots de passe ne correspondent pas.');
+    su.pw2.closest('.field').classList.toggle('ok', okPw2 && okPw);
+
+    $('su-submit').disabled = !(okEmail && okUser && okPw && okPw2 && su.cgu.checked);
+  }
+  Object.keys(su).forEach(function (k) {
+    su[k].addEventListener('input', validateSignup);
+    su[k].addEventListener('change', validateSignup);
+    su[k].addEventListener('blur', function () { if (su[k].value) { touched[k] = true; validateSignup(); } });
+  });
+  $('signup-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if ($('su-submit').disabled) return;
+    document.querySelectorAll('#v-verify [data-email]').forEach(function (el) { el.textContent = su.email.value.trim(); });
+    location.hash = 'verify';
+  });
+
+  // ---- Renvoyer un email : délai de 60 s entre deux envois ----
+  function cooldown(btn, label, msg) {
+    btn.addEventListener('click', function () {
+      toast(msg);
+      var n = 60;
+      btn.disabled = true;
+      btn.textContent = label + ' (' + n + ' s)';
+      var t = setInterval(function () {
+        n--;
+        btn.textContent = n ? label + ' (' + n + ' s)' : label;
+        if (!n) { clearInterval(t); btn.disabled = false; }
+      }, 1000);
+    });
+  }
+  cooldown($('resend-verify'), 'Renvoyer l\'email', 'Email de confirmation renvoyé');
+  cooldown($('resend-reset'), 'Renvoyer le lien', 'Lien renvoyé');
+
+  // ---- Mot de passe oublié ----
+  $('forgot-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var em = $('fg-email');
+    var ok = emailRe.test(em.value.trim());
+    setErr(em, $('fg-email-err'), ok ? '' : 'Cette adresse email n\'est pas valide.');
+    if (!ok) return;
+    document.querySelectorAll('#v-forgot-sent [data-email]').forEach(function (el) { el.textContent = em.value.trim(); });
+    location.hash = 'forgot-sent';
+  });
+  $('fg-email').addEventListener('input', function () { setErr($('fg-email'), $('fg-email-err'), ''); });
+
+  // ---- Nouveau mot de passe ----
+  var rsTouched = false;
+  function validateReset() {
+    var okPw = checkRules($('rs-pw').value, ['lea_n', 'lea'], $('rs-rules'));
+    var okPw2 = $('rs-pw2').value.length > 0 && $('rs-pw2').value === $('rs-pw').value;
+    if (rsTouched) setErr($('rs-pw2'), $('rs-pw2-err'), okPw2 ? '' : 'Les deux mots de passe ne correspondent pas.');
+    $('rs-pw2').closest('.field').classList.toggle('ok', okPw && okPw2);
+    $('rs-submit').disabled = !(okPw && okPw2);
+  }
+  ['rs-pw', 'rs-pw2'].forEach(function (id) { $(id).addEventListener('input', validateReset); });
+  $('rs-pw2').addEventListener('blur', function () { if ($('rs-pw2').value) { rsTouched = true; validateReset(); } });
+  $('reset-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if ($('rs-submit').disabled) return;
+    location.hash = 'login';
+    $('login-reset-ok').classList.add('show');
+  });
+
+  // ---- Fenêtre visiteur (VIS-03) ----
+  var texts = {
+    like:   ['i-heart',     'like',   'Aimez ce post',          'Connectez-vous pour montrer à {u} que vous aimez son post.'],
+    repost: ['i-repeat',    'repost', 'Republiez ce post',      'Connectez-vous pour partager le post de {u} avec vos abonnés.'],
+    reply:  ['i-reply',     '',       'Rejoignez la discussion', 'Connectez-vous pour commenter le post de {u}.'],
+    follow: ['i-user-plus', '',       'Abonnez-vous à {u}',     'Connectez-vous pour voir les posts de {u} dans votre fil.']
+  };
+  var lastFocus;
+  function openModal(kind, user) {
+    var t = texts[kind];
+    $('gm-icon').setAttribute('href', '#' + t[0]);
+    var disc = $('gm-disc');
+    disc.style.color = t[1] ? 'var(--' + t[1] + ')' : 'var(--text)';
+    disc.style.background = t[1] ? 'color-mix(in srgb, var(--' + t[1] + ') 12%, transparent)' : 'var(--hover)';
+    $('gm-title').textContent = t[2].replace('{u}', user);
+    $('gm-text').textContent = t[3].replace(/\{u\}/g, user);
+    lastFocus = document.activeElement;
+    $('guest-modal').classList.add('show');
+    $('guest-modal').setAttribute('aria-hidden', 'false');
+    $('gm-login').focus();
+  }
+  function closeModal() {
+    var m = $('guest-modal');
+    if (!m.classList.contains('show')) return;
+    m.classList.remove('show');
+    m.setAttribute('aria-hidden', 'true');
+    if (lastFocus) lastFocus.focus();
+  }
+  document.querySelectorAll('[data-need]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var user = b.dataset.user || b.closest('.post').querySelector('.who b').textContent;
+      openModal(b.dataset.need, user);
+    });
+  });
+  $('gm-close').addEventListener('click', closeModal);
+  $('guest-modal').addEventListener('click', function (e) { if (e.target === e.currentTarget) closeModal(); });
+  document.addEventListener('keydown', function (e) {
+    if (!$('guest-modal').classList.contains('show')) return;
+    if (e.key === 'Escape') closeModal();
+    if (e.key === 'Tab') { // piège du focus dans la fenêtre
+      var f = $('guest-modal').querySelectorAll('button, a');
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+
+  // ---- Barre de la maquette : réductible ----
+  $('mock-hide').addEventListener('click', function () {
+    var bar = $('mock-bar'), min = bar.classList.toggle('min');
+    this.textContent = min ? '+' : '–';
+  });
+
+  show();
+  if (params.has('modal') && location.hash === '#guest') openModal('like', 'Léa N.');
+})();
+</script>
+<script src="debug-panel.js"></script>
+</body>
+</html>

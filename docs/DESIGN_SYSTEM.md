@@ -1,7 +1,7 @@
 # Design system : « Flat lines »
 
-> **Version :** 0.4 (direction artistique retenue par aboumall ; règles des liens et de la troncature)
-> **Date :** 2026-11-18
+> **Version :** 0.5 (troncature : le post entier tient dans 45 % du fil ; médias de hauteur fixe, format horizontal si tous les médias sont horizontaux ; fonds #0D0F11 et #FFFFFF)
+> **Date :** 2026-11-23
 > **Référence visuelle :** [mockups/flat-lines/v11.html](mockups/flat-lines/v11.html) (`?comments` ouvre les commentaires, `#ds` la planche de style, `?theme=light` le thème clair).
 > **Palette et composants maquettés :** [mockups/flat-lines/design-system.html](mockups/flat-lines/design-system.html).
 > **Module visé :** `web.design_system` (mineur, 1 pt) : *« Custom-made design system with reusable components, including a proper color palette, typography, and icons (minimum: 10 reusable components). »*
@@ -41,11 +41,11 @@ Ce document décrit la palette, la typographie, les autres fondations et les com
 
 | Token | Sombre | Clair | Usage |
 |---|---|---|---|
-| `--bg` | `#16181C` | `#F3F5F7` | Fond de page |
-| `--surface` | `#1D2025` | `#FFFFFF` | Fond d'un bloc au survol, creux |
-| `--card` | `#202329` | `#FFFFFF` | Fond des cartes : tuiles, recherche, commentaires, menus, fenêtres |
+| `--bg` | `#0D0F11` *(v11 : #16181C)* | `#FFFFFF` *(v11 : #F3F5F7)* | Fond de page |
+| `--surface` | `#1A1C21` *(v11 : #1D2025)* | `#F3F5F7` *(v11 : #FFFFFF)* | Badge neutre, `code` en ligne. Même valeur que `--card` |
+| `--card` | `#1A1C21` *(v11 : #202329)* | `#F3F5F7` *(v11 : #FFFFFF)* | Fond des cartes : tuiles, recherche, commentaires, menus, fenêtres |
 | `--card-line` | `#3A3F47` | `#DBE2E7` | Bord des cartes |
-| `--well` | `#16181C` | `#F3F5F7` | Creux dans une carte (champ « Ajouter un commentaire… ») |
+| `--well` | `#0D0F11` | `#FFFFFF` | Creux dans une carte (champ « Ajouter un commentaire… ») |
 | `--line` | `#33373D` | `#E4E9EC` | La ligne grise : séparations, nav, onglets |
 | `--line-strong` | `#5B636D` | `#CFD9DE` | Bord des champs, boutons secondaires |
 | `--avatar` | `#3A3F46` | `#DFE5E9` | Fond des avatars sans photo |
@@ -87,22 +87,22 @@ Chaque couleur fonctionnelle a **une valeur par thème** (en v10, le thème clai
 
 ### 2.5 Contrastes (WCAG)
 
-Les ratios sont donnés **sur le fond de page · sur une carte**. Seuil : **4,5:1** pour le texte, **3:1** pour les éléments non textuels.
+Les ratios sont donnés **sur le fond de page · sur une carte**. Ils sont recalculés avec les fonds du 2026-11-23 (§8). Seuil : **4,5:1** pour le texte, **3:1** pour les éléments non textuels.
 
 | Couleur | Sombre | Clair |
 |---|---|---|
-| `--text` | 14,6 · 12,9 | 16,9 · 18,5 |
-| `--text-2` | 6,7 · 6,0 | 6,7 · 7,3 |
-| `--text-3` | 4,9 · 4,3 ❌ → **5,5 · 4,9** | 4,2 ❌ → **5,0 · 5,5** |
-| `--link` | 6,7 · 5,9 | 4,5 de justesse → **5,2 · 5,7** |
-| `--like` | 4,2 sur carte ❌ → **5,3 · 4,7** | 5,4 · 5,9 |
-| `--repost` | 9,2 · 8,2 | 2,9 ❌ → **4,6 · 5,0** |
-| `--success` | 7,0 · 6,2 | 2,3 ❌ → **4,9 · 5,4** |
-| `--danger` | 3,8 sur carte ❌ → **5,8 · 5,2** | 3,8 ❌ → **5,2 · 5,7** |
-| `--warning` | 12,4 · 11,0 | 1,3 ❌ → **5,4 · 5,9** |
+| `--text` | 15,8 · 14,0 | 18,5 · 16,9 |
+| `--text-2` | 7,3 · 6,5 | 7,3 · 6,7 |
+| `--text-3` | 4,9 · 4,3 ❌ → **6,0 · 5,3** | 4,2 ❌ → **5,5 · 5,0** |
+| `--link` | 7,2 · 6,4 | 4,5 de justesse → **5,7 · 5,2** |
+| `--like` | 4,2 sur carte ❌ → **5,7 · 5,1** | 5,9 · 5,4 |
+| `--repost` | 10,0 · 8,8 | 2,9 ❌ → **5,0 · 4,6** |
+| `--success` | 7,6 · 6,7 | 2,3 ❌ → **5,4 · 4,9** |
+| `--danger` | 3,8 sur carte ❌ → **6,3 · 5,6** | 3,8 ❌ → **5,7 · 5,2** |
+| `--warning` | 13,4 · 11,9 | 1,3 ❌ → **5,9 · 5,4** |
 | Texte blanc sur bouton Supprimer | 4,1 ❌ → **5,7** (fond `--danger-fill`) | idem |
 
-**Bords des champs (`--line-strong`) :** 2,9:1 en sombre et 1,3:1 en clair, sous les 3:1 de WCAG 1.4.11. **Décision : on les garde tels quels**, pour la légèreté du style. Un champ reste identifiable par son libellé, son placeholder et, au focus, son bord de la couleur du texte.
+**Bords des champs (`--line-strong`) :** 3,2:1 sur le fond et 2,8:1 sur une carte en sombre, 1,4:1 et 1,3:1 en clair. C'est sous les 3:1 de WCAG 1.4.11, sauf sur le fond sombre. **Décision : on les garde tels quels**, pour la légèreté du style. Un champ reste identifiable par son libellé, son placeholder et, au focus, son bord de la couleur du texte.
 
 ---
 
@@ -169,20 +169,41 @@ Seuls le fil, les plugins et la liste des commentaires défilent (page fixe au-d
 
 ### 4.7 Troncature « Voir plus »
 
-Le texte n'est pas coupé à un nombre de lignes fixe. Chaque post a un **budget de hauteur** proportionnel à la hauteur visible du fil, et les médias en consomment une partie : un post avec image affiche donc moins de lignes de texte qu'un post sans image.
+Le texte n'est pas coupé à un nombre de lignes fixe. Il est coupé pour que le **post entier tienne dans un budget de hauteur** proportionnel à la hauteur visible du fil.
 
-| Paramètre | Post (fil) | Commentaire (panneau) |
+**Post (fil) : règle du 2026-11-23, validée.**
+- Un post ne dépasse pas **45 % de la hauteur visible du fil**. Le budget compte **tout le post** : marges, en-tête, titre, médias, texte et actions.
+- Les **médias ont une hauteur fixe**, quel que soit leur nombre (1 à 4 images, GIF ou vidéo) : 260 px. Leur hauteur est connue avant le chargement, et le texte ne bouge pas quand l'image arrive.
+- Le texte prend la place qui reste :
+
+  `lignes = floor((budget − marges − en-tête − titre − médias − actions) / 22,5 px)`
+
+  avec 22,5 px l'interligne du texte de post (15 px × 1,5). Le titre est compté sur sa hauteur réelle.
+- **Minimum : 3 lignes**, même si le budget est alors un peu dépassé (option a, validée).
+
+**Exception : tous les médias sont horizontaux** (largeur > hauteur ; un carré compte comme vertical).
+- Le budget passe à **65 %** de la hauteur visible du fil.
+- L'aperçu est **en grand, sur toute la largeur du fil** : au format du média s'il est seul (16:9, 3:2, 4:3…), en **4:3** s'il y en a plusieurs.
+- Sa hauteur est plafonnée pour que le post tienne dans les 65 %, en gardant la place du texte (sa hauteur réelle, 3 lignes au plus). Elle ne descend jamais sous 200 px.
+- Le texte est coupé en conséquence, avec toujours 3 lignes minimum.
+- **Au moins un média vertical** : pas d'exception. L'aperçu garde la hauteur fixe, et les médias horizontaux se calent dessus (recadrés, `object-fit: cover`). L'image entière reste visible en plein écran.
+
+Mesures dans `mockups/flat-lines/feed.html`. Fil de 580 px de large ; parties fixes d'un post ≈ 160 px (marges 32, en-tête 40, titre d'une ligne 35, actions 46, écart 8).
+
+| Post | Fenêtre 1440 × 1080 (fil visible 1 024 px) | Fenêtre 1440 × 900 (fil visible 844 px) |
 |---|---|---|
-| Budget (texte + médias, sans en-tête, titre ni actions) | **45 %** de la hauteur visible du fil | **30 %** de la hauteur visible de la liste des commentaires |
-| Lignes de texte affichées | `floor((budget − hauteur des médias) / interligne)` | idem |
-| Minimum de lignes, même avec un grand média | 3 | 2 |
-| Interligne de référence | 22,5 px (15 px × 1,5) | 20,3 px (14 px × 1,45) |
+| Sans média | ≤ 45 % | ≤ 45 % |
+| Au moins un média vertical (260 px) | ≈ 49 %, texte entier | ≈ 59 % : 3 lignes minimum |
+| Une image horizontale 16:9 | aperçu 325 px (sa taille pleine largeur), 53 % | aperçu 325 px, 64 % |
+| Deux images horizontales (4:3), texte long | aperçu 405 px, **65 %**, texte coupé à 3 lignes | aperçu 288 px (plafonné), **65 %**, 3 lignes |
+| Quatre images horizontales (4:3) | aperçu 433 px, 61 % | aperçu 357 px, 65 % |
 
-- Exemple sur un écran de 1080 px (fil visible ≈ 1000 px, budget 450 px) : environ 20 lignes sans média, environ 6 lignes sous une image de 320 px.
-- La hauteur des médias est connue avant leur chargement (dimensions renvoyées par l'API, `aspect-ratio`), pour éviter que le texte change de taille quand l'image arrive.
+**Commentaire (panneau) : inchangé.** Budget de **30 %** de la hauteur visible de la liste des commentaires, pour le texte et les médias seulement (sans en-tête ni actions). Minimum 2 lignes, interligne 20,3 px (14 px × 1,45).
+
+**Mise en œuvre :**
 - Le nombre de lignes est recalculé au redimensionnement (`ResizeObserver` sur la zone du fil), puis appliqué avec `line-clamp`.
 - « Voir plus » n'apparaît que si le texte dépasse vraiment (`scrollHeight > clientHeight`).
-- Les pourcentages sont un point de départ, à ajuster lors des premiers tests sur le vrai front.
+- Les pourcentages restent à ajuster lors des premiers tests sur le vrai front.
 
 ---
 
@@ -223,7 +244,7 @@ Le texte n'est pas coupé à un nombre de lignes fixe. Chaque post a un **budget
 |---|---|---|---|---|---|:-:|:-:|
 | 18 | `PostCard` | Post façon Reddit, posé sur le fond : en-tête, titre, contenu tronqué selon un budget de hauteur (§4.7, « Voir plus »), médias, actions | normal, survol (fond arrondi), `(modifié)`, « republié par », **supprimé** / supprimé par la modération, réponse (sans titre), commentaires ouverts | `post`, `variant`, `context`, `deleted`, `open`, `onAction` | FEED-01/02, POST-01 à 08, ACC-02 | 1 | ✅ |
 | 19 | `PostAction` | Icône + compteur, sans pastille | `reply`, `repost` (ambre), `like` (framboise) ; actif, survol (disque teinté), désactivé (post supprimé, compte privé : REPOST-03) | `kind`, `count`, `active`, `disabled` | LIKE-01, REPOST-01/03, POST-03 | 2 | ✅ |
-| 20 | `MediaGrid` | Médias d'un post, bord 1 px | 1 à 4 images, GIF, 1 vidéo ; plein écran au clic | `media[]`, `onOpen` | MEDIA-02, MEDIA-08 | 2 | ✅ |
+| 20 | `MediaGrid` | Médias d'un post, bord 1 px. **Hauteur fixe** (260 px) quel que soit le nombre de médias. Si **tous sont horizontaux** : aperçu en grand, pleine largeur, au format du média (seul) ou en 4:3 (plusieurs), le post pouvant aller jusqu'à 65 % du fil. S'il y a un média vertical, les horizontaux se calent sur la hauteur fixe (§4.7) | 1 à 4 images, GIF, 1 vidéo ; plein écran au clic | `media[]`, `onOpen` | MEDIA-02, MEDIA-08 | 2 | ✅ |
 | 21 | `Composer` | Rédaction en carte | titre (obligatoire) + contenu (optionnel) + médias + compteurs ; mode réponse (sans titre) | `mode`, `replyTo`, `onSubmit`, `maxMedia` | POST-01, POST-03, MEDIA-04/05 | 2 | ✅ |
 | 22 | `NavItem` / `Sidebar` | Navigation principale collée à gauche, ligne verticale, pas de panneau | actif (gras), badge, survol en pastille ; repliée (icônes) ; barre du bas sur mobile | `items`, `active`, `collapsed` | FEED-04, toutes les pages | 2 | ✅ |
 | 23 | `UserListItem` | Ligne d'utilisateur | S'abonner / Demandé / Abonné / Accepter-Refuser ; statut en ligne ; action admin | `user`, `relation`, `action`, `admin` | SOC-01 à 06, SEARCH-01, ADM-01 | 2 | ✅ |
@@ -313,3 +334,9 @@ Les tokens deviennent des variables CSS, et le thème Tailwind pointe vers elles
 3. La troncature « Voir plus » dépend d'un budget de hauteur, médias compris (§4.7), au lieu de 4 et 3 lignes fixes.
 4. Les contrastes actuels (§2.5) sont validés : il faut seulement qu'ils restent cohérents entre composants et entre thèmes.
 5. Le front garde le libellé **« Commentaires »** et un panneau dédié plutôt que des réponses à dérouler dans le fil. Dans les données, ce sont toujours des posts en réponse (POST-03) : la spec ne change pas.
+
+**2026-11-23 :**
+1. Troncature d'un post (§4.7) : le **post entier** (en-tête, titre, médias, texte, actions) ne dépasse pas 45 % de la hauteur visible du fil. Les médias ont une **hauteur fixe**, quel que soit leur nombre, et le texte prend la place qui reste.
+2. Exception : si **tous les médias sont horizontaux**, l'aperçu est en grand (pleine largeur, format du média, ou 4:3 s'il y en a plusieurs) et le post peut aller jusqu'à **65 %** du fil ; le texte est coupé en conséquence. S'il y a **au moins un média vertical**, l'aperçu garde la hauteur fixe et les médias horizontaux se calent dessus (recadrés).
+4. Minimum de 3 lignes de texte validé (option a), même si le budget est alors un peu dépassé.
+3. Nouveaux fonds : **`#0D0F11`** en sombre et **`#FFFFFF`** en clair. Les cartes gardent le même écart avec le fond (≈ 1,1:1) : `#1A1C21` en sombre, `#F3F5F7` en clair (les cartes deviennent gris clair sur fond blanc). `--well` suit le fond, et `--surface` prend la valeur de la carte. Les autres couleurs ne changent pas ; elles passent toutes 4,5:1 sur le fond et sur les cartes.

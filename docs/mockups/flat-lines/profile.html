@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette · Profil et abonnements · Flat lines · ft_transcendence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shell.css">
+<style>
+/* =====================================================================
+   Flat lines · profil et relations (S3) : ACC-01, ACC-02, ACC-07, SOC-01 à 06, §3.1, §3.2
+   Vues (ancre de l'URL) :
+     #me            Mon profil (compte privé, lien vers les demandes)
+     #user          Profil d'un ami (abonnement mutuel : statut en ligne visible)
+     #user-public   Compte public qui me suit, que je ne suis pas (« Suivre en retour », J'aime privés)
+     #private       Compte privé que je ne suis pas (contenu masqué, demande d'abonnement)
+     #private-ok    Compte privé que je suis (contenu visible, republication impossible)
+     #followers  #following  #friends   Mes listes (SOC-06), retirer un abonné (SOC-05)
+     #requests      Demandes reçues (SOC-03)           #requests-empty  Aucune demande
+   ===================================================================== */
+.profile { padding: var(--space-4) var(--space-5) 0; }
+.p-top { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-3); }
+.p-actions { display: flex; align-items: center; gap: var(--space-2); }
+.p-name { margin-top: var(--space-3); display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+.p-name h1 { font-size: 22px; letter-spacing: -.02em; }
+.p-handle { display: flex; align-items: center; gap: var(--space-2); color: var(--text-3); font-size: 15px; }
+.p-bio { margin-top: var(--space-3); line-height: 1.5; }
+.p-meta { margin-top: var(--space-3); display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-4); color: var(--text-3); font-size: 14px; }
+.p-meta span { display: inline-flex; align-items: center; gap: 6px; }
+.p-counts { margin-top: var(--space-3); display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-5); font-size: 14px; color: var(--text-3); }
+.p-counts a, .p-counts span { text-decoration: none; }
+.p-counts a:hover { text-decoration: underline; text-underline-offset: 3px; color: var(--text-2); }
+.p-counts b { color: var(--text); font-weight: 700; margin-right: 4px; font-variant-numeric: tabular-nums; }
+.p-counts .locked { cursor: not-allowed; }
+.p-requests { margin-top: var(--space-4); display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); border: 1px solid var(--card-line); border-radius: var(--r-sm); background: var(--card); text-decoration: none; transition: background .15s; }
+.p-requests:hover { background: color-mix(in srgb, var(--card) 80%, var(--hover)); }
+.p-requests .txt { flex: 1; font-size: 14px; color: var(--text-2); }
+.p-requests b { color: var(--text); display: block; font-size: 15px; }
+.profile + .tabs { margin-top: var(--space-4); }
+.gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: var(--space-3) var(--space-5) var(--space-5); }
+.gallery div { aspect-ratio: 1; border-radius: var(--r-sm); background: var(--placeholder) center / cover; cursor: zoom-in; }
+.gallery div:nth-child(3n+2) { background-image: var(--ph2); } .gallery div:nth-child(3n) { background-image: var(--ph3); }
+.list-note { padding: var(--space-3) var(--space-5); font-size: 14px; color: var(--text-3); display: flex; gap: var(--space-2); align-items: flex-start; }
+.rail .tile-head h2 { font-size: 18px; }
+@media (max-width: 720px) { .profile { padding: var(--space-3) var(--space-4) 0; } .avatar.xxl { --size: 76px; } .gallery { padding: var(--space-3) var(--space-4); } }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" data-active="profile"></aside>
+
+  <main class="main">
+    <section class="view" id="v-profile" aria-live="polite"></section>
+    <section class="view" id="v-lists"></section>
+    <section class="view" id="v-requests"></section>
+  </main>
+
+  <aside class="rail" aria-label="Recherche et suggestions">
+    <label class="field search-bar"><svg class="i sm"><use href="#i-search"/></svg><input placeholder="Rechercher" aria-label="Rechercher"><kbd>Ctrl K</kbd></label>
+    <section class="tile flush" aria-labelledby="sugg-title">
+      <div class="tile-head"><h2 id="sugg-title">Vous pourriez suivre</h2></div>
+      <div id="sugg"></div>
+      <a class="link more-link" href="#" data-soon="Recherche">Voir plus</a>
+    </section>
+    <nav class="legal" aria-label="Pages légales"><a href="#">Conditions d'utilisation</a><a href="#">Politique de confidentialité</a><a href="#">Mentions légales</a><span>© 2026 transcendance</span></nav>
+  </aside>
+</div>
+
+<script src="shell.js"></script>
+<script>
+(function () {
+  var M = window.Mock, $ = M.$, $$ = M.$$, icon = M.icon, esc = M.esc, U = M.users;
+  U.nora.rel = 'none';
+
+  // ---- Données : profils, posts, listes -------------------------------------
+  var info = {
+    aboumall: { joined: 'septembre 2026', posts: 128, following: 4, followers: 4, friends: 3, bio: 'Front de transcendance. Je maquette, je code, je recommence. Lyon.', likes: 'public', reposts: 'public' },
+    lea_n: { joined: 'septembre 2026', posts: 342, following: 58, followers: 211, friends: 31, likes: 'followers', reposts: 'public' },
+    mehdi: { joined: 'octobre 2026', posts: 87, following: 40, followers: 66, friends: 12, likes: 'private', reposts: 'public' },
+    nora: { joined: 'octobre 2026', posts: 54, following: 19, followers: 23, friends: 9 },
+    ines: { joined: 'novembre 2026', posts: 23, following: 12, followers: 15, friends: 6, likes: 'public', reposts: 'public' }
+  };
+  var V = { public: 'tout le monde', followers: 'ses abonnés', private: 'personne' };
+
+  function P(o) { return o; }
+  var posts = {
+    aboumall: {
+      posts: [
+        P({ author: 'aboumall', time: '2 h', title: 'Design system v0.5 : des fonds plus sombres', text: 'Fond #0D0F11 en sombre, blanc en clair, et les cartes gardent le même écart. Tous les textes restent au-dessus de 4,5:1. @lea_n tu peux relire la page design system ?', media: [{ o: 'h', ar: '16:9' }, { o: 'h', ar: '4:3' }], r: 6, rp: 2, l: 31 }),
+        P({ author: 'aboumall', time: '1 j', title: 'Les médias verticaux gardent la hauteur fixe', text: 'Une image verticale seule garde sa largeur naturelle. Dès qu\'il y a un média vertical, les horizontaux se calent sur la même hauteur.', media: [{ o: 'v', ar: '3:4' }], r: 3, rp: 0, l: 18, edited: '22 novembre 2026 à 18:04' }),
+        P({ author: 'aboumall', time: '3 j', title: 'Pourquoi le post entier tient dans 45 % du fil', text: 'On a testé plusieurs règles de troncature. Couper à un nombre de lignes fixe ne marche pas : un post avec une image prend tout l\'écran alors qu\'un post texte reste minuscule. Avec un budget de hauteur, chaque post occupe au plus 45 % du fil visible, quel que soit l\'écran. Le texte prend la place qui reste après l\'en-tête, le titre, les médias et les actions. Sur un grand écran on lit plus de lignes, sur un portable un peu moins, et « Voir plus » apparaît seulement si le texte dépasse vraiment. Le minimum reste 3 lignes pour ne jamais afficher un post sans texte lisible. Ça règle aussi le problème des posts qui poussaient tout le reste du fil hors de l\'écran. Prochaine étape : vérifier ces pourcentages sur le vrai front, avec de vraies données, et ajuster si besoin.', r: 11, rp: 4, l: 52 }),
+        P({ deleted: true }),
+        P({ author: 'aboumall', time: '5 j', title: 'Vidéo de la démo du fil', text: 'Deux minutes maximum, une vidéo toujours seule.', media: [{ type: 'video', o: 'h', ar: '16:9', dur: '1:48' }], r: 2, rp: 1, l: 14 })
+      ],
+      replies: [
+        P({ author: 'aboumall', time: '40 min', replyTo: 'lea_n', text: 'Oui, et le « Voir plus » se recalcule au redimensionnement.', r: 1, l: 4 }),
+        P({ author: 'aboumall', time: '6 h', replyTo: 'mehdi', text: 'On garde la pagination par curseur côté fil, c\'est plus simple pour le défilement infini.', r: 0, l: 2 }),
+        P({ author: 'aboumall', time: '2 j', replyTo: 'theok', text: 'Le WebSocket ne fait que pousser : ça me va très bien.', media: [{ o: 'h', ar: '16:9' }], r: 2, l: 9 })
+      ],
+      likes: 'feed', reposts: []
+    },
+    lea_n: {
+      posts: [
+        P({ author: 'lea_n', time: '12 min', title: 'Premier rendu du style « flat lines »', text: 'Plus de verre : des aplats, des lignes grises et c\'est tout. @aboumall tu valides avant que je pousse la branche ?', media: [{ o: 'h', ar: '16:9' }], r: 12, rp: 4, l: 86, liked: true }),
+        P({ author: 'lea_n', time: '1 j', title: 'Trois photos du hackathon', text: 'Une verticale, deux horizontales : les horizontales se calent sur la hauteur fixe.', media: [{ o: 'v', ar: '3:4' }, { o: 'h', ar: '4:3' }, { o: 'h', ar: '16:9' }], r: 4, rp: 2, l: 40 })
+      ],
+      replies: [P({ author: 'lea_n', time: '30 min', replyTo: 'aboumall', text: 'Relu, c\'est bon pour moi. Le blanc pur en clair rend vraiment mieux.', l: 3 })],
+      likes: 'feed',
+      reposts: [P({ author: 'theok', context: 'Léa N. a republié', time: '1 h', title: 'WebSocket : uniquement pour pousser', text: 'Toutes les actions passent par l\'API REST. Le WebSocket ne fait que pousser les nouveautés.', r: 3, rp: 10, l: 41, reposted: false })]
+    },
+    mehdi: {
+      posts: [P({ author: 'mehdi', time: '34 min', title: 'Retour sur la première semaine de sprint', text: 'Côté back, le modèle Post est en place avec le titre obligatoire, et la pagination par curseur fonctionne sur le fil. Il reste les permissions des comptes privés à brancher, puis le moteur de visibilité du §3.', r: 9, rp: 2, l: 27 })],
+      replies: [], likes: [], reposts: []
+    },
+    ines: {
+      posts: [P({ author: 'ines', time: '4 h', title: 'Train de nuit Paris → Vienne', text: 'Quatorze heures de trajet, deux photos. Compte privé : vous ne pouvez pas republier ce post, seulement l\'aimer.', media: [{ o: 'h', ar: '3:2' }, { o: 'h', ar: '3:2' }], r: 2, rp: 0, l: 12 })],
+      replies: [], likes: [], reposts: []
+    }
+  };
+  function likedFeed() {
+    return [
+      P({ author: 'jade', time: '8 h', title: 'Les pages légales, ce n\'est pas qu\'une formalité', text: 'Il faut un vrai contenu pour la soutenance : données collectées, durée de conservation, droits RGPD, contact.', r: 5, rp: 6, l: 33, liked: true }),
+      P({ author: 'theok', time: '1 h', title: 'WebSocket : uniquement pour pousser', text: 'Petit rappel : toutes les actions passent par l\'API REST.', r: 3, rp: 10, l: 41, liked: true })
+    ];
+  }
+  var followers = ['lea_n', 'mehdi', 'jade', 'ines'];
+  var following = function () { return Object.keys(U).filter(function (k) { return U[k].rel === 'following'; }); };
+  var friends = function () { return following().filter(function (k) { return U[k].followsMe; }); };
+  var requests = ['camille', 'yanis', 'hugo'];
+  var reqState = {};
+
+  // ---- Profil (ACC-01, ACC-02, ACC-07) ----------------------------------------
+  var current = 'aboumall', tab = 'posts';
+  function canSee(u) { return u === 'aboumall' || !U[u].private || U[u].rel === 'following'; }
+  function header(u) {
+    var a = U[u], i = info[u], me = u === 'aboumall', friend = !me && a.rel === 'following' && a.followsMe;
+    var see = canSee(u);
+    var counts = [['following', i.following, 'abonnements'], ['followers', i.followers, 'abonnés'], ['friends', i.friends, 'amis']].map(function (c) {
+      return me ? '<a href="#' + c[0] + '"><b>' + M.fmt(c[1]) + '</b>' + c[2] + '</a>' :
+        see ? '<a href="#" data-soon="Listes d\'un autre compte (même écran que les vôtres)"><b>' + M.fmt(c[1]) + '</b>' + c[2] + '</a>' :
+        '<span class="locked" title="Visible seulement par ses abonnés"><b>' + M.fmt(c[1]) + '</b>' + c[2] + '</span>';
+    }).join('');
+    var pending = requests.filter(function (r) { return !reqState[r]; }).length;
+    return '<div class="page-head flush"><a class="icon-btn" href="feed.html" aria-label="Retour">' + icon('arrow-left') + '</a>' +
+      '<div class="titles"><h1>' + esc(a.name) + '</h1><div class="sub">' + M.fmt(i.posts) + ' posts</div></div></div>' +
+      '<div class="profile">' +
+      '<div class="p-top"><span class="avatar xxl' + (friend || me ? ' online' : '') + '"' + (me ? ' data-me-avatar' : '') + ' title="' + (friend ? 'En ligne (visible car vous êtes amis)' : me ? 'En ligne' : '') + '">' + a.av + '</span>' +
+      '<div class="p-actions">' + (me ? '<a class="btn btn-outline" href="settings.html#profile">Modifier le profil</a>' :
+        '<button class="icon-btn outline" aria-label="Plus d\'actions" aria-haspopup="menu" data-p-menu>' + icon('more') + '</button>' +
+        '<button class="icon-btn outline" aria-label="Envoyer un message" data-soon="Messages">' + icon('msg') + '</button>' + M.followBtn(u)) + '</div></div>' +
+      '<div class="p-name"><h1>' + esc(a.name) + '</h1>' + (a.private ? '<span class="badge private" title="Compte privé">' + icon('lock') + 'Privé</span>' : '') + '</div>' +
+      '<div class="p-handle">@' + a.user + (a.followsMe && !me ? '<span class="tag">' + (friend ? 'Ami' : 'Vous suit') + '</span>' : '') + '</div>' +
+      '<p class="p-bio">' + esc(me ? i.bio : a.bio) + '</p>' +
+      '<div class="p-meta"><span>' + icon('calendar') + 'A rejoint transcendance en ' + i.joined + '</span>' + (friend ? '<span style="color:var(--success)">● En ligne</span>' : '') + '</div>' +
+      '<div class="p-counts">' + counts + '</div>' +
+      (me && a.private ? '<a class="p-requests" href="#requests">' + icon('user-plus') + '<span class="txt"><b>Demandes d\'abonnement</b>' + (pending ? pending + ' en attente : votre compte est privé, vous choisissez qui vous suit.' : 'Aucune demande en attente.') + '</span>' + (pending ? '<span class="badge">' + pending + '</span>' : '') + icon('chevron-right') + '</a>' : '') +
+      '</div>';
+  }
+  var TABS = [['posts', 'Posts'], ['replies', 'Réponses'], ['media', 'Médias'], ['likes', 'J\'aime'], ['reposts', 'Republications']];
+  function renderProfile(u) {
+    current = u;
+    var v = $('#v-profile');
+    var h = header(u);
+    if (!canSee(u)) {
+      var req = U[u].rel === 'requested';
+      h += '<div class="empty" style="border-top:1px solid var(--line);margin-top:var(--space-5)"><span class="ring">' + icon('lock', 'lg') + '</span>' +
+        '<h3>' + (req ? 'Demande envoyée' : 'Ce compte est privé') + '</h3>' +
+        '<p>' + (req ? 'Vous verrez les posts, les réponses et les médias de @' + u + ' quand sa demande sera acceptée.' : 'Abonnez-vous à @' + u + ' pour voir ses posts, ses réponses et ses médias. Le compte doit accepter votre demande.') + '</p></div>';
+      v.innerHTML = h;
+    } else {
+      h += '<div class="tabs scroll" role="tablist" aria-label="Contenu du profil">' + TABS.map(function (t) {
+        return '<button role="tab" id="tab-' + t[0] + '" aria-controls="panel" aria-selected="' + (t[0] === tab) + '" data-tab="' + t[0] + '">' + t[1] + '</button>';
+      }).join('') + '</div><div id="panel" role="tabpanel" class="feed"></div>';
+      v.innerHTML = h;
+      renderTab();
+    }
+    M.paintFollow();
+  }
+  function renderTab() {
+    var u = current, d = posts[u] || { posts: [], replies: [], likes: [], reposts: [] }, p = $('#panel'), me = u === 'aboumall', i = info[u] || {};
+    $$('[data-tab]').forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.tab === tab)); });
+    p.setAttribute('aria-labelledby', 'tab-' + tab);
+    function empty(ic, t, s, btn) { return '<div class="empty"><span class="ring">' + icon(ic, 'lg') + '</span><h3>' + t + '</h3><p>' + s + '</p>' + (btn || '') + '</div>'; }
+    var list;
+    if (tab === 'media') {
+      var all = [];
+      d.posts.concat(d.replies).forEach(function (x) { (x.media || []).forEach(function (m) { all.push(m); }); });
+      p.innerHTML = all.length ? '<div class="gallery">' + all.map(function (m) { return '<div role="img" aria-label="' + (m.type === 'video' ? 'Vidéo' : 'Image') + '"' + (m.src ? ' style="background-image:url(' + m.src + ')"' : '') + '></div>'; }).join('') + '</div>' :
+        empty('image', 'Aucun média', me ? 'Les photos et vidéos de vos posts apparaîtront ici.' : '@' + u + ' n\'a pas encore publié de média.');
+      return;
+    }
+    if (tab === 'likes' || tab === 'reposts') {
+      var vis = i[tab] || 'public', allowed = me || vis === 'public' || (vis === 'followers' && U[u].rel === 'following');
+      if (!allowed) {
+        p.innerHTML = empty('eye-off', tab === 'likes' ? 'J\'aime masqués' : 'Republications masquées', '@' + u + ' a choisi de montrer ses ' + (tab === 'likes' ? 'J\'aime' : 'republications') + ' à ' + V[vis] + '. Les compteurs des posts, eux, restent visibles par tous (§3.2).');
+        return;
+      }
+      list = d[tab] === 'feed' ? likedFeed() : d[tab];
+      var note = me ? '<p class="list-note">' + icon('eye', 'sm') + '<span>Visibles par ' + V[i[tab]] + '. <a class="link" href="settings.html#privacy">Changer dans Confidentialité</a></span></p>' :
+        vis === 'followers' ? '<p class="list-note">' + icon('eye', 'sm') + '<span>@' + u + ' montre ses ' + (tab === 'likes' ? 'J\'aime' : 'republications') + ' à ses abonnés : vous les voyez parce que vous le suivez.</span></p>' : '';
+      if (!list.length) { p.innerHTML = note + empty(tab === 'likes' ? 'heart' : 'repeat', tab === 'likes' ? 'Aucun J\'aime' : 'Aucune republication', me ? (tab === 'likes' ? 'Les posts que vous aimez apparaîtront ici.' : 'Les posts que vous republiez apparaîtront ici, et sur le fil de vos abonnés.') : '@' + u + ' n\'a encore rien ' + (tab === 'likes' ? 'aimé' : 'republié') + '.'); return; }
+      p.innerHTML = note + list.map(M.renderPost).join('');
+      M.clampAll();
+      return;
+    }
+    list = d[tab];
+    if (!list.length) { p.innerHTML = empty(tab === 'posts' ? 'rss' : 'reply', tab === 'posts' ? 'Aucun post' : 'Aucune réponse', me ? 'Publiez votre premier post avec le bouton « Publier ».' : '@' + u + ' n\'a encore rien publié ici.', me && tab === 'posts' ? '<button class="btn btn-primary" data-compose>Publier</button>' : ''); return; }
+    p.innerHTML = list.map(M.renderPost).join('');
+    M.clampAll();
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-tab]');
+    if (t) { tab = t.dataset.tab; renderTab(); t.focus(); }
+    var pm = e.target.closest('[data-p-menu]');
+    if (pm) M.menu(pm, [
+      { icon: 'link', label: 'Copier le lien du profil', run: function () { M.toast('Lien copié'); } },
+      { icon: 'user-x', label: 'Bloquer @' + current, danger: true, run: function () { M.toast('Bloquer (SOC-07) est en Could : pas maquetté pour l\'instant.', 'info'); } }
+    ]);
+  });
+  document.addEventListener('keydown', function (e) {
+    var t = e.target.closest && e.target.closest('[role=tab][data-tab]');
+    if (!t || (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft')) return;
+    var all = $$('[data-tab]'), i = all.indexOf(t) + (e.key === 'ArrowRight' ? 1 : -1);
+    all[(i + all.length) % all.length].click();
+  });
+  document.addEventListener('follow-change', function (e) {
+    var u = e.detail.user;
+    if (u === current && $('#v-profile').classList.contains('on')) {
+      if (info[u]) info[u].followers += e.detail.rel === 'following' ? 1 : e.detail.prev === 'following' ? -1 : 0;
+      renderProfile(u);
+    }
+    if ($('#v-lists').classList.contains('on')) renderLists(listTab);
+  });
+  M.onPublish = function (np) {
+    posts.aboumall.posts.unshift(np);
+    info.aboumall.posts++;
+    if (current === 'aboumall' && $('#v-profile').classList.contains('on')) { tab = 'posts'; renderProfile('aboumall'); var el = $('.post[data-id="' + np.id + '"]'); if (el) el.classList.add('is-new'); }
+    M.toast('Post publié');
+  };
+
+  // ---- Listes (SOC-06) et retrait d'un abonné (SOC-05) ----------------------
+  var listTab = 'followers';
+  function row(u, extra) {
+    var a = U[u], friend = a.rel === 'following' && a.followsMe;
+    return '<div class="user-row" data-row="' + u + '"><a class="avatar' + (friend ? ' online' : '') + '" href="' + M.profileUrl(u) + '" tabindex="-1" aria-hidden="true">' + a.av + '</a>' +
+      '<div class="txt"><a href="' + M.profileUrl(u) + '"><b>' + esc(a.name) + (a.private ? icon('lock') : '') + '</b></a>' +
+      '<span class="handle">@' + u + (a.followsMe ? '<span class="tag">' + (friend ? 'Ami' : 'Vous suit') + '</span>' : '') + '</span><span class="bio">' + esc(a.bio || '') + '</span></div>' +
+      '<div class="end">' + (extra || '') + M.followBtn(u, 'btn-sm') + '</div></div>';
+  }
+  function renderLists(which) {
+    listTab = which;
+    var lists = { followers: followers, following: following(), friends: friends() };
+    var labels = { followers: 'Abonnés', following: 'Abonnements', friends: 'Amis' };
+    var L = lists[which];
+    var h = '<div class="page-head flush"><a class="icon-btn" href="#me" aria-label="Retour au profil">' + icon('arrow-left') + '</a><div class="titles"><h1>aboumall</h1><div class="sub">@aboumall</div></div></div>' +
+      '<nav class="tabs" aria-label="Listes">' + ['followers', 'following', 'friends'].map(function (k) {
+        return '<a href="#' + k + '" aria-selected="' + (k === which) + '"' + (k === which ? ' aria-current="page"' : '') + '>' + labels[k] + '<span class="n">' + lists[k].length + '</span></a>';
+      }).join('') + '</nav>';
+    if (which === 'friends') h += '<p class="list-note">' + icon('users', 'sm') + '<span>Un ami est un compte que vous suivez et qui vous suit. Vous voyez son statut en ligne, et il voit le vôtre.</span></p>';
+    if (which === 'followers') h += '<p class="list-note">' + icon('lock', 'sm') + '<span>Votre compte est privé : seuls ces comptes voient vos posts. Retirer un abonné ne le prévient pas.</span></p>';
+    h += L.length ? '<div>' + L.map(function (u) {
+      return row(u, which === 'followers' ? '<button class="icon-btn sm" aria-label="Options pour @' + u + '" aria-haspopup="menu" data-row-menu="' + u + '">' + icon('more') + '</button>' : '');
+    }).join('') + '</div>' :
+      '<div class="empty"><span class="ring">' + icon('users', 'lg') + '</span><h3>' + (which === 'friends' ? 'Pas encore d\'amis' : 'Personne pour l\'instant') + '</h3><p>' +
+      (which === 'friends' ? 'Suivez un compte qui vous suit déjà pour devenir amis.' : which === 'following' ? 'Les comptes que vous suivez apparaîtront ici.' : 'Les comptes qui vous suivent apparaîtront ici.') + '</p></div>';
+    $('#v-lists').innerHTML = h;
+    M.paintFollow();
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-row-menu]');
+    if (!b) return;
+    var u = b.dataset.rowMenu;
+    M.menu(b, [{ icon: 'user-x', label: 'Retirer cet abonné', danger: true, run: function () {
+      M.confirm({
+        title: 'Retirer @' + u + ' de vos abonnés ?', ok: 'Retirer', danger: true, opener: b,
+        text: '@' + u + ' ne sera pas prévenu. Comme votre compte est privé, il devra refaire une demande pour voir vos posts.',
+        run: function () {
+          var i = followers.indexOf(u);
+          followers.splice(i, 1); U[u].followsMe = false; info.aboumall.followers--;
+          renderLists('followers');
+          M.toast('@' + u + ' ne fait plus partie de vos abonnés', 'success', function () { followers.splice(i, 0, u); U[u].followsMe = true; info.aboumall.followers++; renderLists('followers'); });
+        }
+      });
+    } }]);
+  });
+
+  // ---- Demandes reçues (SOC-03) -------------------------------------------------
+  function renderRequests(forceEmpty) {
+    var list = forceEmpty ? [] : requests;
+    var pending = list.filter(function (r) { return !reqState[r]; }).length;
+    var h = '<div class="page-head"><a class="icon-btn" href="#me" aria-label="Retour au profil">' + icon('arrow-left') + '</a><div class="titles"><h1>Demandes d\'abonnement</h1><div class="sub">' +
+      (pending ? pending + ' en attente' : 'Aucune demande en attente') + '</div></div></div>';
+    if (!list.length) {
+      h += '<div class="empty"><span class="ring">' + icon('inbox', 'lg') + '</span><h3>Aucune demande</h3><p>Votre compte est privé : quand quelqu\'un demandera à vous suivre, sa demande apparaîtra ici et dans vos notifications.</p>' +
+        '<a class="btn btn-outline" href="settings.html#privacy">Paramètres de confidentialité</a></div>';
+    } else {
+      h += '<p class="list-note">' + icon('info', 'sm') + '<span>Accepter une demande donne accès à vos posts, réponses et médias. Seule l\'acceptation est notifiée.</span></p>';
+      h += list.map(function (u) {
+        var s = reqState[u];
+        var end = s === 'ok' ? '<span class="done">Acceptée</span>' + M.followBtn(u, 'btn-sm') :
+          s === 'no' ? '<span class="done">Refusée</span>' :
+          '<button class="btn btn-primary btn-sm" data-req="ok" data-u="' + u + '">Accepter</button><button class="btn btn-outline btn-sm" data-req="no" data-u="' + u + '">Refuser</button>';
+        var a = U[u];
+        return '<div class="user-row"><a class="avatar" href="#" data-soon="Profil" tabindex="-1" aria-hidden="true">' + a.av + '</a><div class="txt"><a href="#" data-soon="Profil"><b>' + esc(a.name) + (a.private ? icon('lock') : '') + '</b></a><span class="handle">@' + u + ' · il y a ' + ({ camille: '5 min', yanis: '2 h', hugo: '1 j' }[u]) + '</span><span class="bio">' + esc(a.bio) + '</span></div><div class="end">' + end + '</div></div>';
+      }).join('');
+    }
+    $('#v-requests').innerHTML = h;
+    M.paintFollow();
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-req]');
+    if (!b) return;
+    var u = b.dataset.u, ok = b.dataset.req === 'ok';
+    reqState[u] = b.dataset.req;
+    if (ok) { U[u].followsMe = true; followers.push(u); info.aboumall.followers++; }
+    renderRequests();
+    M.toast(ok ? '@' + u + ' peut maintenant voir vos posts' : 'Demande de @' + u + ' refusée', 'success', function () {
+      delete reqState[u];
+      if (ok) { U[u].followsMe = false; followers.splice(followers.indexOf(u), 1); info.aboumall.followers--; }
+      renderRequests();
+    });
+  });
+
+  // ---- Colonne de droite : suggestions ------------------------------------------
+  $('#sugg').innerHTML = ['hugo', 'sami', 'camille'].map(function (u) {
+    var a = U[u];
+    return '<div class="user-row"><a class="avatar sm" href="#" data-soon="Profil" tabindex="-1" aria-hidden="true">' + a.av + '</a><div class="txt"><a href="#" data-soon="Profil"><b>' + esc(a.name) + (a.private ? icon('lock') : '') + '</b></a><span class="handle">@' + u + '</span></div><div class="end">' + M.followBtn(u, 'btn-sm') + '</div></div>';
+  }).join('');
+
+  // ---- Vues ------------------------------------------------------------------
+  function prof(u) { return { view: 'profile', run: function () { tab = 'posts'; renderProfile(u); } }; }
+  M.views({
+    me: prof('aboumall'), user: prof('lea_n'), 'user-public': prof('mehdi'), private: prof('nora'), 'private-ok': prof('ines'),
+    followers: { view: 'lists', run: function () { renderLists('followers'); } },
+    following: { view: 'lists', run: function () { renderLists('following'); } },
+    friends: { view: 'lists', run: function () { renderLists('friends'); } },
+    requests: { view: 'requests', run: function () { renderRequests(); } },
+    'requests-empty': { view: 'requests', run: function () { renderRequests(true); } }
+  }, 'me');
+  M.bar([['me', 'Mon profil'], ['user', 'Ami'], ['user-public', 'Public'], ['private', 'Privé'], ['private-ok', 'Privé suivi'], ['followers', 'Listes'], ['requests', 'Demandes'], ['requests-empty', 'Aucune demande']],
+    'Le bouton « Abonné » devient « Se désabonner » au survol · les onglets J\'aime et Republications suivent le réglage de visibilité de chaque compte (§3.2)');
+})();
+</script>
+<script src="debug-panel.js"></script>
+</body>
+</html>

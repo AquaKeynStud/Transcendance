@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette · Fil, rédaction et modification · Flat lines · ft_transcendence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shell.css">
+<style>
+/* =====================================================================
+   Flat lines · fil et posts (S4) : FEED-01, FEED-02, POST-01, POST-06 à 08, MEDIA-01 à 05, NOTIF-03
+   Vues (ancre de l'URL) :
+     #following       Fil Abonnements (défilement infini, posts de tous les formats)
+     #explore         Fil Explorer (comptes publics)
+     #empty           Fil Abonnements vide (on ne suit personne)
+     #loading         Premier chargement (squelettes)
+     #compose         Fenêtre « Nouveau post »
+     #compose-media   Fenêtre avec 3 médias (dont un vertical) et un texte proche de la limite
+     #edit            Modifier un de ses posts (titre, texte, retrait de médias)
+     #delete          Confirmation de suppression
+   Médias : hauteur fixe, format 16:9 si tous sont horizontaux (DESIGN_SYSTEM §4.7).
+   Troncature : le post entier tient dans 45 % de la hauteur de la fenêtre.
+   ===================================================================== */
+.feed-tabs { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); }
+.feed-end { padding: var(--space-6) var(--space-5) var(--space-8); text-align: center; font-size: 14px; color: var(--text-3); }
+.rail .composer-tile { padding: 0; gap: 0; }
+.rail .composer-tile .field { border: 0; padding: 0 var(--space-4); }
+.rail .composer-tile .rt { min-height: 44px; }
+.rail .composer-tile .rt input { font-size: 17px; font-weight: 700; }
+.rail .composer-tile .rb textarea { padding: 0 0 var(--space-3); }
+.rail .composer-tile .tools { display: flex; align-items: center; gap: 2px; padding: var(--space-2) var(--space-3); border-top: 1px solid var(--line); }
+.rail .composer-tile .tools .count { margin-left: auto; margin-right: var(--space-3); }
+.rail .composer-tile .icon-btn { color: var(--text); }
+.plugin-link { flex-direction: row; align-items: center; gap: var(--space-3); text-decoration: none; border-style: dashed; border-color: var(--line-strong); color: var(--text-2); }
+.plugin-link:hover { background: var(--hover); color: var(--text); }
+.sugg-list { border-top: 1px solid var(--line); }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" data-active="home"></aside>
+
+  <main class="main">
+    <div class="feed-tabs">
+      <nav class="tabs" aria-label="Fils">
+        <a href="#following" id="t-following" aria-selected="true">Abonnements</a>
+        <a href="#explore" id="t-explore" aria-selected="false">Explorer</a>
+      </nav>
+    </div>
+    <section class="view feed" id="v-feed" aria-live="polite"><div id="list"></div><div id="more"></div><div id="sentinel" style="height:1px"></div></section>
+    <section class="view" id="v-empty">
+      <div class="empty">
+        <span class="ring"><svg class="i lg"><use href="#i-users"/></svg></span>
+        <h3>Votre fil est vide</h3>
+        <p>Abonnez-vous à des comptes pour voir leurs posts ici. Vous pouvez commencer par ceux-ci, ou parcourir le fil Explorer.</p>
+        <a class="btn btn-primary" href="#explore">Parcourir Explorer</a>
+      </div>
+      <div class="sugg-list" id="empty-sugg"></div>
+    </section>
+    <section class="view feed" id="v-loading" aria-busy="true" aria-label="Chargement du fil"></section>
+  </main>
+
+  <aside class="rail" aria-label="Recherche et publication">
+    <label class="field search-bar"><svg class="i sm"><use href="#i-search"/></svg><input placeholder="Rechercher" aria-label="Rechercher"><kbd>Ctrl K</kbd></label>
+    <form class="tile composer-tile" id="quick" aria-label="Publier un post" novalidate>
+      <label class="field rt"><span class="sr-only">Titre</span><input id="q-t" placeholder="Titre" maxlength="120" autocomplete="off"></label>
+      <label class="field rb"><span class="sr-only">Contenu</span><textarea id="q-b" rows="3" placeholder="Contenu (optionnel)"></textarea></label>
+      <div class="tools">
+        <button type="button" class="icon-btn" id="q-media" aria-label="Ajouter des médias (ouvre la fenêtre de rédaction)"><svg class="i sm"><use href="#i-image"/></svg></button>
+        <span class="counter count" id="q-c">0 / 500</span>
+        <button class="btn btn-primary btn-sm" id="q-go" disabled>Publier</button>
+      </div>
+    </form>
+    <a class="tile plugin-link" href="v11.html"><svg class="i"><use href="#i-blocks"/></svg><span style="flex:1;font-size:14px">Les plugins (bento) sont maquettés dans la v11.</span><svg class="i sm"><use href="#i-chevron-right"/></svg></a>
+    <nav class="legal" aria-label="Pages légales"><a href="#">Conditions d'utilisation</a><a href="#">Politique de confidentialité</a><a href="#">Mentions légales</a><span>© 2026 transcendance</span></nav>
+  </aside>
+</div>
+
+<script src="shell.js"></script>
+<script>
+(function () {
+  var M = window.Mock, $ = M.$, $$ = M.$$, icon = M.icon, U = M.users;
+
+  // ---- Posts de la maquette (tous les formats de médias) ------------------------
+  var mine = { author: 'aboumall', time: '5 min', title: 'Maquettes S3 et S4 terminées', text: 'Profil, listes, demandes, paramètres, fil, rédaction, modification et suppression. Testez le menu « … » de ce post : vous pouvez le modifier ou le supprimer. @lea_n @mehdi vos retours sont les bienvenus.', media: [{ o: 'h', ar: '16:9' }, { o: 'v', ar: '3:4' }], r: 2, rp: 1, l: 9 };
+  var following = [
+    mine,
+    { author: 'lea_n', time: '12 min', title: 'Premier rendu du style « flat lines »', text: 'Plus de verre : des aplats, des lignes grises et c\'est tout. Une seule image horizontale : l\'aperçu prend le format 16:9.', media: [{ o: 'h', ar: '16:9' }], r: 12, rp: 4, l: 86, liked: true },
+    { author: 'mehdi', time: '34 min', title: 'Retour sur la première semaine de sprint', text: 'Bilan rapide de S1 pour ceux qui n\'étaient pas à la rétro. Côté back, le modèle Post est en place avec le titre obligatoire, et la pagination par curseur fonctionne sur le fil. @theok a branché le WebSocket pour les notifications, il reste à gérer la reconnexion propre quand le token expire. Côté front, @lea_n a fini les maquettes flat lines et on attaque le setup Vite + Tailwind lundi. Points de vigilance : on a sous-estimé la partie médias (upload, progression, aperçu), il faudra sûrement la découper en deux tickets. Et on doit trancher sessions ou JWT avant mercredi, sinon le front et le back vont partir dans deux directions. Dernier point : pensez à remplir vos contributions individuelles dans le README au fil de l\'eau, ce sera beaucoup plus simple qu\'à la fin. Et si vous avez des idées de plugins pour l\'accueil, notez-les dans le ticket dédié, on fera le tri en rétro.', r: 9, rp: 2, l: 27 },
+    { author: 'theok', context: 'Jade a republié', time: '1 h', title: 'WebSocket : uniquement pour pousser', text: 'Toutes les actions passent par l\'API REST. Le WebSocket ne fait que pousser les nouveautés. Une seule couche de permissions, moins de bugs.', r: 3, rp: 10, l: 41, reposted: true, edited: '23 novembre 2026 à 09:12' },
+    { deleted: true },
+    { author: 'jade', time: '2 h', title: 'Un média vertical et deux horizontaux', text: 'Il y a un média vertical : l\'aperçu garde la hauteur fixe de 260 px, et les horizontaux se calent dessus.', media: [{ o: 'v', ar: '9:16' }, { o: 'h', ar: '4:3' }, { o: 'h', ar: '16:9' }], r: 5, rp: 6, l: 33 },
+    { author: 'ines', time: '4 h', title: 'Train de nuit Paris → Vienne', text: 'Compte privé : on peut aimer ce post, mais pas le republier. Deux photos horizontales : l\'aperçu passe en grand (4:3 sur toute la largeur) et le post peut aller jusqu\'à 65 % du fil. Le texte, lui, est coupé pour tenir dans ce qui reste. Départ à 19 h de la gare de l\'Est, couchettes de six, réveil à Munich avec un café tiède et la brume sur les champs. Arrivée à Vienne vers 9 h, juste à temps pour le premier tram. Je referais le trajet sans hésiter, même si dormir dans un train reste un sport à part entière.', media: [{ o: 'h', ar: '3:2' }, { o: 'h', ar: '3:2' }], r: 2, rp: 0, l: 12 },
+    { author: 'deleted', deleted: 'mod' },
+    { author: 'lea_n', time: '6 h', title: 'Quatre captures du design system', text: 'Quatre images horizontales : la grille entière prend le format 16:9.', media: [{ o: 'h' }, { o: 'h' }, { o: 'h' }, { o: 'h' }], r: 1, rp: 3, l: 22 },
+    { author: 'theok', time: '8 h', title: 'Démo de la reconnexion WebSocket', text: 'Une vidéo est toujours seule (MEDIA-02).', media: [{ type: 'video', o: 'h', ar: '16:9', dur: '1:12' }], r: 4, rp: 2, l: 18 },
+    { author: 'jade', time: '9 h', title: 'Portrait seul', text: 'Une image verticale seule garde la hauteur fixe et sa largeur naturelle.', media: [{ o: 'v', ar: '4:5' }], r: 0, rp: 1, l: 7 }
+  ];
+  var explore = [
+    { author: 'hugo', time: '3 min', title: 'Record battu sur le plugin Snake', text: 'Quelqu\'un a réussi à dépasser 240 ? Je partage la vidéo dès que le plugin est en ligne.', media: [{ type: 'gif', o: 'h', ar: '16:9' }], r: 7, rp: 2, l: 31 },
+    { author: 'yanis', time: '20 min', title: 'Première semaine à 42 Lyon', text: 'Je découvre transcendance. Les maquettes sont vraiment propres, bravo à l\'équipe front.', r: 2, rp: 0, l: 11 },
+    { author: 'sami', time: '1 h', title: 'MSW + TanStack Query : une config propre ?', text: 'Je cherche une config propre pour mocker la pagination par curseur. Quelqu\'un a déjà un handler qui renvoie next correctement ?', r: 8, rp: 1, l: 19 },
+    following[1], following[5]
+  ];
+  var extra = [
+    { author: 'mehdi', time: '1 j', title: 'Visibilité : la règle du §3', text: 'La visibilité d\'un post dépend de l\'état actuel du compte de son auteur, pas de son état au moment de la publication.', r: 6, rp: 3, l: 24 },
+    { author: 'lea_n', time: '1 j', title: 'Deux photos du hackathon', text: 'Deux horizontales : format 16:9.', media: [{ o: 'h', ar: '3:2' }, { o: 'h', ar: '4:3' }], r: 3, rp: 1, l: 17 },
+    { author: 'jade', time: '2 j', title: 'RGPD : ce qu\'on exporte', text: 'Profil, posts, J\'aime, republications, abonnements et messages, dans un JSON lisible.', r: 1, rp: 0, l: 8 }
+  ];
+
+  // ---- Fil et défilement infini (FEED-01, FEED-02) ------------------------------
+  var which = 'following', loads = 0, loading = false;
+  function sk(n) {
+    var h = '';
+    for (var i = 0; i < n; i++) h += '<div class="sk-post" aria-hidden="true"><span class="sk circle" style="width:40px;height:40px;flex:none"></span><div class="lines"><span class="sk" style="width:40%;height:12px"></span><span class="sk" style="width:75%;height:16px"></span><span class="sk" style="width:95%;height:12px"></span><span class="sk" style="width:60%;height:12px"></span></div></div>';
+    return h;
+  }
+  function render(list) {
+    which = list;
+    loads = 0;
+    $('#t-following').setAttribute('aria-selected', String(list === 'following'));
+    $('#t-explore').setAttribute('aria-selected', String(list === 'explore'));
+    $('#list').innerHTML = (list === 'following' ? following : explore).map(M.renderPost).join('');
+    $('#more').innerHTML = '';
+    M.paintFollow();
+  }
+  // Par défaut, 2 pages de plus puis « Vous êtes à jour ». Le bouton « Défilement infini » de la barre
+  // de la maquette enlève la limite : une page arrive à chaque fois qu'on approche du bas du fil.
+  var maxLoads = 2, infinite = false, pool = extra.concat(explore.slice(0, 3), following.slice(1, 3), following.slice(5, 7));
+  function nearBottom() { var r = $('#sentinel').getBoundingClientRect(); return r.top < innerHeight + 400; }
+  function loadMore() {
+    if (loading || !$('#v-feed').classList.contains('on') || loads >= maxLoads) return;
+    loading = true;
+    $('#more').innerHTML = sk(2);
+    setTimeout(function () {
+      loads++;
+      $('#more').innerHTML = '';
+      var page = [0, 1, 2].map(function (k) {
+        var p = pool[(loads * 3 + k) % pool.length];
+        return M.renderPost(Object.assign({}, p, { id: null, liked: false, reposted: false, time: (loads + 1) + ' j' }));
+      });
+      $('#list').insertAdjacentHTML('beforeend', (infinite ? '<p class="feed-end" style="padding:var(--space-2);font-size:12px">Page ' + (loads + 1) + '</p>' : '') + page.join(''));
+      if (loads >= maxLoads) $('#more').innerHTML = '<p class="feed-end">Vous êtes à jour. ' + (which === 'following' ? '<a class="link" href="#explore">Parcourir Explorer</a>' : '') + '</p>';
+      M.clampAll();
+      M.paintFollow();
+      loading = false;
+      if (infinite && nearBottom()) loadMore();
+    }, 900);
+  }
+  var io = new IntersectionObserver(function (en) { if (en[0].isIntersecting) loadMore(); }, { rootMargin: '400px' });
+  io.observe($('#sentinel'));
+  function setInfinite(on) {
+    infinite = on;
+    maxLoads = on ? Infinity : Math.max(loads, 2);
+    var b = $('#inf-btn');
+    b.textContent = on ? '■ Arrêter le défilement infini' : '∞ Défilement infini';
+    b.setAttribute('aria-pressed', String(on));
+    if (on) {
+      if (!$('#v-feed').classList.contains('on')) location.hash = 'following';
+      $('#more').innerHTML = '';
+      setTimeout(function () { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); loadMore(); }, 80);
+      M.toast('Défilement infini : une page de 3 posts arrive à chaque fois que vous approchez du bas', 'info');
+    } else if (loads >= maxLoads && !loading) {
+      $('#more').innerHTML = '<p class="feed-end">Vous êtes à jour.</p>';
+    }
+  }
+
+  M.onPublish = function (np) {
+    following.unshift(np);
+    if (location.hash !== '#following' && location.hash !== '') location.hash = 'following';
+    else render('following');
+    M.clampAll();
+    var el = $('.post[data-id="' + np.id + '"]');
+    if (el) { el.classList.add('is-new'); el.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+    M.toast('Post publié');
+  };
+
+  // ---- Fil vide et suggestions ------------------------------------------------------
+  $('#empty-sugg').innerHTML = ['lea_n', 'mehdi', 'hugo'].map(function (u) {
+    var a = U[u];
+    return '<div class="user-row"><a class="avatar" href="' + M.profileUrl(u) + '" tabindex="-1" aria-hidden="true">' + a.av + '</a><div class="txt"><a href="' + M.profileUrl(u) + '"><b>' + M.esc(a.name) + '</b></a><span class="handle">@' + u + '</span><span class="bio">' + M.esc(a.bio) + '</span></div><div class="end">' + M.followBtn(u, 'btn-sm') + '</div></div>';
+  }).join('');
+
+  // ---- Rédaction rapide (colonne de droite) ---------------------------------------
+  function q() {
+    var t = $('#q-t').value.trim().length, b = $('#q-b').value.length, c = $('#q-c');
+    c.textContent = b + ' / 500';
+    c.className = 'counter count' + (b > 500 ? ' over' : b >= 450 ? ' warn' : '');
+    $('#q-go').disabled = t < 3 || b > 500;
+    $('#q-go').title = t < 3 ? 'Le titre doit faire au moins 3 caractères' : '';
+  }
+  $('#q-t').addEventListener('input', q);
+  $('#q-b').addEventListener('input', q);
+  $('#quick').onsubmit = function (e) {
+    e.preventDefault();
+    if ($('#q-go').disabled) return;
+    M.onPublish({ author: 'aboumall', time: 'à l\'instant', title: $('#q-t').value.trim(), text: $('#q-b').value.trim(), r: 0, rp: 0, l: 0 });
+    this.reset(); q();
+  };
+  $('#q-media').onclick = function () {
+    var t = $('#q-t').value, b = $('#q-b').value;
+    $('#quick').reset(); q();
+    M.composer.open({ title: t, text: b, opener: this });
+    setTimeout(function () { $('#cp-file').click(); }, 80);
+  };
+
+  // ---- Vues ----------------------------------------------------------------------
+  function feed(list, after) { return { view: 'feed', run: function () { render(list); if (after) setTimeout(after, 60); } }; }
+  M.views({
+    following: feed('following'),
+    explore: feed('explore'),
+    empty: { view: 'empty', run: function () { $('#t-following').setAttribute('aria-selected', 'true'); $('#t-explore').setAttribute('aria-selected', 'false'); M.paintFollow(); } },
+    loading: { view: 'loading', run: function () { $('#v-loading').innerHTML = sk(4); } },
+    compose: feed('following', function () { M.composer.open(); }),
+    'compose-media': feed('following', function () {
+      M.composer.open({ title: 'Retour du hackathon de samedi', text: 'Merci à tous ceux qui sont venus. '.repeat(14).trim(), preset: [{ type: 'img', name: 'salle.jpg', o: 'h', ar: '16:9' }, { type: 'img', name: 'equipe.jpg', o: 'v', ar: '3:4' }, { type: 'gif', name: 'victoire.gif', o: 'h', ar: '16:9' }] });
+    }),
+    edit: feed('following', function () { M.composer.open({ mode: 'edit', post: M.posts[mine.id], opener: $('.post [data-post-menu]') }); }),
+    delete: feed('following', function () { M.deletePost(M.posts[mine.id], $('.post [data-post-menu]')); })
+  }, 'following');
+  M.bar([['following', 'Abonnements'], ['explore', 'Explorer'], ['empty', 'Fil vide'], ['loading', 'Chargement'], ['compose', 'Nouveau post'], ['compose-media', 'Avec médias'], ['edit', 'Modifier'], ['delete', 'Supprimer']],
+    'Menu « … » de votre post : Modifier / Supprimer · troncature : 45 % du fil, 65 % si tous les médias sont horizontaux (redimensionnez la fenêtre)');
+  var bar = $('nav.mock-bar'), inf = document.createElement('a');
+  inf.href = '#'; inf.id = 'inf-btn'; inf.setAttribute('role', 'button'); inf.setAttribute('aria-pressed', 'false');
+  inf.style.cssText = 'border:1px dashed var(--line-strong);font-weight:600';
+  inf.textContent = '∞ Défilement infini';
+  inf.onclick = function (e) { e.preventDefault(); setInfinite(!infinite); };
+  bar.insertBefore(inf, bar.querySelector('.sep'));
+})();
+</script>
+<script src="debug-panel.js"></script>
+</body>
+</html>
