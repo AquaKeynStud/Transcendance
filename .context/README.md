@@ -5,7 +5,7 @@ Ils servent à reprendre le travail d'une session à l'autre et à montrer à l'
 
 ## État de la direction artistique
 
-✅ **Direction retenue : « flat lines »** (2026-11-11). Référence : `docs/mockups/flat-lines/v11.html` et `docs/mockups/flat-lines/design-system.html`, documentée dans `docs/DESIGN_SYSTEM.md` (v0.4, 25 composants).
+✅ **Direction retenue : « flat lines »** (2026-11-11). Référence : `docs/mockups/flat-lines/v11.html` et `docs/mockups/flat-lines/design-system.html`, documentée dans `docs/DESIGN_SYSTEM.md` (v0.5, 25 composants).
 Le **« liquid glass »** (`docs/mockups/liquid-glass/`) était un test : il est gardé pour l'historique.
 
 ## Convention
@@ -49,3 +49,4 @@ Le **« liquid glass »** (`docs/mockups/liquid-glass/`) était un test : il est
 | 2026-11-11 | [2026-11-11_flat-lines-v11-retenue.md](2026-11-11_flat-lines-v11-retenue.md) | Flat lines retenue : maquette v11 (contrastes corrigés), `DESIGN_SYSTEM.md` v0.3, composant 25 `CommentsPanel` au lot 2 |
 | 2026-11-18 | [2026-11-18_decisions-liens-troncature-commentaires.md](2026-11-18_decisions-liens-troncature-commentaires.md) | Fusion dans `frontend` ; décisions : liens, `@username`, troncature par budget de hauteur, libellé « Commentaires » ; nettoyage des branches |
 | 2026-11-18 | [2026-11-18_maquette-auth.md](2026-11-18_maquette-auth.md) | Maquette des écrans d'authentification : connexion (blocage après 5 échecs), inscription, vérification de l'email, mot de passe oublié, visiteur (bandeau + fenêtre) |
+| 2026-11-23 | [2026-11-23_panneau-reglages-et-decisions-auth.md](2026-11-23_panneau-reglages-et-decisions-auth.md) | Panneau « Réglages » des maquettes (contraste, tokens, daltonisme) ; email à vérifier avant d'utiliser le site ; 2FA de côté ; troncature : post entier ≤ 45 % du fil, médias de hauteur fixe (format horizontal si tous sont horizontaux) ; nouveaux fonds `#0D0F11` / `#FFFFFF` |

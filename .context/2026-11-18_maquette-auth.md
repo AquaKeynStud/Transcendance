@@ -45,8 +45,8 @@ Premier des trois écrans clés à maquetter, avant le profil et la page d'un po
 
 1. Les écrans dans leur ensemble (tester avec la barre « Maquette »).
 2. Ajouter la case à cocher et l'alerte en ligne comme composants du design system (26 et 27) ?
-3. Peut-on utiliser le site avant d'avoir vérifié son email ? La maquette dit « vous pouvez déjà lire le fil Explorer », ce qui sous-entend que non.
-4. La 2FA (AUTH-06, Could) n'est pas maquettée : il faudrait un écran « code à 6 chiffres » après la connexion si le module est retenu.
+3. ~~Peut-on utiliser le site avant d'avoir vérifié son email ?~~ Non, tranché le 2026-11-23 ([rapport](2026-11-23_panneau-reglages-et-decisions-auth.md)).
+4. ~~La 2FA (AUTH-06, Could) n'est pas maquettée.~~ Mise de côté le 2026-11-23 : on ne sait pas encore comment le backend la gérera.
 
 ## Prochaines étapes
 

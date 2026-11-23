@@ -19,6 +19,7 @@
      #reset        Nouveau mot de passe               #reset-expired  Lien expiré
      #guest        Fil Explorer en visiteur : bandeau VIS-04, fenêtre VIS-03 au clic sur une action
    Paramètres : ?theme=light, ?modal (ouvre la fenêtre visiteur sur #guest).
+   Bouton « Réglages » (debug-panel.js) : contraste, luminosité des tokens, rayons, daltonisme ; ?debug l'ouvre.
    ===================================================================== */
 
 /* 1. TOKENS (identiques à la v11) ====================================== */
@@ -30,8 +31,8 @@
   --ease: cubic-bezier(.2, .8, .2, 1);
 }
 [data-theme="dark"] {
-  --bg: #16181c; --surface: #1d2025; --hover: rgba(231, 233, 234, .07);
-  --line: #33373d; --card: #202329; --card-line: #3a3f47; --well: #16181c;
+  --bg: #0d0f11; --surface: #1a1c21; --hover: rgba(231, 233, 234, .07);
+  --line: #33373d; --card: #1a1c21; --card-line: #3a3f47; --well: #0d0f11;
   --avatar: #3a3f46; --line-strong: #5b636d;
   --text: #e7e9ea; --text-2: #9aa0a6; --text-3: #8a9096;
   --accent: #e7e9ea; --accent-ink: #16181c;
@@ -41,8 +42,8 @@
   --placeholder: linear-gradient(135deg, #202328, #383c42 55%, #202328);
 }
 [data-theme="light"] {
-  --bg: #f3f5f7; --surface: #ffffff; --hover: rgba(15, 20, 25, .05);
-  --line: #e4e9ec; --card: #ffffff; --card-line: #dbe2e7; --well: #f3f5f7;
+  --bg: #ffffff; --surface: #f3f5f7; --hover: rgba(15, 20, 25, .05);
+  --line: #e4e9ec; --card: #f3f5f7; --card-line: #dbe2e7; --well: #ffffff;
   --avatar: #dfe5e9; --line-strong: #cfd9de;
   --text: #0f1419; --text-2: #4b5862; --text-3: #5f6b74;
   --accent: #0f1419; --accent-ink: #ffffff;
@@ -469,7 +470,7 @@ body.is-guest .mock-bar { bottom: 92px; }
         <button class="btn btn-outline btn-lg btn-block" id="resend-verify" type="button">Renvoyer l'email</button>
         <a class="btn btn-ghost btn-block" href="#signup">Modifier l'adresse email</a>
       </div>
-      <p class="note">Rien reçu ? Regardez dans vos courriers indésirables. Vous pouvez déjà lire le fil Explorer en attendant.</p>
+      <p class="note">Rien reçu ? Regardez dans vos courriers indésirables. Vous pourrez utiliser le site une fois votre adresse confirmée.</p>
     </section>
   </main>
   <footer class="legal"><a href="#">Conditions d'utilisation</a><a href="#">Politique de confidentialité</a><a href="#">Mentions légales</a><span>© 2026 transcendance</span></footer>
@@ -979,5 +980,6 @@ body.is-guest .mock-bar { bottom: 92px; }
   if (params.has('modal') && location.hash === '#guest') openModal('like', 'Léa N.');
 })();
 </script>
+<script src="debug-panel.js"></script>
 </body>
 </html>

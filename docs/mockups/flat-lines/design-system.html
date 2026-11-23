@@ -37,13 +37,13 @@
 }
 
 [data-theme="dark"] {
-  --bg: #16181c;
-  --surface: #1d2025;
+  --bg: #0d0f11;
+  --surface: #1a1c21;
   --hover: rgba(231, 233, 234, .07);
   --line: #33373d;
-  --card: #202329;
+  --card: #1a1c21;
   --card-line: #3a3f47;
-  --well: #16181c;
+  --well: #0d0f11;
   --avatar: #3a3f46;
   --line-strong: #5b636d;
   --text: #e7e9ea;
@@ -66,13 +66,13 @@
 }
 
 [data-theme="light"] {
-  --bg: #f3f5f7;
-  --surface: #ffffff;
+  --bg: #ffffff;
+  --surface: #f3f5f7;
   --hover: rgba(15, 20, 25, .05);
   --line: #e4e9ec;
-  --card: #ffffff;
+  --card: #f3f5f7;
   --card-line: #dbe2e7;
-  --well: #f3f5f7;
+  --well: #ffffff;
   --avatar: #dfe5e9;
   --line-strong: #cfd9de;
   --text: #0f1419;
@@ -641,27 +641,27 @@ code { font-family: ui-monospace, monospace; font-size: .86em; padding: 1px 5px;
       <div class="theme-panel c-6" data-theme="dark">
         <h3><svg class="i sm"><use href="#i-moon"/></svg>Thème sombre <span class="faint">par défaut</span></h3>
         <div class="pal-group"><span class="lbl">Surfaces et lignes</span><div class="pal">
-          <div class="sw"><div class="chip" style="background:var(--bg)"></div><div class="meta"><code class="tok">--bg</code><code>#16181C</code><span class="use">Fond de page, creux dans une carte (--well)</span></div></div>
-          <div class="sw"><div class="chip" style="background:var(--card)"></div><div class="meta"><code class="tok">--card</code><code>#202329</code><span class="use">Tuiles, recherche, commentaires, menus, fenêtres</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--bg)"></div><div class="meta"><code class="tok">--bg</code><code>#0D0F11</code><span class="use">Fond de page, creux dans une carte (--well)</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--card)"></div><div class="meta"><code class="tok">--card</code><code>#1A1C21</code><span class="use">Tuiles, recherche, commentaires, menus, fenêtres</span></div></div>
           <div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;inset:12px 14px;border-radius:8px;border:1px solid var(--card-line);background:var(--card)"></span></div><div class="meta"><code class="tok">--card-line</code><code>#3A3F47</code><span class="use">Bord des cartes</span></div></div>
           <div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;left:14px;right:14px;height:1px;background:var(--line)"></span></div><div class="meta"><code class="tok">--line</code><code>#33373D</code><span class="use">La ligne grise : séparations, nav, onglets</span></div></div>
-          <div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;inset:14px 18px;border-radius:8px;border:1px solid var(--line-strong)"></span></div><div class="meta"><code class="tok">--line-strong</code><code>#5B636D</code><span class="use">Bord des champs, boutons secondaires</span><span class="ratio">2,9 · 2,6</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;inset:14px 18px;border-radius:8px;border:1px solid var(--line-strong)"></span></div><div class="meta"><code class="tok">--line-strong</code><code>#5B636D</code><span class="use">Bord des champs, boutons secondaires</span><span class="ratio">3,2 · 2,8</span></div></div>
           <div class="sw"><div class="chip" style="background:var(--avatar);font-size:15px">LN</div><div class="meta"><code class="tok">--avatar</code><code>#3A3F46</code><span class="use">Avatar sans photo</span></div></div>
         </div></div>
         <div class="pal-group"><span class="lbl">Texte et liens</span><div class="pal">
-          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--text)">Aa</span><span style="background:var(--card);color:var(--text)">Aa</span></div><div class="meta"><code class="tok">--text</code><code>#E7E9EA</code><span class="use">Texte, titres, accent</span><span class="ratio"><i>✓</i> 14,6 · 12,9</span></div></div>
-          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--text-2)">Aa</span><span style="background:var(--card);color:var(--text-2)">Aa</span></div><div class="meta"><code class="tok">--text-2</code><code>#9AA0A6</code><span class="use">Texte secondaire, « Répondre »</span><span class="ratio"><i>✓</i> 6,7 · 6,0</span></div></div>
-          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--text-3)">Aa</span><span style="background:var(--card);color:var(--text-3)">Aa</span></div><div class="meta"><code class="tok">--text-3</code><code>#8A9096</code><span class="use">@username, dates, compteurs</span><span class="was">⚠️ v10 : #80868C</span><span class="ratio fix"><i>✓</i> 5,5 · 4,9</span></div></div>
-          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--link)">@nora</span><span style="background:var(--card);color:var(--link)">Voir</span></div><div class="meta"><code class="tok">--link</code><code>#4EA1FF</code><span class="use">Mentions, « Voir plus », « Voir N réponses »</span><span class="ratio"><i>✓</i> 6,7 · 5,9</span></div></div>
+          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--text)">Aa</span><span style="background:var(--card);color:var(--text)">Aa</span></div><div class="meta"><code class="tok">--text</code><code>#E7E9EA</code><span class="use">Texte, titres, accent</span><span class="ratio"><i>✓</i> 15,8 · 14,0</span></div></div>
+          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--text-2)">Aa</span><span style="background:var(--card);color:var(--text-2)">Aa</span></div><div class="meta"><code class="tok">--text-2</code><code>#9AA0A6</code><span class="use">Texte secondaire, « Répondre »</span><span class="ratio"><i>✓</i> 7,3 · 6,5</span></div></div>
+          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--text-3)">Aa</span><span style="background:var(--card);color:var(--text-3)">Aa</span></div><div class="meta"><code class="tok">--text-3</code><code>#8A9096</code><span class="use">@username, dates, compteurs</span><span class="was">⚠️ v10 : #80868C</span><span class="ratio fix"><i>✓</i> 6,0 · 5,3</span></div></div>
+          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--link)">@nora</span><span style="background:var(--card);color:var(--link)">Voir</span></div><div class="meta"><code class="tok">--link</code><code>#4EA1FF</code><span class="use">Mentions, « Voir plus », « Voir N réponses »</span><span class="ratio"><i>✓</i> 7,2 · 6,4</span></div></div>
           <div class="sw"><div class="chip" style="background:var(--accent);color:var(--accent-ink)">Aa</div><div class="meta"><code class="tok">--accent-ink</code><code>#16181C</code><span class="use">Texte sur l'accent (bouton principal, toast)</span><span class="ratio"><i>✓</i> 14,6</span></div></div>
         </div></div>
         <div class="pal-group"><span class="lbl">Couleurs fonctionnelles</span><div class="pal">
-          <div class="sw"><div class="chip" style="background:var(--like)"></div><div class="meta"><code class="tok">--like</code><code>#F0508F</code><span class="use">J'aime</span><span class="was">⚠️ v10 : #EC3F86</span><span class="ratio fix"><i>✓</i> 5,3 · 4,7</span></div></div>
-          <div class="sw"><div class="chip" style="background:var(--repost)"></div><div class="meta"><code class="tok">--repost</code><code>#FFA834</code><span class="use">Republier</span><span class="ratio"><i>✓</i> 9,2 · 8,2</span></div></div>
-          <div class="sw"><div class="chip" style="background:var(--success)"></div><div class="meta"><code class="tok">--success</code><code>#00BA7C</code><span class="use">En ligne, succès</span><span class="ratio"><i>✓</i> 7,0 · 6,2</span></div></div>
-          <div class="sw"><div class="chip" style="background:var(--danger)"></div><div class="meta"><code class="tok">--danger</code><code>#FF5A64</code><span class="use">Texte d'erreur, action destructrice</span><span class="was">⚠️ v10 : #F4212E</span><span class="ratio fix"><i>✓</i> 5,8 · 5,2</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--like)"></div><div class="meta"><code class="tok">--like</code><code>#F0508F</code><span class="use">J'aime</span><span class="was">⚠️ v10 : #EC3F86</span><span class="ratio fix"><i>✓</i> 5,7 · 5,1</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--repost)"></div><div class="meta"><code class="tok">--repost</code><code>#FFA834</code><span class="use">Republier</span><span class="ratio"><i>✓</i> 10,0 · 8,8</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--success)"></div><div class="meta"><code class="tok">--success</code><code>#00BA7C</code><span class="use">En ligne, succès</span><span class="ratio"><i>✓</i> 7,6 · 6,7</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--danger)"></div><div class="meta"><code class="tok">--danger</code><code>#FF5A64</code><span class="use">Texte d'erreur, action destructrice</span><span class="was">⚠️ v10 : #F4212E</span><span class="ratio fix"><i>✓</i> 6,3 · 5,6</span></div></div>
           <div class="sw"><div class="chip" style="background:var(--danger-fill);color:#fff;font-size:14px">Supprimer</div><div class="meta"><code class="tok">--danger-fill</code><code>#C81E28</code><span class="use">Fond du bouton Supprimer</span><span class="ratio fix"><i>✓</i> blanc 5,7</span></div></div>
-          <div class="sw"><div class="chip" style="background:var(--warning)"></div><div class="meta"><code class="tok">--warning</code><code>#FFD400</code><span class="use">Avertissement, limite proche</span><span class="ratio"><i>✓</i> 12,4 · 11,0</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--warning)"></div><div class="meta"><code class="tok">--warning</code><code>#FFD400</code><span class="use">Avertissement, limite proche</span><span class="ratio"><i>✓</i> 13,4 · 11,9</span></div></div>
         </div></div>
         <div class="pal-group"><span class="lbl">États</span><div class="pal">
           <div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;inset:12px 14px;border-radius:999px;background:var(--hover)"></span></div><div class="meta"><code class="tok">--hover</code><code>rgba(231,233,234,.07)</code><span class="use">Survol : nav, boutons, lignes</span></div></div>
@@ -672,27 +672,27 @@ code { font-family: ui-monospace, monospace; font-size: .86em; padding: 1px 5px;
       <div class="theme-panel c-6" data-theme="light">
         <h3><svg class="i sm"><use href="#i-sun"/></svg>Thème clair</h3>
         <div class="pal-group"><span class="lbl">Surfaces et lignes</span><div class="pal">
-          <div class="sw"><div class="chip" style="background:var(--bg)"></div><div class="meta"><code class="tok">--bg</code><code>#F3F5F7</code><span class="use">Fond de page, creux dans une carte (--well)</span></div></div>
-          <div class="sw"><div class="chip" style="background:var(--card)"></div><div class="meta"><code class="tok">--card</code><code>#FFFFFF</code><span class="use">Tuiles, recherche, commentaires, menus, fenêtres</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--bg)"></div><div class="meta"><code class="tok">--bg</code><code>#FFFFFF</code><span class="use">Fond de page, creux dans une carte (--well)</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--card)"></div><div class="meta"><code class="tok">--card</code><code>#F3F5F7</code><span class="use">Tuiles, recherche, commentaires, menus, fenêtres</span></div></div>
           <div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;inset:12px 14px;border-radius:8px;border:1px solid var(--card-line);background:var(--card)"></span></div><div class="meta"><code class="tok">--card-line</code><code>#DBE2E7</code><span class="use">Bord des cartes</span></div></div>
           <div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;left:14px;right:14px;height:1px;background:var(--line)"></span></div><div class="meta"><code class="tok">--line</code><code>#E4E9EC</code><span class="use">La ligne grise : séparations, nav, onglets</span></div></div>
-          <div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;inset:14px 18px;border-radius:8px;border:1px solid var(--line-strong)"></span></div><div class="meta"><code class="tok">--line-strong</code><code>#CFD9DE</code><span class="use">Bord des champs, boutons secondaires</span><span class="ratio">1,3 · 1,4</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;inset:14px 18px;border-radius:8px;border:1px solid var(--line-strong)"></span></div><div class="meta"><code class="tok">--line-strong</code><code>#CFD9DE</code><span class="use">Bord des champs, boutons secondaires</span><span class="ratio">1,4 · 1,3</span></div></div>
           <div class="sw"><div class="chip" style="background:var(--avatar);font-size:15px">LN</div><div class="meta"><code class="tok">--avatar</code><code>#DFE5E9</code><span class="use">Avatar sans photo</span></div></div>
         </div></div>
         <div class="pal-group"><span class="lbl">Texte et liens</span><div class="pal">
-          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--text)">Aa</span><span style="background:var(--card);color:var(--text)">Aa</span></div><div class="meta"><code class="tok">--text</code><code>#0F1419</code><span class="use">Texte, titres, accent</span><span class="ratio"><i>✓</i> 16,9 · 18,5</span></div></div>
-          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--text-2)">Aa</span><span style="background:var(--card);color:var(--text-2)">Aa</span></div><div class="meta"><code class="tok">--text-2</code><code>#4B5862</code><span class="use">Texte secondaire, « Répondre »</span><span class="ratio"><i>✓</i> 6,7 · 7,3</span></div></div>
-          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--text-3)">Aa</span><span style="background:var(--card);color:var(--text-3)">Aa</span></div><div class="meta"><code class="tok">--text-3</code><code>#5F6B74</code><span class="use">@username, dates, compteurs</span><span class="was">⚠️ v10 : #6B7780</span><span class="ratio fix"><i>✓</i> 5,0 · 5,5</span></div></div>
-          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--link)">@nora</span><span style="background:var(--card);color:var(--link)">Voir</span></div><div class="meta"><code class="tok">--link</code><code>#1765C4</code><span class="use">Mentions, « Voir plus », « Voir N réponses »</span><span class="was">⚠️ v10 : #1A6FD6</span><span class="ratio fix"><i>✓</i> 5,2 · 5,7</span></div></div>
+          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--text)">Aa</span><span style="background:var(--card);color:var(--text)">Aa</span></div><div class="meta"><code class="tok">--text</code><code>#0F1419</code><span class="use">Texte, titres, accent</span><span class="ratio"><i>✓</i> 18,5 · 16,9</span></div></div>
+          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--text-2)">Aa</span><span style="background:var(--card);color:var(--text-2)">Aa</span></div><div class="meta"><code class="tok">--text-2</code><code>#4B5862</code><span class="use">Texte secondaire, « Répondre »</span><span class="ratio"><i>✓</i> 7,3 · 6,7</span></div></div>
+          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--text-3)">Aa</span><span style="background:var(--card);color:var(--text-3)">Aa</span></div><div class="meta"><code class="tok">--text-3</code><code>#5F6B74</code><span class="use">@username, dates, compteurs</span><span class="was">⚠️ v10 : #6B7780</span><span class="ratio fix"><i>✓</i> 5,5 · 5,0</span></div></div>
+          <div class="sw"><div class="chip split"><span style="background:var(--bg);color:var(--link)">@nora</span><span style="background:var(--card);color:var(--link)">Voir</span></div><div class="meta"><code class="tok">--link</code><code>#1765C4</code><span class="use">Mentions, « Voir plus », « Voir N réponses »</span><span class="was">⚠️ v10 : #1A6FD6</span><span class="ratio fix"><i>✓</i> 5,7 · 5,2</span></div></div>
           <div class="sw"><div class="chip" style="background:var(--accent);color:var(--accent-ink)">Aa</div><div class="meta"><code class="tok">--accent-ink</code><code>#FFFFFF</code><span class="use">Texte sur l'accent (bouton principal, toast)</span><span class="ratio"><i>✓</i> 18,5</span></div></div>
         </div></div>
         <div class="pal-group"><span class="lbl">Couleurs fonctionnelles</span><div class="pal">
-          <div class="sw"><div class="chip" style="background:var(--like)"></div><div class="meta"><code class="tok">--like</code><code>#C0185E</code><span class="use">J'aime</span><span class="ratio"><i>✓</i> 5,4 · 5,9</span></div></div>
-          <div class="sw"><div class="chip" style="background:var(--repost)"></div><div class="meta"><code class="tok">--repost</code><code>#B45309</code><span class="use">Republier</span><span class="was">⚠️ v10 : #D97706</span><span class="ratio fix"><i>✓</i> 4,6 · 5,0</span></div></div>
-          <div class="sw"><div class="chip" style="background:var(--success)"></div><div class="meta"><code class="tok">--success</code><code>#007A52</code><span class="use">En ligne, succès</span><span class="was">⚠️ v10 : #00BA7C</span><span class="ratio fix"><i>✓</i> 4,9 · 5,4</span></div></div>
-          <div class="sw"><div class="chip" style="background:var(--danger)"></div><div class="meta"><code class="tok">--danger</code><code>#C81E28</code><span class="use">Texte d'erreur, action destructrice</span><span class="was">⚠️ v10 : #F4212E</span><span class="ratio fix"><i>✓</i> 5,2 · 5,7</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--like)"></div><div class="meta"><code class="tok">--like</code><code>#C0185E</code><span class="use">J'aime</span><span class="ratio"><i>✓</i> 5,9 · 5,4</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--repost)"></div><div class="meta"><code class="tok">--repost</code><code>#B45309</code><span class="use">Republier</span><span class="was">⚠️ v10 : #D97706</span><span class="ratio fix"><i>✓</i> 5,0 · 4,6</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--success)"></div><div class="meta"><code class="tok">--success</code><code>#007A52</code><span class="use">En ligne, succès</span><span class="was">⚠️ v10 : #00BA7C</span><span class="ratio fix"><i>✓</i> 5,4 · 4,9</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--danger)"></div><div class="meta"><code class="tok">--danger</code><code>#C81E28</code><span class="use">Texte d'erreur, action destructrice</span><span class="was">⚠️ v10 : #F4212E</span><span class="ratio fix"><i>✓</i> 5,7 · 5,2</span></div></div>
           <div class="sw"><div class="chip" style="background:var(--danger-fill);color:#fff;font-size:14px">Supprimer</div><div class="meta"><code class="tok">--danger-fill</code><code>#C81E28</code><span class="use">Fond du bouton Supprimer</span><span class="ratio fix"><i>✓</i> blanc 5,7</span></div></div>
-          <div class="sw"><div class="chip" style="background:var(--warning)"></div><div class="meta"><code class="tok">--warning</code><code>#8A5A00</code><span class="use">Avertissement, limite proche</span><span class="was">⚠️ v10 : #FFD400</span><span class="ratio fix"><i>✓</i> 5,4 · 5,9</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--warning)"></div><div class="meta"><code class="tok">--warning</code><code>#8A5A00</code><span class="use">Avertissement, limite proche</span><span class="was">⚠️ v10 : #FFD400</span><span class="ratio fix"><i>✓</i> 5,9 · 5,4</span></div></div>
         </div></div>
         <div class="pal-group"><span class="lbl">États</span><div class="pal">
           <div class="sw"><div class="chip" style="background:var(--bg)"><span style="position:absolute;inset:12px 14px;border-radius:999px;background:var(--hover)"></span></div><div class="meta"><code class="tok">--hover</code><code>rgba(15,20,25,.05)</code><span class="use">Survol : nav, boutons, lignes</span></div></div>

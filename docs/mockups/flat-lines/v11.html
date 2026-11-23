@@ -47,14 +47,14 @@
 
 [data-theme="dark"] {
   /* v2 : fond anthracite au lieu du noir pur ; lignes et gris éclaircis pour garder le contraste */
-  --bg: #16181c;
-  --surface: #1d2025;        /* fond d'une tuile au survol, des blocs « creux » */
+  --bg: #0d0f11;
+  --surface: #1a1c21;        /* = --card : badge neutre, code en ligne */
   --hover: rgba(231, 233, 234, .07);
   --line: #33373d;           /* LA ligne grise : séparations, bords des tuiles */
   /* v8 : fond « carte » des composants (tuiles, recherche, commentaires), plus clair que la page */
-  --card: #202329;
+  --card: #1a1c21;
   --card-line: #3a3f47;
-  --well: #16181c;           /* creux dans une carte (champ de commentaire) */
+  --well: #0d0f11;           /* creux dans une carte (champ de commentaire) */
   --avatar: #3a3f46;
   --line-strong: #5b636d;
   --text: #e7e9ea;
@@ -73,13 +73,13 @@
 }
 
 [data-theme="light"] {
-  --bg: #f3f5f7;            /* v8 : page légèrement grise pour détacher les cartes blanches */
-  --surface: #ffffff;
+  --bg: #ffffff;            /* 2026-11-23 : fond blanc, cartes gris clair */
+  --surface: #f3f5f7;
   --hover: rgba(15, 20, 25, .05);
   --line: #e4e9ec;
-  --card: #ffffff;
+  --card: #f3f5f7;
   --card-line: #dbe2e7;
-  --well: #f3f5f7;
+  --well: #ffffff;
   --avatar: #dfe5e9;
   --line-strong: #cfd9de;
   --text: #0f1419;
