@@ -25,6 +25,9 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    environment:
+      # Sans MSW (VITE_MSW=off), Vite envoie /api et /ws au backend.
+      API_PROXY_TARGET: http://backend:8000
     ports:
       - "3000:3000"
     depends_on:
