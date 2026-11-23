@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from 'react-router';
 import { AuthLayout } from '@/app/layouts/AuthLayout';
 import { RootLayout } from '@/app/layouts/RootLayout';
+import { DesignSystem } from '@/pages/DesignSystem';
 import { NotFound } from '@/pages/NotFound';
 import { Placeholder } from '@/pages/Placeholder';
 
@@ -120,10 +121,7 @@ export const router = createBrowserRouter([
         path: 'terms',
         element: <Placeholder title="Conditions d’utilisation" spec="UI-02" sprint="S8" />,
       },
-      {
-        path: 'design-system',
-        element: <Placeholder title="Design system" spec="UI-07" sprint="S2" />,
-      },
+      { path: 'design-system', element: <DesignSystem /> },
       { path: '*', element: <NotFound /> },
     ],
   },

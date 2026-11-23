@@ -1,0 +1,158 @@
+/* =====================================================================
+   Design system « Flat lines » : tokens (docs/DESIGN_SYSTEM.md v0.5, §2 à §4)
+   Les couleurs sont des variables CSS par thème ; le thème Tailwind pointe dessus.
+   Le thème change avec un seul attribut : <html data-theme="dark|light">.
+   ===================================================================== */
+
+/* Palette par défaut de Tailwind retirée : on n'utilise que les tokens (principe 4). */
+@theme {
+  --color-*: initial;
+  --breakpoint-*: initial;
+}
+
+@theme inline {
+  /* Typographie (§3) : Inter seule, auto-hébergée */
+  --font-sans: 'Inter Variable', 'Inter', system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+
+  --text-display: 28px;
+  --text-display--line-height: 1.2;
+  --text-title: 20px;
+  --text-title--line-height: 1.25;
+  --text-post-title: 18px;
+  --text-post-title--line-height: 1.3;
+  --text-card-title: 17px;
+  --text-card-title--line-height: 1.3;
+  --text-nav: 19px;
+  --text-nav--line-height: 1.3;
+  --text-post: 15px;
+  --text-post--line-height: 1.5;
+  --text-comment: 14px;
+  --text-comment--line-height: 1.45;
+  --text-caption: 13px;
+  --text-caption--line-height: 1.35;
+  --text-overline: 12px;
+  --text-overline--line-height: 1.3;
+
+  /* Couleurs (§2) */
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-card-line: var(--card-line);
+  --color-well: var(--well);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-avatar: var(--avatar);
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-link: var(--link);
+  --color-like: var(--like);
+  --color-repost: var(--repost);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-danger-fill: var(--danger-fill);
+  --color-warning: var(--warning);
+  --color-hover: var(--hover);
+  --color-post-hover: var(--post-hover);
+  --color-overlay: var(--overlay);
+  --color-white: #fff;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* Rayons (§4.2) : rounded-sm 8, rounded-md 16, rounded-full pour les pilules */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+
+  /* Mouvement (§4.4) */
+  --ease-flat: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Points de rupture (§4.6), en « au moins » comme Tailwind :
+     sm ≥ 721 : nav à gauche, en icônes · md ≥ 1021 : colonne de droite
+     lg ≥ 1181 : nav avec libellés · xl ≥ 1281 : largeurs pleines · 2xl ≥ 1500 */
+  --breakpoint-sm: 721px;
+  --breakpoint-md: 1021px;
+  --breakpoint-lg: 1181px;
+  --breakpoint-xl: 1281px;
+  --breakpoint-2xl: 1500px;
+}
+
+/* Espacements (§4.1) : l'échelle de Tailwind (1 = 4 px) donne déjà 4 · 8 · 12 · 16 · 20 · 24. */
+
+:root {
+  --danger-fill: #c81e28;
+  --nav-w: 275px;
+  --main-w: 620px;
+  --rail-w: 360px;
+  --media-h: 260px; /* hauteur fixe des médias (§4.7) */
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0d0f11;
+  --surface: #1a1c21;
+  --card: #1a1c21;
+  --card-line: #3a3f47;
+  --well: #0d0f11;
+  --line: #33373d;
+  --line-strong: #5b636d;
+  --avatar: #3a3f46;
+  --text: #e7e9ea;
+  --text-2: #9aa0a6;
+  --text-3: #8a9096;
+  --accent: #e7e9ea;
+  --accent-ink: #16181c;
+  --link: #4ea1ff;
+  --like: #f0508f;
+  --repost: #ffa834;
+  --success: #00ba7c;
+  --danger: #ff5a64;
+  --warning: #ffd400;
+  --hover: rgba(231, 233, 234, 0.07);
+  --post-hover: rgba(231, 233, 234, 0.03);
+  --overlay: rgba(8, 9, 11, 0.66);
+  --scroll-thumb: rgba(231, 233, 234, 0.3);
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --bg: #ffffff;
+  --surface: #f3f5f7;
+  --card: #f3f5f7;
+  --card-line: #dbe2e7;
+  --well: #ffffff;
+  --line: #e4e9ec;
+  --line-strong: #cfd9de;
+  --avatar: #dfe5e9;
+  --text: #0f1419;
+  --text-2: #4b5862;
+  --text-3: #5f6b74;
+  --accent: #0f1419;
+  --accent-ink: #ffffff;
+  --link: #1765c4;
+  --like: #c0185e;
+  --repost: #b45309;
+  --success: #007a52;
+  --danger: #c81e28;
+  --warning: #8a5a00;
+  --hover: rgba(15, 20, 25, 0.05);
+  --post-hover: rgba(15, 20, 25, 0.03);
+  --overlay: rgba(15, 20, 25, 0.4);
+  --scroll-thumb: rgba(15, 20, 25, 0.25);
+}
+
+/* Largeurs de colonnes (§4.6) */
+@media (max-width: 1280px) {
+  :root {
+    --nav-w: 240px;
+    --main-w: 600px;
+    --rail-w: 340px;
+  }
+}
+@media (max-width: 1180px) {
+  :root {
+    --nav-w: 80px;
+  }
+}

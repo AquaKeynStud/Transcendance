@@ -314,6 +314,24 @@ Les tokens deviennent des variables CSS, et le thème Tailwind pointe vers elles
 }
 ```
 
+**Dans le code** (`frontend/src/design-system/tokens.css`, branche `front/feat/design-tokens`) :
+
+- La palette par défaut de Tailwind est **retirée** (`--color-*: initial`). Seules les classes des tokens existent : `bg-bg`, `bg-card`, `border-line`, `text-text-2`, `text-like`, etc. Une couleur en dur se voit donc tout de suite à la relecture.
+- **Tailles de texte** nommées d'après le §3 : `text-display`, `text-title`, `text-post-title`, `text-card-title`, `text-nav`, `text-post`, `text-comment`, `text-caption`, `text-overline`. Chacune porte son interligne.
+- **Rayons** : `rounded-sm` (8 px), `rounded-md` (16 px), `rounded-full` (pilule). **Courbe** : `ease-flat`.
+- **Points de rupture** redéfinis sur le §4.6, en « au moins » :
+
+  | Préfixe | Largeur | Ce qui change |
+  |---|---|---|
+  | `sm` | ≥ 721 px | Nav à gauche, en icônes |
+  | `md` | ≥ 1021 px | Colonne de droite |
+  | `lg` | ≥ 1181 px | Nav avec libellés |
+  | `xl` | ≥ 1281 px | Largeurs pleines |
+  | `2xl` | ≥ 1500 px | — |
+
+- **Thème** : `useTheme()` dans `design-system/theme.ts`. Le choix est gardé dans `localStorage`, et un script dans `index.html` l'applique avant le premier rendu, pour éviter un flash du mauvais thème.
+- **Inter** est auto-hébergée avec `@fontsource-variable/inter`.
+
 ---
 
 ## 8. Décisions validées

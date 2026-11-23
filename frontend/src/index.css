@@ -1,11 +1,38 @@
 @import 'tailwindcss';
+@import '@fontsource-variable/inter';
+@import './design-system/tokens.css';
 
-/* Fond provisoire : les tokens du design system arrivent dans front/feat/design-tokens. */
 @layer base {
-  html {
-    color-scheme: dark;
-  }
   body {
-    @apply min-h-dvh bg-[#0d0f11] text-neutral-100 antialiased;
+    @apply bg-bg text-text font-sans text-[15px] leading-[1.4] antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-extrabold tracking-[-0.01em];
+  }
+  :focus-visible {
+    @apply outline-accent outline-2 outline-offset-2;
+  }
+  code {
+    @apply border-line bg-surface rounded-[4px] border px-[5px] py-px font-mono text-[0.88em];
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--link) 35%, transparent);
+  }
+  * {
+    scrollbar-color: var(--scroll-thumb) transparent;
+  }
+}
+
+/* §4.4 : tout le mouvement est coupé si l'user le demande. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

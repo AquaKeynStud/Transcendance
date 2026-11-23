@@ -1,65 +1,51 @@
-import {
-  Bell,
-  Compass,
-  Home,
-  Mail,
-  Search,
-  Settings,
-  Shield,
-  User,
-  type LucideIcon,
-} from 'lucide-react';
-import { NavLink, Outlet, ScrollRestoration } from 'react-router';
-import { Footer } from '@/app/layouts/Footer';
+import { Search } from 'lucide-react';
+import { Form, Outlet, ScrollRestoration } from 'react-router';
+import { LegalLinks } from '@/app/layouts/LegalLinks';
+import { Sidebar } from '@/app/layouts/Sidebar';
 
-const links: { to: string; label: string; icon: LucideIcon; end?: boolean }[] = [
-  { to: '/', label: 'Accueil', icon: Home, end: true },
-  { to: '/explore', label: 'Explorer', icon: Compass },
-  { to: '/search', label: 'Recherche', icon: Search },
-  { to: '/messages', label: 'Messages', icon: Mail },
-  { to: '/notifications', label: 'Notifications', icon: Bell },
-  { to: '/u/aboumall', label: 'Profil', icon: User },
-  { to: '/settings', label: 'Paramètres', icon: Settings },
-  { to: '/admin', label: 'Administration', icon: Shield },
-];
+/** Colonne de droite (≥ 1021 px) : recherche, puis les tuiles du sprint en cours. */
+function Rail() {
+  return (
+    <aside
+      aria-label="Colonne de droite"
+      className="sticky top-0 col-start-4 row-start-1 hidden h-dvh [scrollbar-width:none] flex-col gap-4 self-start overflow-y-auto pt-2 pb-4 pl-6 md:flex"
+    >
+      <Form action="/search" role="search" className="relative">
+        <Search
+          aria-hidden
+          size={18}
+          strokeWidth={1.8}
+          className="text-text-3 pointer-events-none absolute top-1/2 left-4 -translate-y-1/2"
+        />
+        <input
+          type="search"
+          name="q"
+          aria-label="Rechercher"
+          placeholder="Rechercher"
+          className="border-card-line bg-card text-post placeholder:text-text-3 focus:border-accent h-11 w-full rounded-full border pr-4 pl-11 focus:outline-none"
+        />
+      </Form>
+      <LegalLinks />
+    </aside>
+  );
+}
 
-/** Squelette des pages connectées : navigation, contenu, pied de page. */
+/**
+ * Mise en page des maquettes (DESIGN_SYSTEM.md §4.6) :
+ * nav | marge | contenu (620) | colonne de droite (360) | marge.
+ * ≤ 1180 px : nav en icônes · ≤ 1020 px : pas de colonne de droite · ≤ 720 px : une colonne, nav en bas.
+ */
 export function RootLayout() {
   return (
-    <div className="flex min-h-dvh flex-col md:flex-row">
-      <nav
-        aria-label="Navigation principale"
-        className="flex shrink-0 gap-1 overflow-x-auto border-b border-neutral-800 p-2 md:sticky md:top-0 md:h-dvh md:w-56 md:flex-col md:border-r md:border-b-0 md:p-3"
-      >
-        <span className="hidden px-3 py-2 text-lg font-semibold md:block">Transcendance</span>
-        {links.map(({ to, label, icon: Icon, end }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={end}
-            className={({ isActive }) =>
-              `flex items-center gap-3 rounded-md px-3 py-2 text-sm whitespace-nowrap hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-neutral-100 ${
-                isActive ? 'bg-neutral-800 font-semibold' : 'text-neutral-300'
-              }`
-            }
-          >
-            <Icon aria-hidden size={18} />
-            {label}
-          </NavLink>
-        ))}
-        <NavLink
-          to="/login"
-          className="mt-auto hidden rounded-md px-3 py-2 text-sm text-neutral-300 hover:bg-neutral-800 md:block"
-        >
-          Se connecter
-        </NavLink>
-      </nav>
-      <div className="flex min-w-0 flex-1 flex-col">
-        <main className="flex-1">
+    <div className="min-h-dvh pb-14 sm:grid sm:grid-cols-[var(--nav-w)_minmax(0,1fr)_minmax(0,var(--main-w))_minmax(0,1fr)] sm:pb-0 md:grid-cols-[var(--nav-w)_minmax(0,1fr)_minmax(0,var(--main-w))_var(--rail-w)_minmax(0,1fr)]">
+      <Sidebar />
+      <main className="sm:border-line col-start-3 row-start-1 flex min-h-dvh min-w-0 flex-col sm:border-r">
+        <div className="flex-1">
           <Outlet />
-        </main>
-        <Footer />
-      </div>
+        </div>
+        <LegalLinks className="py-4 md:hidden" />
+      </main>
+      <Rail />
       <ScrollRestoration />
     </div>
   );
