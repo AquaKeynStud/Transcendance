@@ -1,5 +1,5 @@
 import { Check } from 'lucide-react';
-import type { InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from 'react';
+import type { InputHTMLAttributes, ReactNode, Ref, TextareaHTMLAttributes } from 'react';
 import { cx } from '@/lib/cx';
 
 type FieldState = { error?: boolean; ok?: boolean; disabled?: boolean };
@@ -22,6 +22,7 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> &
     /** Contenu à droite : bouton, spinner… */
     end?: ReactNode;
     wrapperClassName?: string;
+    ref?: Ref<HTMLInputElement>;
   };
 
 /** Input (04) : champ à bord gris, bord du texte au focus, rouge en erreur, coche verte si valide. */

@@ -17,21 +17,13 @@ import {
   serialize,
   summary,
 } from '@/mocks/db';
+import { authHandlers, viewer } from '@/mocks/auth';
 
 // Handlers MSW : ils suivent le contrat de docs/SPEC_TECH.md (§2, §3) en attendant l'OpenAPI.
 // Les routes de l'API sont des propositions du front : voir .context/2026-11-24_pages-s3-s4.md.
 
 const API = '/api/v1';
 const PAGE = 10;
-
-/** Mettre « 1 » dans localStorage['mock-visitor'] pour naviguer en visiteur. */
-function viewer(): string | null {
-  try {
-    return localStorage.getItem('mock-visitor') === '1' ? null : ME;
-  } catch {
-    return ME;
-  }
-}
 
 const err = (status: number, code: string, message: string, fields?: Record<string, string[]>) =>
   HttpResponse.json({ error: { code, message, ...(fields ? { fields } : {}) } }, { status });
@@ -52,6 +44,7 @@ const wait = () => delay(250 + Math.random() * 350);
 
 export const handlers = [
   // ------------------------------------------------------------ Session (§2)
+  ...authHandlers,
   http.get(`${API}/auth/csrf`, () => new HttpResponse(null, { status: 204 })),
   http.get(`${API}/auth/me`, async () => {
     await delay(150);

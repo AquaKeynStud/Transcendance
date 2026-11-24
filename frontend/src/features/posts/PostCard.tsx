@@ -16,6 +16,7 @@ import { useConfirm, useToast } from '@/design-system/feedback';
 import { Menu, type MenuItem } from '@/design-system/Menu';
 import { cx } from '@/lib/cx';
 import { dateTime, fmtCount, timeAgo } from '@/lib/format';
+import { useLoginPrompt, type GuestAction } from '@/lib/login-prompt';
 import { useMe } from '@/lib/session';
 import type { FeedItem } from '@/lib/types';
 import { profileUrl } from '@/lib/urls';
@@ -100,6 +101,7 @@ function Action({
 export function PostCard({ item, isNew }: { item: FeedItem; isNew?: boolean }) {
   const { post, reposted_by } = item;
   const { data: me } = useMe();
+  const loginPrompt = useLoginPrompt();
   const toast = useToast();
   const confirm = useConfirm();
   const composer = useComposer();
@@ -136,7 +138,8 @@ export function PostCard({ item, isNew }: { item: FeedItem; isNew?: boolean }) {
   const a = post.author;
   const mine = me?.username === a.username;
   const noRepost = a.is_private && !mine;
-  const needLogin = () => toast('Connectez-vous pour interagir avec les posts.', { type: 'info' });
+  const needLogin = (action: GuestAction) =>
+    loginPrompt(action, a.display_name || `@${a.username}`);
 
   const askDelete = async () => {
     const ok = await confirm({
@@ -286,7 +289,9 @@ export function PostCard({ item, isNew }: { item: FeedItem; isNew?: boolean }) {
           count={post.replies_count}
           icon={<MessageCircle aria-hidden size={18} strokeWidth={1.8} />}
           onClick={() =>
-            toast('Les réponses arrivent avec la page d’un post (S5).', { type: 'info' })
+            me
+              ? toast('Les réponses arrivent avec la page d’un post (S5).', { type: 'info' })
+              : needLogin('reply')
           }
         />
         <Action
@@ -297,7 +302,7 @@ export function PostCard({ item, isNew }: { item: FeedItem; isNew?: boolean }) {
           disabled={noRepost}
           title={noRepost ? 'Impossible de republier le post d’un compte privé' : undefined}
           icon={<Repeat2 aria-hidden size={18} strokeWidth={post.reposted ? 2.4 : 1.8} />}
-          onClick={() => (me ? repost.mutate({ post, on: !post.reposted }) : needLogin())}
+          onClick={() => (me ? repost.mutate({ post, on: !post.reposted }) : needLogin('repost'))}
         />
         <Action
           label="J’aime"
@@ -312,7 +317,7 @@ export function PostCard({ item, isNew }: { item: FeedItem; isNew?: boolean }) {
               fill={post.liked ? 'currentColor' : 'none'}
             />
           }
-          onClick={() => (me ? like.mutate({ post, on: !post.liked }) : needLogin())}
+          onClick={() => (me ? like.mutate({ post, on: !post.liked }) : needLogin('like'))}
         />
       </footer>
     </article>

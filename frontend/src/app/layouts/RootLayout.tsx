@@ -3,6 +3,8 @@ import { Form, Outlet, ScrollRestoration, useMatches } from 'react-router';
 import { LegalLinks } from '@/app/layouts/LegalLinks';
 import { Sidebar } from '@/app/layouts/Sidebar';
 import { cx } from '@/lib/cx';
+import { useMe } from '@/lib/session';
+import { GuestBar, GuestTile, LoginPromptProvider } from '@/features/auth/Guest';
 import { QuickComposer } from '@/features/feed/QuickComposer';
 import { ComposerProvider } from '@/features/posts/Composer';
 import { Suggestions } from '@/features/social/Suggestions';
@@ -20,7 +22,7 @@ function useHandle(): RouteHandle {
 }
 
 /** Colonne de droite (≥ 1021 px) : recherche, puis la tuile de la page. */
-function Rail({ content }: { content: RouteHandle['rail'] }) {
+function Rail({ content, guest }: { content: RouteHandle['rail']; guest: boolean }) {
   return (
     <aside
       aria-label="Colonne de droite"
@@ -41,7 +43,8 @@ function Rail({ content }: { content: RouteHandle['rail'] }) {
           className="h-11 w-full rounded-full border border-card-line bg-card pr-4 pl-11 text-post placeholder:text-text-3 focus:border-accent focus:outline-none"
         />
       </Form>
-      {content === 'composer' && <QuickComposer />}
+      {guest && <GuestTile />}
+      {content === 'composer' && !guest && <QuickComposer />}
       {(content === 'suggestions' || content === undefined) && <Suggestions />}
       <LegalLinks />
     </aside>
@@ -55,24 +58,29 @@ function Rail({ content }: { content: RouteHandle['rail'] }) {
  */
 export function RootLayout() {
   const { rail, wide } = useHandle();
+  const { data: me, isPending } = useMe();
+  const guest = !isPending && !me;
   return (
-    <ComposerProvider>
-      <div className="min-h-dvh pb-14 sm:grid sm:grid-cols-[var(--nav-w)_minmax(0,1fr)_minmax(0,var(--main-w))_minmax(0,1fr)] sm:pb-0 md:grid-cols-[var(--nav-w)_minmax(0,1fr)_minmax(0,var(--main-w))_var(--rail-w)_minmax(0,1fr)]">
-        <Sidebar />
-        <main
-          className={cx(
-            'col-start-3 row-start-1 flex min-h-dvh min-w-0 flex-col',
-            wide ? 'sm:col-end-5 md:col-end-5' : 'sm:border-r sm:border-line',
-          )}
-        >
-          <div className="flex-1">
-            <Outlet />
-          </div>
-          <LegalLinks className={cx('py-4', !wide && 'md:hidden')} />
-        </main>
-        {!wide && <Rail content={rail} />}
-        <ScrollRestoration />
-      </div>
-    </ComposerProvider>
+    <LoginPromptProvider>
+      <ComposerProvider>
+        <div className="min-h-dvh pb-14 sm:grid sm:grid-cols-[var(--nav-w)_minmax(0,1fr)_minmax(0,var(--main-w))_minmax(0,1fr)] sm:pb-0 md:grid-cols-[var(--nav-w)_minmax(0,1fr)_minmax(0,var(--main-w))_var(--rail-w)_minmax(0,1fr)]">
+          <Sidebar />
+          <main
+            className={cx(
+              'col-start-3 row-start-1 flex min-h-dvh min-w-0 flex-col',
+              wide ? 'sm:col-end-5 md:col-end-5' : 'sm:border-r sm:border-line',
+            )}
+          >
+            <div className="flex-1">
+              <Outlet />
+            </div>
+            <LegalLinks className={cx('py-4', !wide && 'md:hidden')} />
+            {guest && <GuestBar />}
+          </main>
+          {!wide && <Rail content={rail} guest={guest} />}
+          <ScrollRestoration />
+        </div>
+      </ComposerProvider>
+    </LoginPromptProvider>
   );
 }

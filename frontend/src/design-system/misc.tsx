@@ -1,4 +1,4 @@
-import { AlertCircle, CheckCircle2, Info, type LucideIcon } from 'lucide-react';
+import { AlertCircle, Check, CheckCircle2, Info, type LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { cx } from '@/lib/cx';
 
@@ -66,6 +66,38 @@ export function Switch({
         )}
       />
     </button>
+  );
+}
+
+/** Case à cocher : un vrai <input>, la case dessinée à côté, le libellé cliquable. */
+export function Checkbox({
+  id,
+  checked,
+  onChange,
+  children,
+}: {
+  id: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  children: ReactNode;
+}) {
+  return (
+    <label htmlFor={id} className="group flex cursor-pointer items-start gap-3 text-sm text-text-2">
+      <input
+        id={id}
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        className="peer pointer-events-none absolute opacity-0"
+      />
+      <span
+        aria-hidden
+        className="mt-px grid size-5 shrink-0 place-items-center rounded-[6px] border border-line-strong text-accent-ink transition-colors duration-150 group-hover:border-text-2 peer-checked:border-accent peer-checked:bg-accent peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent [&>svg]:scale-0 peer-checked:[&>svg]:scale-100"
+      >
+        <Check size={14} strokeWidth={3} className="transition-transform duration-150" />
+      </span>
+      <span className="leading-normal">{children}</span>
+    </label>
   );
 }
 

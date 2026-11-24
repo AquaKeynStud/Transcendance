@@ -3,6 +3,7 @@ import {
   Download,
   KeyRound,
   Lock,
+  LogOut,
   Mail,
   Trash2,
   User,
@@ -13,6 +14,7 @@ import { NavLink, Outlet } from 'react-router';
 import { Tag } from '@/design-system/Avatar';
 import { PageHead } from '@/design-system/PageHead';
 import { cx } from '@/lib/cx';
+import { useSignOut } from '@/features/auth/useSignOut';
 
 const SECTIONS: { to: string; icon: LucideIcon; label: string; sub: string; soon?: string }[] = [
   { to: 'profile', icon: User, label: 'Profil', sub: 'Photo, nom affiché, bio' },
@@ -67,11 +69,28 @@ export function SettingsLayout() {
             )}
           </NavLink>
         ))}
+        <SignOutRow />
       </nav>
       <div className="min-w-0">
         <Outlet />
       </div>
     </div>
+  );
+}
+
+/** Se déconnecter (AUTH-03) : aussi ici, puisque la barre du bas des mobiles n'a pas ce bouton. */
+function SignOutRow() {
+  const { signOut, pending } = useSignOut();
+  return (
+    <button
+      type="button"
+      disabled={pending}
+      onClick={signOut}
+      className="flex w-full shrink-0 items-center gap-3 px-4 py-3 text-left text-danger transition-colors hover:bg-hover disabled:opacity-50 max-md:w-auto md:mt-2 md:border-t md:border-line md:px-5 md:pt-4"
+    >
+      <LogOut aria-hidden size={22} strokeWidth={1.8} />
+      <b className="font-semibold">Se déconnecter</b>
+    </button>
   );
 }
 

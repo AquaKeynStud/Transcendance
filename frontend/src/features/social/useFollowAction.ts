@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router';
 import { useConfirm, useToast } from '@/design-system/feedback';
+import { useLoginPrompt } from '@/lib/login-prompt';
 import { useMe } from '@/lib/session';
 import type { UserSummary } from '@/lib/types';
 import { useFollow } from '@/features/social/api';
@@ -18,11 +18,11 @@ export function useFollowAction() {
   const follow = useFollow();
   const confirm = useConfirm();
   const toast = useToast();
-  const navigate = useNavigate();
+  const loginPrompt = useLoginPrompt();
   const { data: me } = useMe();
 
   return async (u: Pick<UserSummary, 'username' | 'is_private' | 'follows_me' | 'relation'>) => {
-    if (!me) return navigate('/login');
+    if (!me) return loginPrompt('follow', `@${u.username}`);
     const { username } = u;
     if (u.relation === 'following') {
       const ok = await confirm({
