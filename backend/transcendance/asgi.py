@@ -18,9 +18,11 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'transcendance.settings')
 django_asgi_app = get_asgi_application()
 
 # Importé après get_asgi_application() pour que les apps Django soient prêtes
-from realtime import routing as realtime_routing  # noqa: E402
+from realtime.routing import websocket_urlpatterns  # noqa: E402
 
 application = ProtocolTypeRouter({
     "http": django_asgi_app,
-    "websocket": URLRouter(realtime_routing.websocket_urlpatterns),
+    "websocket": AuthMiddlewareStack(
+        URLRouter(websocket_urlpatterns),
+    ),
 })

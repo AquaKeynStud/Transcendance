@@ -47,6 +47,10 @@ ALLOWED_HOSTS = env_list('DJANGO_ALLOWED_HOSTS', default='localhost,127.0.0.1' i
 # Application definition
 
 INSTALLED_APPS = [
+    # ASGI server override
+    'daphne',
+    'channels',
+    # Django core apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -94,7 +98,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'transcendance.wsgi.application'
-
+ASGI_APPLICATION = 'transcendance.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -197,10 +201,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Django Channels Configuration using Redis
 CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("redis", 6379)],  # "redis" correspond au nom du service dans le docker-compose
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('redis', 6379)],
         },
     },
 }

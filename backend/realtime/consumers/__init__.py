@@ -1,3 +1,3 @@
-from .ping import PingConsumer
+from .base import BaseWebsocketConsumer
 
-__all__ = ["PingConsumer"]
+__all__ = ['BaseWebsocketConsumer']

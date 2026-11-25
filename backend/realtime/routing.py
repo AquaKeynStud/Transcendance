@@ -1,6 +1,7 @@
 from django.urls import path
+
 from . import consumers
 
 websocket_urlpatterns = [
-    path("ws/ping/", consumers.PingConsumer.as_asgi()),
+    path('ws/ping/', consumers.BaseWebsocketConsumer.as_asgi()),
 ]
