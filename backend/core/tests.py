@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework.test import APIRequestFactory
 from rest_framework.views import APIView
 
+from core.exceptions import Conflict
+
 factory = APIRequestFactory()
 
 
@@ -62,3 +64,15 @@ def test_anonymous_write_returns_401():
     response = call(method='post')
     assert response.status_code == 401
     assert response.data['error']['code'] == 'not_authenticated'
+
+
+def test_conflict_keeps_its_fields():
+    response = call(Conflict('Already exists.', fields={'username': ['Taken.']}))
+    assert response.status_code == 409
+    assert response.data == {
+        'error': {
+            'code': 'conflict',
+            'message': 'Already exists.',
+            'fields': {'username': ['Taken.']},
+        }
+    }

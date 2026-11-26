@@ -23,6 +23,22 @@ from rest_framework.views import exception_handler
 VALIDATION_MESSAGE = _('Some fields are invalid.')
 
 
+class Conflict(exceptions.APIException):
+    """
+    409: the request clashes with existing data (SPEC_TECH §3), e.g. a username
+    already taken or a post already liked. `fields` points the front to the
+    inputs involved, like a validation error does.
+    """
+
+    status_code = 409
+    default_code = 'conflict'
+    default_detail = _('This already exists.')
+
+    def __init__(self, detail=None, fields=None):
+        super().__init__(detail)
+        self.fields = fields or {}
+
+
 def api_exception_handler(exc, context):
     # Same conversions DRF does internally, done first so we know the final code.
     if isinstance(exc, Http404):
@@ -40,7 +56,7 @@ def api_exception_handler(exc, context):
     else:
         code = getattr(exc, 'default_code', 'error')
         message = _detail_to_message(exc.detail)
-        fields = {}
+        fields = getattr(exc, 'fields', {})
 
     response.data = {'error': {'code': code, 'message': message, 'fields': fields}}
     return response

@@ -12,3 +12,18 @@ class SessionAuthentication(authentication.SessionAuthentication):
 
     def authenticate_header(self, request):
         return 'Session'
+
+
+class EnforceCsrfMixin:
+    """
+    Checks the CSRF token even for anonymous requests.
+
+    DRF only checks CSRF for users already logged in by session. Login and
+    register are called by visitors, so without this a third-party site could
+    log a victim into the attacker's account ("login CSRF"). A failure goes
+    through the API error format (403), not Django's HTML error page.
+    """
+
+    def initial(self, request, *args, **kwargs):
+        SessionAuthentication().enforce_csrf(request)
+        super().initial(request, *args, **kwargs)
