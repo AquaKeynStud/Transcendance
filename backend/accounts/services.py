@@ -178,6 +178,29 @@ def change_password(user, *, current_password, new_password):
     return user
 
 
+@transaction.atomic
+def delete_account(user, *, password):
+    """
+    Delete the account and everything linked to it (ACC-09, SPEC_FONC §4.2.1).
+
+    The database cascades do the work: posts, likes, reposts, follows... go with
+    the user, while other users' replies to its posts stay (parent set to NULL).
+    There must always be at least one admin (SPEC_FONC §4.12): the last one can't
+    delete their own account.
+    """
+    if not user.check_password(password):
+        raise exceptions.ValidationError({'password': ['Wrong password.']})
+    if user.is_admin and not User.objects.filter(role=User.Role.ADMIN).exclude(pk=user.pk).exists():
+        raise Conflict('You are the last admin: promote someone else before leaving.')
+
+    avatar = user.avatar.name
+    storage = user.avatar.storage
+    user.delete()
+    if avatar:
+        # Delete the file only once the database deletion is committed.
+        transaction.on_commit(lambda: storage.delete(avatar))
+
+
 def set_avatar(user, uploaded):
     """Replace the avatar (ACC-04). The previous file is deleted (MEDIA-07)."""
     content = process_avatar(uploaded)

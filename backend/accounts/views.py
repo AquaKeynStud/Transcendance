@@ -16,6 +16,7 @@ from social.models import Follow
 from . import services
 from .models import User
 from .serializers import (
+    AccountDeleteSerializer,
     AvatarUploadSerializer,
     EmailChangeSerializer,
     LoginSerializer,
@@ -140,6 +141,19 @@ class MyProfileView(APIView):
         serializer.is_valid(raise_exception=True)
         user = services.update_profile(request.user, **serializer.validated_data)
         return Response(MeSerializer(user).data)
+
+    @extend_schema(
+        request=AccountDeleteSerializer,
+        responses={204: OpenApiResponse(description='Account deleted and logged out.')},
+    )
+    def delete(self, request):
+        """Delete the own account and all its data (ACC-09)."""
+        serializer = AccountDeleteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # Checks (password, last admin) happen inside: nothing changes if they fail.
+        services.delete_account(request.user, password=serializer.validated_data['password'])
+        logout(request)  # sends user_logged_out, so realtime can close the sockets
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class MyEmailView(APIView):

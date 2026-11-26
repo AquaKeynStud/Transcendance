@@ -116,6 +116,12 @@ class PasswordChangeSerializer(serializers.Serializer):
         return attrs
 
 
+class AccountDeleteSerializer(serializers.Serializer):
+    """Account deletion (ACC-09): the password is typed again to confirm."""
+
+    password = serializers.CharField(write_only=True, trim_whitespace=False)
+
+
 class AvatarUploadSerializer(serializers.Serializer):
     """Multipart upload of a new avatar. Format and size are checked by accounts.avatars."""
 
