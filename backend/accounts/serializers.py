@@ -64,3 +64,49 @@ class LoginSerializer(serializers.Serializer):
 
     login = serializers.CharField(max_length=254)
     password = serializers.CharField(write_only=True, trim_whitespace=False)
+
+
+class PublicProfileSerializer(serializers.ModelSerializer):
+    """
+    Profile header (ACC-01), visible to everyone, visitors included, even for a
+    private account (SPEC_FONC §3.1). The counters come from `annotate()` in the view.
+    """
+
+    post_count = serializers.IntegerField(read_only=True)
+    follower_count = serializers.IntegerField(read_only=True)
+    following_count = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = [
+            'username',
+            'display_name',
+            'bio',
+            'avatar',
+            'is_private',
+            'date_joined',
+            'post_count',
+            'follower_count',
+            'following_count',
+        ]
+        read_only_fields = fields
+
+
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    """
+    Editable part of the own account (ACC-03, ACC-05, ACC-06). Every field is
+    optional (PATCH). Username uniqueness is checked by the service (409).
+    """
+
+    username = serializers.CharField(max_length=20, validators=[username_validator])
+
+    class Meta:
+        model = User
+        fields = [
+            'username',
+            'display_name',
+            'bio',
+            'is_private',
+            'likes_visibility',
+            'reposts_visibility',
+        ]

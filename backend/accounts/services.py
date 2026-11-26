@@ -10,6 +10,7 @@ from django.db import IntegrityError, transaction
 from rest_framework import exceptions
 
 from core.exceptions import Conflict
+from social.models import Follow
 
 from .models import User
 
@@ -101,3 +102,41 @@ def _record_failure(keys):
 
 def _reset_failures(keys):
     cache.delete_many(list(keys))
+
+
+# --- Profile (SPEC_FONC §4.2) -------------------------------------------------
+
+
+@transaction.atomic
+def update_profile(user, **changes):
+    """
+    Apply a partial update of the own account (ACC-03, ACC-05, ACC-06).
+
+    A private account that turns public accepts its pending follow requests
+    (SPEC_FONC §3.1), in the same transaction.
+    """
+    new_username = changes.get('username')
+    if new_username and new_username.lower() != user.username.lower():
+        if User.objects.filter(username__iexact=new_username).exclude(pk=user.pk).exists():
+            raise Conflict(
+                'This username is already taken.',
+                fields={'username': ['This username is already taken.']},
+            )
+
+    was_private = user.is_private
+    for field, value in changes.items():
+        setattr(user, field, value)
+    try:
+        with transaction.atomic():
+            user.save(update_fields=list(changes))
+    except IntegrityError as exc:
+        raise Conflict(
+            'This username is already taken.',
+            fields={'username': ['This username is already taken.']},
+        ) from exc
+
+    if was_private and not user.is_private:
+        Follow.objects.filter(followed=user, status=Follow.Status.PENDING).update(
+            status=Follow.Status.ACCEPTED
+        )
+    return user
