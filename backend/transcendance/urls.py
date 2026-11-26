@@ -7,6 +7,7 @@ from core.views import HealthView
 # API v1 routes. Each app adds its own `include('<app>.urls')` here.
 api_v1_patterns = [
     path('health/', HealthView.as_view(), name='health'),
+    path('', include('accounts.urls')),
 ]
 
 urlpatterns = [

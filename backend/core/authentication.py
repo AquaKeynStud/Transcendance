@@ -1,3 +1,4 @@
+from drf_spectacular.authentication import SessionScheme
 from rest_framework import authentication
 
 
@@ -12,6 +13,12 @@ class SessionAuthentication(authentication.SessionAuthentication):
 
     def authenticate_header(self, request):
         return 'Session'
+
+
+class SessionAuthenticationScheme(SessionScheme):
+    """Tells the OpenAPI schema that our subclass is the session cookie scheme."""
+
+    target_class = 'core.authentication.SessionAuthentication'
 
 
 class EnforceCsrfMixin:

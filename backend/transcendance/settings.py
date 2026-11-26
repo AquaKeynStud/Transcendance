@@ -166,6 +166,8 @@ SPECTACULAR_SETTINGS = {
     # Separate request/response components: cleaner types for openapi-typescript on the front.
     'COMPONENT_SPLIT_REQUEST': True,
     'SCHEMA_PATH_PREFIX': r'/api/v[0-9]+',
+    # likes_visibility and reposts_visibility share one set of choices: one type name.
+    'ENUM_NAME_OVERRIDES': {'Visibility': 'accounts.models.User.Visibility'},
 }
 
 
@@ -194,3 +196,14 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# --- CACHE ---
+# Holds the anti-bruteforce counters. In-process memory for now, which is enough
+# for the single dev server; switch to Redis once the realtime branch adds it,
+# so that every worker shares the same counters.
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
