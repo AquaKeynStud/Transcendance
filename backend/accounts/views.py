@@ -1,4 +1,4 @@
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
@@ -17,8 +17,10 @@ from . import services
 from .models import User
 from .serializers import (
     AvatarUploadSerializer,
+    EmailChangeSerializer,
     LoginSerializer,
     MeSerializer,
+    PasswordChangeSerializer,
     ProfileUpdateSerializer,
     PublicProfileSerializer,
     RegisterSerializer,
@@ -138,6 +140,40 @@ class MyProfileView(APIView):
         serializer.is_valid(raise_exception=True)
         user = services.update_profile(request.user, **serializer.validated_data)
         return Response(MeSerializer(user).data)
+
+
+class MyEmailView(APIView):
+    """Change the own email (ACC-05). Needs the current password."""
+
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(request=EmailChangeSerializer, responses={200: MeSerializer})
+    def post(self, request):
+        serializer = EmailChangeSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = services.change_email(request.user, **serializer.validated_data)
+        return Response(MeSerializer(user).data)
+
+
+class MyPasswordView(APIView):
+    """Change the own password (ACC-05). Other sessions are logged out."""
+
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        request=PasswordChangeSerializer,
+        responses={204: OpenApiResponse(description='Password changed.')},
+    )
+    def post(self, request):
+        serializer = PasswordChangeSerializer(data=request.data, context={'user': request.user})
+        serializer.is_valid(raise_exception=True)
+        user = services.change_password(
+            request.user,
+            current_password=serializer.validated_data['current_password'],
+            new_password=serializer.validated_data['new_password'],
+        )
+        update_session_auth_hash(request, user)  # keep this session, drop the others
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class MyAvatarView(APIView):

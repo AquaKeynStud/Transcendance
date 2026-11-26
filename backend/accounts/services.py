@@ -143,6 +143,41 @@ def update_profile(user, **changes):
     return user
 
 
+def check_current_password(user, password):
+    """Sensitive changes ask for the password again: 400 on the field if it's wrong."""
+    if not user.check_password(password):
+        raise exceptions.ValidationError({'current_password': ['Wrong password.']})
+
+
+def change_email(user, *, email, current_password):
+    """ACC-05. 409 if another account already uses this email (case-insensitive)."""
+    check_current_password(user, current_password)
+    if User.objects.filter(email__iexact=email).exclude(pk=user.pk).exists():
+        raise Conflict(
+            'This email is already in use.', fields={'email': ['This email is already in use.']}
+        )
+    user.email = User.objects.normalize_email(email)
+    try:
+        with transaction.atomic():
+            user.save(update_fields=['email'])
+    except IntegrityError as exc:
+        raise Conflict(
+            'This email is already in use.', fields={'email': ['This email is already in use.']}
+        ) from exc
+    return user
+
+
+def change_password(user, *, current_password, new_password):
+    """
+    ACC-05. Changing the password invalidates every session of this user; the
+    view keeps the current one open with update_session_auth_hash().
+    """
+    check_current_password(user, current_password)
+    user.set_password(new_password)
+    user.save(update_fields=['password'])
+    return user
+
+
 def set_avatar(user, uploaded):
     """Replace the avatar (ACC-04). The previous file is deleted (MEDIA-07)."""
     content = process_avatar(uploaded)
