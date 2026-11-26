@@ -23,20 +23,31 @@ from rest_framework.views import exception_handler
 VALIDATION_MESSAGE = _('Some fields are invalid.')
 
 
-class Conflict(exceptions.APIException):
+class FieldAPIException(exceptions.APIException):
+    """An API error that can point the front to the inputs involved (`fields`)."""
+
+    def __init__(self, detail=None, fields=None):
+        super().__init__(detail)
+        self.fields = fields or {}
+
+
+class Conflict(FieldAPIException):
     """
     409: the request clashes with existing data (SPEC_TECH §3), e.g. a username
-    already taken or a post already liked. `fields` points the front to the
-    inputs involved, like a validation error does.
+    already taken or a post already liked.
     """
 
     status_code = 409
     default_code = 'conflict'
     default_detail = _('This already exists.')
 
-    def __init__(self, detail=None, fields=None):
-        super().__init__(detail)
-        self.fields = fields or {}
+
+class FileTooLarge(FieldAPIException):
+    """413: an uploaded file is over its size limit (SPEC_TECH §3)."""
+
+    status_code = 413
+    default_code = 'file_too_large'
+    default_detail = _('This file is too large.')
 
 
 def api_exception_handler(exc, context):

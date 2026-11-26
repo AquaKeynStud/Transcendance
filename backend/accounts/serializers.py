@@ -92,6 +92,12 @@ class PublicProfileSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
+class AvatarUploadSerializer(serializers.Serializer):
+    """Multipart upload of a new avatar. Format and size are checked by accounts.avatars."""
+
+    avatar = serializers.FileField()
+
+
 class ProfileUpdateSerializer(serializers.ModelSerializer):
     """
     Editable part of the own account (ACC-03, ACC-05, ACC-06). Every field is

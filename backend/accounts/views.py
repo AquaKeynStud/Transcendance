@@ -5,6 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -15,6 +16,7 @@ from social.models import Follow
 from . import services
 from .models import User
 from .serializers import (
+    AvatarUploadSerializer,
     LoginSerializer,
     MeSerializer,
     ProfileUpdateSerializer,
@@ -135,4 +137,23 @@ class MyProfileView(APIView):
         serializer = ProfileUpdateSerializer(request.user, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         user = services.update_profile(request.user, **serializer.validated_data)
+        return Response(MeSerializer(user).data)
+
+
+class MyAvatarView(APIView):
+    """Upload (multipart, field `avatar`) or remove the own avatar (ACC-04)."""
+
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser]
+
+    @extend_schema(request=AvatarUploadSerializer, responses={200: MeSerializer})
+    def put(self, request):
+        serializer = AvatarUploadSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = services.set_avatar(request.user, serializer.validated_data['avatar'])
+        return Response(MeSerializer(user).data)
+
+    @extend_schema(request=None, responses={200: MeSerializer})
+    def delete(self, request):
+        user = services.remove_avatar(request.user)
         return Response(MeSerializer(user).data)

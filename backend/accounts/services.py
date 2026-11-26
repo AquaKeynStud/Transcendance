@@ -12,6 +12,7 @@ from rest_framework import exceptions
 from core.exceptions import Conflict
 from social.models import Follow
 
+from .avatars import process_avatar
 from .models import User
 
 # Anti-bruteforce (AUTH rules): 5 failures in 15 minutes block an identifier.
@@ -139,4 +140,23 @@ def update_profile(user, **changes):
         Follow.objects.filter(followed=user, status=Follow.Status.PENDING).update(
             status=Follow.Status.ACCEPTED
         )
+    return user
+
+
+def set_avatar(user, uploaded):
+    """Replace the avatar (ACC-04). The previous file is deleted (MEDIA-07)."""
+    content = process_avatar(uploaded)
+    old_name = user.avatar.name
+    user.avatar.save(content.name, content, save=False)
+    user.save(update_fields=['avatar'])
+    if old_name:
+        user.avatar.storage.delete(old_name)
+    return user
+
+
+def remove_avatar(user):
+    """Back to the default avatar: the front shows it when `avatar` is null."""
+    if user.avatar:
+        user.avatar.delete(save=False)
+        user.save(update_fields=['avatar'])
     return user
