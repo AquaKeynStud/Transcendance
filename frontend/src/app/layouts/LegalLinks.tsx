@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 export function LegalLinks({ className = '' }: { className?: string }) {
   const link = 'hover:text-text hover:underline';
   return (
-    <footer className={`text-caption text-text-3 flex flex-wrap gap-x-3 gap-y-1 px-2 ${className}`}>
+    <footer className={`flex flex-wrap gap-x-3 gap-y-1 px-2 text-caption text-text-3 ${className}`}>
       <Link to="/privacy" className={link}>
         Confidentialité
       </Link>

@@ -41,7 +41,7 @@ function NavItem({ to, label, icon: Icon, end, className = '' }: Item) {
       end={end}
       aria-label={label}
       className={({ isActive }) =>
-        `text-nav ease-flat hover:bg-hover relative flex w-fit items-center gap-4 rounded-full p-3 transition-colors duration-150 lg:py-2.5 lg:pr-5 lg:pl-3 ${
+        `relative flex w-fit items-center gap-4 rounded-full p-3 text-nav transition-colors duration-150 ease-flat hover:bg-hover lg:py-2.5 lg:pr-5 lg:pl-3 ${
           isActive ? 'font-bold' : ''
         } ${className}`
       }
@@ -61,7 +61,7 @@ function ThemeSwitch() {
   const dark = theme === 'dark';
   return (
     <div className="flex items-center justify-between gap-2 px-3 py-2">
-      <span className="text-text-3 hidden items-center gap-2 text-sm lg:inline-flex">
+      <span className="hidden items-center gap-2 text-sm text-text-3 lg:inline-flex">
         <Moon aria-hidden size={18} strokeWidth={1.8} />
         Thème sombre
       </span>
@@ -71,12 +71,12 @@ function ThemeSwitch() {
         aria-checked={dark}
         aria-label="Thème sombre"
         onClick={() => setTheme(dark ? 'light' : 'dark')}
-        className={`ease-flat relative h-6 w-10 shrink-0 rounded-full transition-colors duration-200 ${
+        className={`relative h-6 w-10 shrink-0 rounded-full transition-colors duration-200 ease-flat ${
           dark ? 'bg-accent' : 'bg-line-strong'
         }`}
       >
         <span
-          className={`bg-bg ease-flat absolute top-0.5 left-0.5 size-5 rounded-full transition-transform duration-200 ${
+          className={`absolute top-0.5 left-0.5 size-5 rounded-full bg-bg transition-transform duration-200 ease-flat ${
             dark ? 'translate-x-4' : ''
           }`}
         />
@@ -90,7 +90,7 @@ export function Sidebar() {
   return (
     <aside
       aria-label="Navigation principale"
-      className="border-line bg-bg fixed inset-x-0 bottom-0 z-20 flex h-14 border-t sm:sticky sm:top-0 sm:col-start-1 sm:row-start-1 sm:h-dvh sm:flex-col sm:items-center sm:gap-1 sm:border-t-0 sm:border-r sm:px-2 sm:py-3 lg:items-stretch lg:pr-4 lg:pl-3"
+      className="fixed inset-x-0 bottom-0 z-20 flex h-14 border-t border-line bg-bg sm:sticky sm:top-0 sm:col-start-1 sm:row-start-1 sm:h-dvh sm:flex-col sm:items-center sm:gap-1 sm:border-t-0 sm:border-r sm:px-2 sm:py-3 lg:items-stretch lg:pr-4 lg:pl-3"
     >
       <Brand className="mb-2 hidden rounded-full p-3 sm:flex" nameClassName="hidden lg:inline" />
 
@@ -99,7 +99,7 @@ export function Sidebar() {
           <NavItem key={item.to} {...item} />
         ))}
       </nav>
-      <div className="bg-line m-3 hidden h-px lg:block" />
+      <div className="m-3 hidden h-px bg-line lg:block" />
       <nav aria-label="Navigation secondaire" className="hidden flex-col gap-0.5 sm:flex">
         {secondary.map((item) => (
           <NavItem key={item.to} {...item} />
@@ -111,7 +111,7 @@ export function Sidebar() {
         <Link
           to="/login"
           aria-label="Se connecter"
-          className="bg-accent text-accent-ink inline-flex h-13 items-center justify-center gap-2 rounded-full text-[17px] font-bold transition-opacity duration-150 hover:opacity-90 max-lg:w-13 lg:px-4"
+          className="inline-flex h-13 items-center justify-center gap-2 rounded-full bg-accent text-[17px] font-bold text-accent-ink transition-opacity duration-150 hover:opacity-90 max-lg:w-13 lg:px-4"
         >
           <LogIn aria-hidden size={20} strokeWidth={1.8} />
           <span className="hidden lg:inline">Se connecter</span>

@@ -88,7 +88,7 @@ export function DesignSystem() {
           <button
             type="button"
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="border-line-strong hover:bg-hover inline-flex h-8 items-center rounded-full border px-3.5 text-sm font-bold transition-colors duration-150"
+            className="inline-flex h-8 items-center rounded-full border border-line-strong px-3.5 text-sm font-bold transition-colors duration-150 hover:bg-hover"
           >
             Thème {theme === 'dark' ? 'clair' : 'sombre'}
           </button>
@@ -102,16 +102,16 @@ export function DesignSystem() {
               {g.tokens.map((t) => (
                 <li
                   key={t.name}
-                  className="border-card-line bg-card overflow-hidden rounded-md border"
+                  className="overflow-hidden rounded-md border border-card-line bg-card"
                 >
                   <div
-                    className="border-card-line h-14 border-b"
+                    className="h-14 border-b border-card-line"
                     style={{ background: `var(--${t.name})` }}
                   />
                   <div className="p-3 leading-snug">
                     <code className="text-xs">--{t.name}</code>
-                    <p className="text-caption text-text-2 mt-1">{t.usage}</p>
-                    <p className="text-text-3 font-mono text-xs uppercase">{values[t.name]}</p>
+                    <p className="mt-1 text-caption text-text-2">{t.usage}</p>
+                    <p className="font-mono text-xs text-text-3 uppercase">{values[t.name]}</p>
                   </div>
                 </li>
               ))}
@@ -121,7 +121,7 @@ export function DesignSystem() {
 
         <section className="flex flex-col gap-3">
           <h2 className="text-card-title">Typographie · Inter</h2>
-          <ul className="divide-line divide-y">
+          <ul className="divide-y divide-line">
             {type.map((t) => (
               <li
                 key={t.label}
@@ -143,7 +143,7 @@ export function DesignSystem() {
               ['rounded-full', 'pilule · boutons, nav'],
             ].map(([cls, label]) => (
               <div key={cls} className="flex flex-col gap-2">
-                <div className={`border-card-line bg-card h-12 w-28 border ${cls}`} />
+                <div className={`h-12 w-28 border border-card-line bg-card ${cls}`} />
                 <span className="text-caption text-text-3">{label}</span>
               </div>
             ))}
