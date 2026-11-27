@@ -1,0 +1,11 @@
+@import 'tailwindcss';
+
+/* Fond provisoire : les tokens du design system arrivent dans front/feat/design-tokens. */
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    @apply min-h-dvh bg-[#0d0f11] text-neutral-100 antialiased;
+  }
+}

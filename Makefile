@@ -14,6 +14,7 @@ YELLOW      := \e[1;33m
 BUILD_DEPS	:=	backend/Dockerfile			\
 				frontend/Dockerfile			\
 				frontend/package.json		\
+				frontend/package-lock.json	\
 				backend/requirements.txt
 
 MAKEFLAGS   += --no-print-directory
