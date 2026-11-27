@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { PageHead } from '@/app/layouts/PageHead';
+import { PageHead } from '@/design-system/PageHead';
 
 export function NotFound() {
   return (

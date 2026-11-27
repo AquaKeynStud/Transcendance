@@ -112,6 +112,10 @@
   --warning: #ffd400;
   --hover: rgba(231, 233, 234, 0.07);
   --post-hover: rgba(231, 233, 234, 0.03);
+  /* Médias sans fichier (maquettes, chargement) */
+  --ph1: linear-gradient(135deg, #202328, #383c42 55%, #202328);
+  --ph2: linear-gradient(200deg, #2a2d33, #43484f);
+  --ph3: linear-gradient(160deg, #4a4f57, #2a2d33 60%, #1d2025);
   --overlay: rgba(8, 9, 11, 0.66);
   --scroll-thumb: rgba(231, 233, 234, 0.3);
 }
@@ -139,6 +143,9 @@
   --warning: #8a5a00;
   --hover: rgba(15, 20, 25, 0.05);
   --post-hover: rgba(15, 20, 25, 0.03);
+  --ph1: linear-gradient(135deg, #e6ecf0, #f7f9f9 55%, #dfe5e9);
+  --ph2: linear-gradient(200deg, #dfe5e9, #f3f5f7);
+  --ph3: linear-gradient(160deg, #cfd9de, #eef2f4 60%, #f7f9f9);
   --overlay: rgba(15, 20, 25, 0.4);
   --scroll-thumb: rgba(15, 20, 25, 0.25);
 }

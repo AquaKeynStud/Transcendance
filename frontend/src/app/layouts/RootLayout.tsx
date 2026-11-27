@@ -1,10 +1,26 @@
 import { Search } from 'lucide-react';
-import { Form, Outlet, ScrollRestoration } from 'react-router';
+import { Form, Outlet, ScrollRestoration, useMatches } from 'react-router';
 import { LegalLinks } from '@/app/layouts/LegalLinks';
 import { Sidebar } from '@/app/layouts/Sidebar';
+import { cx } from '@/lib/cx';
+import { QuickComposer } from '@/features/feed/QuickComposer';
+import { ComposerProvider } from '@/features/posts/Composer';
+import { Suggestions } from '@/features/social/Suggestions';
 
-/** Colonne de droite (≥ 1021 px) : recherche, puis les tuiles du sprint en cours. */
-function Rail() {
+/**
+ * Ce qu'une route demande à la mise en page (champ `handle` du routeur) :
+ * - rail : contenu de la colonne de droite (rédaction rapide sur le fil, suggestions ailleurs) ;
+ * - wide : le contenu prend aussi la place de la colonne de droite (paramètres).
+ */
+export type RouteHandle = { rail?: 'composer' | 'suggestions' | 'none'; wide?: boolean };
+
+function useHandle(): RouteHandle {
+  const matches = useMatches();
+  return Object.assign({}, ...matches.map((m) => (m.handle as RouteHandle | undefined) ?? {}));
+}
+
+/** Colonne de droite (≥ 1021 px) : recherche, puis la tuile de la page. */
+function Rail({ content }: { content: RouteHandle['rail'] }) {
   return (
     <aside
       aria-label="Colonne de droite"
@@ -25,6 +41,8 @@ function Rail() {
           className="h-11 w-full rounded-full border border-card-line bg-card pr-4 pl-11 text-post placeholder:text-text-3 focus:border-accent focus:outline-none"
         />
       </Form>
+      {content === 'composer' && <QuickComposer />}
+      {(content === 'suggestions' || content === undefined) && <Suggestions />}
       <LegalLinks />
     </aside>
   );
@@ -36,17 +54,25 @@ function Rail() {
  * ≤ 1180 px : nav en icônes · ≤ 1020 px : pas de colonne de droite · ≤ 720 px : une colonne, nav en bas.
  */
 export function RootLayout() {
+  const { rail, wide } = useHandle();
   return (
-    <div className="min-h-dvh pb-14 sm:grid sm:grid-cols-[var(--nav-w)_minmax(0,1fr)_minmax(0,var(--main-w))_minmax(0,1fr)] sm:pb-0 md:grid-cols-[var(--nav-w)_minmax(0,1fr)_minmax(0,var(--main-w))_var(--rail-w)_minmax(0,1fr)]">
-      <Sidebar />
-      <main className="col-start-3 row-start-1 flex min-h-dvh min-w-0 flex-col sm:border-r sm:border-line">
-        <div className="flex-1">
-          <Outlet />
-        </div>
-        <LegalLinks className="py-4 md:hidden" />
-      </main>
-      <Rail />
-      <ScrollRestoration />
-    </div>
+    <ComposerProvider>
+      <div className="min-h-dvh pb-14 sm:grid sm:grid-cols-[var(--nav-w)_minmax(0,1fr)_minmax(0,var(--main-w))_minmax(0,1fr)] sm:pb-0 md:grid-cols-[var(--nav-w)_minmax(0,1fr)_minmax(0,var(--main-w))_var(--rail-w)_minmax(0,1fr)]">
+        <Sidebar />
+        <main
+          className={cx(
+            'col-start-3 row-start-1 flex min-h-dvh min-w-0 flex-col',
+            wide ? 'sm:col-end-5 md:col-end-5' : 'sm:border-r sm:border-line',
+          )}
+        >
+          <div className="flex-1">
+            <Outlet />
+          </div>
+          <LegalLinks className={cx('py-4', !wide && 'md:hidden')} />
+        </main>
+        {!wide && <Rail content={rail} />}
+        <ScrollRestoration />
+      </div>
+    </ComposerProvider>
   );
 }

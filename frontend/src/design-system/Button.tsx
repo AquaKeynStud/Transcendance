@@ -6,7 +6,7 @@ export type ButtonVariant = 'primary' | 'outline' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 const base =
-  'inline-flex items-center justify-center gap-2 rounded-full border border-transparent font-bold whitespace-nowrap transition-[background-color,opacity,color,border-color] duration-150 ease-flat disabled:cursor-default';
+  'inline-flex items-center justify-center gap-2 rounded-full border font-bold whitespace-nowrap transition-[background-color,opacity,color,border-color] duration-150 ease-flat disabled:cursor-default';
 
 const sizes: Record<ButtonSize, string> = {
   sm: 'h-8 px-3.5 text-sm',
@@ -15,12 +15,12 @@ const sizes: Record<ButtonSize, string> = {
 };
 
 const variants: Record<ButtonVariant, string> = {
-  primary: 'bg-accent text-accent-ink hover:opacity-90 disabled:opacity-40',
+  primary: 'border-transparent bg-accent text-accent-ink hover:opacity-90 disabled:opacity-40',
   outline:
     'border-line-strong bg-transparent text-text hover:bg-hover disabled:opacity-50 disabled:hover:bg-transparent',
   ghost:
-    'bg-transparent text-text hover:bg-hover disabled:opacity-50 disabled:hover:bg-transparent',
-  danger: 'bg-danger-fill text-white hover:opacity-90 disabled:opacity-50',
+    'border-transparent bg-transparent text-text hover:bg-hover disabled:opacity-50 disabled:hover:bg-transparent',
+  danger: 'border-transparent bg-danger-fill text-white hover:opacity-90 disabled:opacity-50',
 };
 
 /** Classes du bouton (02), aussi pour un <Link> qui a l'apparence d'un bouton. */
