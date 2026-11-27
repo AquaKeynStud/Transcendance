@@ -1,14 +1,14 @@
 import { useMutation } from '@tanstack/react-query';
-import { Eye, EyeOff } from 'lucide-react';
 import { useId, useState, type FormEvent } from 'react';
 import { Link } from 'react-router';
-import { Button, IconButton } from '@/design-system/Button';
+import { Button } from '@/design-system/Button';
 import { useConfirm, useToast } from '@/design-system/feedback';
 import { FormRow, Input } from '@/design-system/Field';
 import { Alert, RadioGroup, Switch } from '@/design-system/misc';
+import { PasswordInput, PasswordRules } from '@/design-system/Password';
 import { api, ApiError } from '@/lib/api';
-import { cx } from '@/lib/cx';
 import { plural } from '@/lib/format';
+import { baseRules } from '@/lib/password';
 import { useMe } from '@/lib/session';
 import type { Me, Visibility } from '@/lib/types';
 import { useSaveMe } from '@/features/settings/useSaveMe';
@@ -150,39 +150,6 @@ export function PrivacySettings() {
   );
 }
 
-const COMMON = ['password', 'motdepasse', '12345678', 'azertyui', 'qwertyui', 'transcendance1'];
-
-function PasswordInput({
-  id,
-  value,
-  onChange,
-  ...rest
-}: { id: string; value: string; onChange: (v: string) => void } & Omit<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  'onChange'
-> & { error?: boolean; ok?: boolean }) {
-  const [shown, setShown] = useState(false);
-  return (
-    <Input
-      id={id}
-      type={shown ? 'text' : 'password'}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      end={
-        <IconButton
-          label={shown ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
-          size="sm"
-          onClick={() => setShown(!shown)}
-          className="size-8"
-        >
-          {shown ? <EyeOff aria-hidden size={18} /> : <Eye aria-hidden size={18} />}
-        </IconButton>
-      }
-      {...rest}
-    />
-  );
-}
-
 /** Paramètres · Sécurité : changer de mot de passe, avec l'ancien (ACC-05). */
 export function SecuritySettings() {
   const toast = useToast();
@@ -200,12 +167,7 @@ export function SecuritySettings() {
       }),
   });
 
-  const rules = [
-    { ok: pw.length >= 8, label: '8 caractères min.' },
-    { ok: !!pw && !/^\d+$/.test(pw), label: 'Pas que des chiffres' },
-    { ok: !!pw && !COMMON.includes(pw.toLowerCase()), label: 'Pas trop courant' },
-    { ok: !!pw && pw !== old, label: 'Différent de l’actuel' },
-  ];
+  const rules = [...baseRules(pw), { ok: !!pw && pw !== old, label: 'Différent de l’actuel' }];
   const allOk = rules.every((r) => r.ok);
   const match = !!pw2 && pw2 === pw;
   const edit = (fn: (v: string) => void) => (v: string) => {
@@ -274,29 +236,7 @@ export function SecuritySettings() {
             value={pw}
             onChange={edit(setPw)}
           />
-          <ul
-            id="pw-rules"
-            aria-label="Règles du mot de passe"
-            className="mt-0.5 grid grid-cols-2 gap-x-3 gap-y-1 text-caption text-text-3 max-sm:grid-cols-1"
-          >
-            {rules.map((r) => (
-              <li key={r.label} className={cx('flex items-center gap-1.5', r.ok && 'text-text-2')}>
-                <span
-                  aria-hidden
-                  className={cx(
-                    'shrink-0 rounded-full',
-                    r.ok
-                      ? 'grid size-3.5 place-items-center bg-success text-[9px] font-bold text-white'
-                      : 'mx-1 size-1.5 bg-line-strong',
-                  )}
-                >
-                  {r.ok && '✓'}
-                </span>
-                {r.label}
-                <span className="sr-only">{r.ok ? ' : respecté' : ' : pas encore'}</span>
-              </li>
-            ))}
-          </ul>
+          <PasswordRules id="pw-rules" rules={rules} />
         </div>
         <FormRow
           label="Confirmer le nouveau mot de passe"

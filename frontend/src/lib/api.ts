@@ -5,6 +5,7 @@ export class ApiError extends Error {
   status: number;
   code: string;
   fields: Record<string, string[]>;
+  details: Record<string, unknown>;
 
   constructor(status: number, body: Partial<ApiErrorBody> | null) {
     super(body?.error?.message ?? 'Une erreur est survenue. Réessayez dans un instant.');
@@ -12,6 +13,7 @@ export class ApiError extends Error {
     this.status = status;
     this.code = body?.error?.code ?? 'unknown_error';
     this.fields = body?.error?.fields ?? {};
+    this.details = body?.error?.details ?? {};
   }
 
   /** Premier message d'erreur d'un champ, pour l'afficher sous le champ. */

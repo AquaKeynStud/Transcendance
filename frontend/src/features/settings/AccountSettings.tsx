@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { Mail } from 'lucide-react';
-import { useEffect, useState, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import { Button } from '@/design-system/Button';
 import { useConfirm, useToast } from '@/design-system/feedback';
 import { FormRow, Input } from '@/design-system/Field';
@@ -8,6 +8,7 @@ import { Alert } from '@/design-system/misc';
 import { Spinner } from '@/design-system/Spinner';
 import { api, ApiError } from '@/lib/api';
 import { useMe } from '@/lib/session';
+import { useUsernameCheck } from '@/lib/useUsernameCheck';
 import { Block, SettingsSection } from '@/features/settings/SettingsLayout';
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -123,7 +124,6 @@ function UsernameBlock({ current }: { current: string }) {
   const [value, setValue] = useState(current);
   const [saved, setSaved] = useState(current);
   // Réponse du serveur pour un nom donné, et erreur d'enregistrement
-  const [check, setCheck] = useState<{ value: string; available: boolean } | null>(null);
   const [saveErr, setSaveErr] = useState<string | null>(null);
   const save = useMutation({
     mutationFn: (username: string) => api('/me/username', { method: 'PATCH', body: { username } }),
@@ -132,20 +132,7 @@ function UsernameBlock({ current }: { current: string }) {
   const valid = /^\w{3,20}$/.test(value);
   const toCheck = valid && value !== saved;
 
-  // Disponibilité vérifiée 500 ms après la dernière frappe
-  useEffect(() => {
-    if (!toCheck) return;
-    const ctrl = new AbortController();
-    const t = setTimeout(() => {
-      api<{ available: boolean }>(`/usernames/${value}`, { signal: ctrl.signal })
-        .then((r) => setCheck({ value, available: r.available }))
-        .catch(() => undefined);
-    }, 500);
-    return () => {
-      clearTimeout(t);
-      ctrl.abort();
-    };
-  }, [value, toCheck]);
+  const check = useUsernameCheck(value, toCheck);
 
   const state: { status: 'idle' | 'checking' | 'ok' | 'error'; msg: string } = saveErr
     ? { status: 'error', msg: saveErr }

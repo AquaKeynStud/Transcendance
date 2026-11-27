@@ -4,6 +4,7 @@ import {
   House,
   LayoutGrid,
   LogIn,
+  LogOut,
   Mail,
   Moon,
   Plus,
@@ -22,6 +23,7 @@ import { cx } from '@/lib/cx';
 import { useMe } from '@/lib/session';
 import { profileUrl } from '@/lib/urls';
 import { useComposer } from '@/features/posts/composer-context';
+import { useSignOut } from '@/features/auth/useSignOut';
 
 type Item = {
   to: string;
@@ -108,6 +110,7 @@ function ThemeSwitch() {
 export function Sidebar() {
   const { data: me } = useMe();
   const composer = useComposer();
+  const { signOut, pending } = useSignOut();
   const items = me
     ? [...primary, { to: profileUrl(me.username), label: 'Profil', icon: User, end: false }]
     : primary.filter((i) => i.to === '/explore' || i.to === '/search');
@@ -128,6 +131,19 @@ export function Sidebar() {
         {(me ? secondary : secondary.slice(0, 1)).map((item) => (
           <NavItem key={item.to} {...item} />
         ))}
+        {me && (
+          <button
+            type="button"
+            aria-label="Se déconnecter"
+            title="Se déconnecter"
+            disabled={pending}
+            onClick={signOut}
+            className="flex w-fit items-center gap-4 rounded-full p-3 text-nav text-text-2 transition-colors duration-150 ease-flat hover:bg-hover hover:text-text disabled:opacity-50 lg:py-2.5 lg:pr-5 lg:pl-3"
+          >
+            <LogOut aria-hidden size={26} strokeWidth={1.8} />
+            <span className="hidden lg:inline">Se déconnecter</span>
+          </button>
+        )}
       </nav>
 
       <div className="mt-auto hidden flex-col gap-2 sm:flex">

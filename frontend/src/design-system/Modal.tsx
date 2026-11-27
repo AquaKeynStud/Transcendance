@@ -13,6 +13,8 @@ type Props = {
   /** alertdialog pour une confirmation. */
   role?: 'dialog' | 'alertdialog';
   hideClose?: boolean;
+  /** Le titre n'est lu que par les lecteurs d'écran : le contenu l'affiche à sa façon. */
+  titleHidden?: boolean;
   describedBy?: string;
   className?: string;
 };
@@ -29,6 +31,7 @@ export function Modal({
   size = 'md',
   role = 'dialog',
   hideClose,
+  titleHidden,
   describedBy,
   className,
 }: Props) {
@@ -67,8 +70,8 @@ export function Modal({
     >
       {open && (
         <div className={cx('flex flex-col gap-4 p-6 max-sm:p-5', className)}>
-          <div className="-mt-2 -mr-2 flex items-center gap-3">
-            <h2 id={titleId} className="flex-1 text-[19px]">
+          <div className={cx('-mt-2 -mr-2 flex items-center gap-3', titleHidden && 'justify-end')}>
+            <h2 id={titleId} className={cx('flex-1 text-[19px]', titleHidden && 'sr-only')}>
               {title}
             </h2>
             {!hideClose && (

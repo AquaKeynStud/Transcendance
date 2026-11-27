@@ -1,6 +1,12 @@
 import { createBrowserRouter, Navigate } from 'react-router';
+import { GuestOnly, RequireAuth } from '@/app/guards';
 import { AuthLayout } from '@/app/layouts/AuthLayout';
 import { RootLayout, type RouteHandle } from '@/app/layouts/RootLayout';
+import { ForgotPasswordPage } from '@/features/auth/ForgotPasswordPage';
+import { LoginPage } from '@/features/auth/LoginPage';
+import { ResetPasswordPage } from '@/features/auth/ResetPasswordPage';
+import { SignupPage } from '@/features/auth/SignupPage';
+import { VerifyEmailPage } from '@/features/auth/VerifyEmailPage';
 import { FeedPage } from '@/features/feed/FeedPage';
 import { ProfilePage } from '@/features/profile/ProfilePage';
 import { AccountSettings } from '@/features/settings/AccountSettings';
@@ -18,20 +24,16 @@ export const router = createBrowserRouter([
   {
     element: <AuthLayout />,
     children: [
-      { path: 'login', element: <Placeholder title="Connexion" spec="AUTH-02" sprint="S2" /> },
-      { path: 'signup', element: <Placeholder title="Inscription" spec="AUTH-01" sprint="S2" /> },
       {
-        path: 'verify-email',
-        element: <Placeholder title="Vérification de l’email" spec="AUTH-01" sprint="S2" />,
+        element: <GuestOnly />,
+        children: [
+          { path: 'login', element: <LoginPage /> },
+          { path: 'signup', element: <SignupPage /> },
+        ],
       },
-      {
-        path: 'forgot-password',
-        element: <Placeholder title="Mot de passe oublié" spec="AUTH-04" sprint="S2" />,
-      },
-      {
-        path: 'reset-password',
-        element: <Placeholder title="Nouveau mot de passe" spec="AUTH-05" sprint="S2" />,
-      },
+      { path: 'verify-email', element: <VerifyEmailPage /> },
+      { path: 'forgot-password', element: <ForgotPasswordPage /> },
+      { path: 'reset-password', element: <ResetPasswordPage /> },
     ],
   },
   {
@@ -64,53 +66,62 @@ export const router = createBrowserRouter([
           { path: 'friends', element: <ListsPage kind="friends" /> },
         ],
       },
-      { path: 'requests', element: <RequestsPage /> },
       {
-        path: 'messages/:conversationId?',
-        element: <Placeholder title="Messages" spec="DM-01 à 05" sprint="S5" />,
-      },
-      {
-        path: 'notifications',
-        element: <Placeholder title="Notifications" spec="NOTIF-01, NOTIF-02" sprint="S6" />,
-      },
-      {
-        path: 'search',
-        element: <Placeholder title="Recherche" spec="SEARCH-01 à 05" sprint="S7" />,
-      },
-      {
-        path: 'settings',
-        element: <SettingsLayout />,
-        handle: { wide: true } satisfies RouteHandle,
+        // Réservé aux users connectés (un visiteur part vers /login?next=…)
+        element: <RequireAuth />,
         children: [
-          { index: true, element: <Navigate to="profile" replace /> },
-          { path: 'profile', element: <ProfileSettings /> },
-          { path: 'account', element: <AccountSettings /> },
-          { path: 'privacy', element: <PrivacySettings /> },
-          { path: 'security', element: <SecuritySettings /> },
-          { path: 'data', element: <Placeholder title="Mes données" spec="ACC-08" sprint="S8" /> },
+          { path: 'requests', element: <RequestsPage /> },
           {
-            path: 'delete',
-            element: <Placeholder title="Supprimer le compte" spec="ACC-09" sprint="S8" />,
-          },
-        ],
-      },
-      {
-        path: 'admin',
-        children: [
-          { index: true, element: <Navigate to="users" replace /> },
-          {
-            path: 'users',
-            element: <Placeholder title="Administration · Users" spec="ADM-01" sprint="S7" />,
+            path: 'messages/:conversationId?',
+            element: <Placeholder title="Messages" spec="DM-01 à 05" sprint="S5" />,
           },
           {
-            path: 'users/:username',
-            element: (
-              <Placeholder title="Administration · Fiche user" spec="ADM-02 à 07" sprint="S7" />
-            ),
+            path: 'notifications',
+            element: <Placeholder title="Notifications" spec="NOTIF-01, NOTIF-02" sprint="S6" />,
           },
           {
-            path: 'log',
-            element: <Placeholder title="Journal de modération" spec="ADM-08" sprint="S7" />,
+            path: 'search',
+            element: <Placeholder title="Recherche" spec="SEARCH-01 à 05" sprint="S7" />,
+          },
+          {
+            path: 'settings',
+            element: <SettingsLayout />,
+            handle: { wide: true } satisfies RouteHandle,
+            children: [
+              { index: true, element: <Navigate to="profile" replace /> },
+              { path: 'profile', element: <ProfileSettings /> },
+              { path: 'account', element: <AccountSettings /> },
+              { path: 'privacy', element: <PrivacySettings /> },
+              { path: 'security', element: <SecuritySettings /> },
+              {
+                path: 'data',
+                element: <Placeholder title="Mes données" spec="ACC-08" sprint="S8" />,
+              },
+              {
+                path: 'delete',
+                element: <Placeholder title="Supprimer le compte" spec="ACC-09" sprint="S8" />,
+              },
+            ],
+          },
+          {
+            path: 'admin',
+            children: [
+              { index: true, element: <Navigate to="users" replace /> },
+              {
+                path: 'users',
+                element: <Placeholder title="Administration · Users" spec="ADM-01" sprint="S7" />,
+              },
+              {
+                path: 'users/:username',
+                element: (
+                  <Placeholder title="Administration · Fiche user" spec="ADM-02 à 07" sprint="S7" />
+                ),
+              },
+              {
+                path: 'log',
+                element: <Placeholder title="Journal de modération" spec="ADM-08" sprint="S7" />,
+              },
+            ],
           },
         ],
       },

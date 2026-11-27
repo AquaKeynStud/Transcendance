@@ -89,5 +89,11 @@ export type FollowRequest = { user: UserSummary; created_at: string };
 
 /** Format d'erreur unique de l'API (SPEC_TECH §3). */
 export type ApiErrorBody = {
-  error: { code: string; message: string; fields?: Record<string, string[]> };
+  error: {
+    code: string;
+    message: string;
+    fields?: Record<string, string[]>;
+    /** Données en plus selon le code, ex. `retry_after` (secondes) pour `too_many_attempts`. */
+    details?: Record<string, unknown>;
+  };
 };
