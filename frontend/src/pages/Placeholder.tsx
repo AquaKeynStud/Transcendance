@@ -1,4 +1,5 @@
 import { useParams } from 'react-router';
+import { PageHead } from '@/app/layouts/PageHead';
 
 type Props = {
   title: string;
@@ -13,16 +14,18 @@ export function Placeholder({ title, spec, sprint }: Props) {
   const params = useParams();
   const shown = Object.entries(params).filter(([key]) => key !== '*');
   return (
-    <section className="mx-auto max-w-2xl px-4 py-10">
-      <h1 className="text-2xl font-semibold">{title}</h1>
-      {shown.length > 0 && (
-        <p className="mt-2 text-sm text-neutral-400">
-          {shown.map(([key, value]) => `${key} : ${value}`).join(' · ')}
-        </p>
-      )}
-      <p className="mt-4 text-neutral-400">
+    <>
+      <PageHead
+        title={title}
+        sub={
+          shown.length > 0
+            ? shown.map(([key, value]) => `${key} : ${value}`).join(' · ')
+            : undefined
+        }
+      />
+      <p className="text-post text-text-2 px-5 py-6">
         Page à venir{sprint ? ` (${sprint})` : ''}.{spec ? ` Spec : ${spec}.` : ''}
       </p>
-    </section>
+    </>
   );
 }

@@ -1,19 +1,18 @@
-import { Link, Outlet } from 'react-router';
-import { Footer } from '@/app/layouts/Footer';
+import { Outlet } from 'react-router';
+import { Brand } from '@/app/layouts/Brand';
+import { LegalLinks } from '@/app/layouts/LegalLinks';
 
 /** Pages d'authentification : pas de navigation, contenu centré. */
 export function AuthLayout() {
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="p-4">
-        <Link to="/" className="text-lg font-semibold">
-          Transcendance
-        </Link>
+        <Brand className="inline-flex" />
       </header>
-      <main className="flex flex-1 items-start justify-center">
+      <main className="mx-auto w-full max-w-[420px] flex-1 px-4">
         <Outlet />
       </main>
-      <Footer />
+      <LegalLinks className="justify-center py-4" />
     </div>
   );
 }
